@@ -28,7 +28,8 @@ Other scripts: `npm run build`, `npm run preview`, `npm run typecheck`,
    - **Use their website** — type `acme.com`. The server fetches the page and
      pulls out the logo, palette, typefaces and whether the site runs light or
      dark, then applies the lot.
-3. On **Content**, paste (or upload) the account brief you already wrote. The
+3. On **Content**, drop in the account brief you already wrote — PDF, Word,
+   txt or markdown — or paste the text. The
    studio reads the industry, the workloads and the systems named in it, then
    rebuilds the agents, knowledge base, connectors and composer suggestions to
    match — so the demo is about their business, not ours. Everything it took is
@@ -77,6 +78,8 @@ src/
     __root.tsx          document shell, meta, error and 404 screens
     index.tsx           the studio, reads ?b= into a brand kit
     api/brand-scan.ts   server-side website reader (no CORS to fight)
+    api/brief-extract.ts .docx text extraction (a docx is a ZIP; node:zlib
+                        opens it, so no dependency)
   components/studio/
     brand/
       types.ts          BrandKit shape — this is what travels in the URL
@@ -84,6 +87,7 @@ src/
       kit.ts            defaults, presets, theme derivation, URL encode/decode
       image.ts          logo downscaling + palette extraction from pixels
       brief.ts          account brief -> industry, workloads, systems, metrics
+      brief-file.ts     reads PDF (pdf.js) and Word (server) into plain text
       BrandProvider.tsx context, CSS-variable injection, web fonts, URL sync
     BrandSettingsPanel.tsx   the Brand Studio drawer
     BrandMark.tsx            logo rendering, wordmark and dark-sidebar handling
@@ -116,6 +120,8 @@ working even if the customer's CDN blocks hotlinking.
 
 - A site that blocks bots, or renders entirely client-side, yields a thin scan.
   The panel says so and points at the logo-upload path instead.
+- A scanned PDF (an image, no selectable text) cannot be read; the panel says so
+  and asks for the text instead. Old .doc files need saving as .docx first.
 - Uploaded logos are downscaled to 320px and re-encoded to WebP before going into
   the URL; SVGs are kept as-is. A very large PNG makes a long link, and the Share
   tab warns past 6,000 characters.

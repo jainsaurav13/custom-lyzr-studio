@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiBrandScanRouteImport } from './routes/api/brand-scan'
+import { Route as ApiBriefExtractRouteImport } from './routes/api/brief-extract'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +23,40 @@ const ApiBrandScanRoute = ApiBrandScanRouteImport.update({
   path: '/api/brand-scan',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiBriefExtractRoute = ApiBriefExtractRouteImport.update({
+  id: '/api/brief-extract',
+  path: '/api/brief-extract',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/brand-scan': typeof ApiBrandScanRoute
+  '/api/brief-extract': typeof ApiBriefExtractRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/brand-scan': typeof ApiBrandScanRoute
+  '/api/brief-extract': typeof ApiBriefExtractRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/brand-scan': typeof ApiBrandScanRoute
+  '/api/brief-extract': typeof ApiBriefExtractRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/brand-scan'
+  fullPaths: '/' | '/api/brand-scan' | '/api/brief-extract'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/brand-scan'
-  id: '__root__' | '/' | '/api/brand-scan'
+  to: '/' | '/api/brand-scan' | '/api/brief-extract'
+  id: '__root__' | '/' | '/api/brand-scan' | '/api/brief-extract'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiBrandScanRoute: typeof ApiBrandScanRoute
+  ApiBriefExtractRoute: typeof ApiBriefExtractRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiBrandScanRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/brief-extract': {
+      id: '/api/brief-extract'
+      path: '/api/brief-extract'
+      fullPath: '/api/brief-extract'
+      preLoaderRoute: typeof ApiBriefExtractRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiBrandScanRoute: ApiBrandScanRoute,
+  ApiBriefExtractRoute: ApiBriefExtractRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

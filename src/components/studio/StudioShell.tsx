@@ -144,7 +144,7 @@ export function StudioShell() {
   const [mobileNav, setMobileNav] = useState(false);
   const [bannerOpen, setBannerOpen] = useState(true);
 
-  const agents = useMemo(() => makeAgents(kit.company, kit.brief), [kit.company]);
+  const agents = useMemo(() => makeAgents(kit.company, kit.brief), [kit.company, kit.brief]);
   // A colourful logo disappears on a dark or brand-filled sidebar.
   const sidebarIsDark = luminance(theme.vars["--st-sidebar-bg"]) < 0.45;
   const agent = draft?.agent ?? agents.find((item) => item.id === agentId) ?? null;

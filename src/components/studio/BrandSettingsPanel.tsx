@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 
 import { useBrand } from "./brand/BrandProvider";
 import { analyseBrief, briefSystems, industryLabel, INDUSTRIES, findUseCase } from "./brand/brief";
+import { readBriefFile } from "./brand/brief-file";
 import { fileToLogo, rankBrandColors } from "./brand/image";
 import {
   deleteDemo,
@@ -789,6 +790,7 @@ function ContentTab({
 }) {
   const [text, setText] = useState("");
   const [error, setError] = useState("");
+  const [reading, setReading] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const brief = kit.brief;
 
@@ -804,18 +806,16 @@ function ContentTab({
 
   const handleFile = async (file: File | undefined) => {
     if (!file) return;
-    if (/\.(pdf|docx?)$/i.test(file.name)) {
-      setError(
-        `${file.name} is a ${file.name.split(".").pop()?.toUpperCase()} — open it, select all, and paste the text below.`,
-      );
-      return;
-    }
+    setError("");
+    setReading(true);
     try {
-      const raw = await file.text();
-      setText(raw.slice(0, 200_000));
+      const raw = await readBriefFile(file);
+      setText(raw);
       analyse(raw);
-    } catch {
-      setError("That file could not be read.");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "That file could not be read.");
+    } finally {
+      setReading(false);
     }
   };
 
@@ -833,15 +833,31 @@ function ContentTab({
       </p>
 
       <div
-        onClick={() => fileInput.current?.click()}
-        className="flex cursor-pointer items-center justify-center gap-2 rounded-[var(--st-radius-sm)] border border-dashed border-[var(--st-border-strong)] px-4 py-3 text-xs text-[var(--st-text-muted)] transition-colors hover:border-[var(--st-primary)]"
+        onClick={() => (reading ? undefined : fileInput.current?.click())}
+        onDragOver={(event) => event.preventDefault()}
+        onDrop={(event) => {
+          event.preventDefault();
+          handleFile(event.dataTransfer.files?.[0]);
+        }}
+        className={cn(
+          "flex cursor-pointer items-center justify-center gap-2 rounded-[var(--st-radius-sm)] border border-dashed border-[var(--st-border-strong)] px-4 py-3 text-xs text-[var(--st-text-muted)] transition-colors hover:border-[var(--st-primary)]",
+          reading && "pointer-events-none opacity-60",
+        )}
       >
-        <FileText className="h-3.5 w-3.5" /> Upload a .txt or .md brief
+        {reading ? (
+          <>
+            <Loader2 className="h-3.5 w-3.5 animate-spin" /> Reading the brief…
+          </>
+        ) : (
+          <>
+            <FileText className="h-3.5 w-3.5" /> Drop a brief here — PDF, Word, txt or md
+          </>
+        )}
       </div>
       <input
         ref={fileInput}
         type="file"
-        accept=".txt,.md,.markdown,.csv,.json,text/plain"
+        accept=".pdf,.docx,.txt,.md,.markdown,.csv,.json,application/pdf,text/plain"
         className="hidden"
         onChange={(event) => handleFile(event.target.files?.[0] ?? undefined)}
       />
