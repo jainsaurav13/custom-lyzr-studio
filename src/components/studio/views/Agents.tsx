@@ -3,6 +3,8 @@ import { Filter, LayoutGrid, List, Plus, Search } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
+import { useBrand } from "../brand/BrandProvider";
+import { industryLabel } from "../brand/brief";
 import type { Agent } from "../data";
 import { Badge, Button, Card, inputClass, SegmentedControl, StatusDot } from "../ui";
 
@@ -21,6 +23,7 @@ export function AgentsView({
   onOpenAgent: (id: string) => void;
   onCreate: () => void;
 }) {
+  const { kit } = useBrand();
   const [query, setQuery] = useState("");
   const [layout, setLayout] = useState<"grid" | "list">("grid");
   const [status, setStatus] = useState<"all" | "live" | "draft">("all");
@@ -36,6 +39,19 @@ export function AgentsView({
 
   return (
     <div className="space-y-[var(--st-gap)]">
+      {kit.brief ? (
+        <Card className="p-4">
+          <p className="text-sm font-medium text-[var(--st-text)]">
+            {agents.length} agent{agents.length === 1 ? "" : "s"} built for {kit.company}
+          </p>
+          <p className="mt-1 text-xs text-[var(--st-text-muted)]">
+            Drawn from the workloads your account brief names
+            {industryLabel(kit.brief) ? `, in ${industryLabel(kit.brief).toLowerCase()}` : ""} — the
+            first three are running, the rest are staged and ready to turn on.
+          </p>
+        </Card>
+      ) : null}
+
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative min-w-[220px] flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--st-text-faint)]" />

@@ -21,10 +21,19 @@ export interface UseCase {
   match: RegExp;
   agent: string;
   role: string;
+  /** Why it is worth building — the line a rep says after the name. */
+  impact: string;
   category: string;
   tools: string[];
   doc: string;
   suggestion: string;
+  /** Steps in the flow, shown when the agent is offered as a blueprint. */
+  steps: number;
+}
+
+/** One agent the studio is proposing off the back of the brief. */
+export interface AgentProposal extends Omit<UseCase, "match"> {
+  name: string;
 }
 
 /* ------------------------------------------------------------------ *
@@ -37,170 +46,204 @@ export const USE_CASES: UseCase[] = [
     match: /support|ticket|helpdesk|service desk|csat|contact cent|call cent|complaint/i,
     agent: "Support Triage",
     role: "Classifies inbound tickets, drafts a first reply and routes to the right queue.",
+    impact: "Takes the repeat questions off the queue and shortens first response to seconds.",
     category: "Customer support",
     tools: ["Zendesk", "Slack", "Jira"],
     doc: "Support macros & escalation matrix.pdf",
     suggestion: "Handle customer support questions for my company",
+    steps: 5,
   },
   {
     id: "churn",
     match: /churn|retention|win.?back|loyalty|attrition/i,
     agent: "Retention Save Desk",
     role: "Spots at-risk accounts and prepares a save offer the rep can send in one click.",
+    impact: "Reaches the accounts that were going to leave quietly, before the renewal date.",
     category: "Revenue",
     tools: ["Salesforce", "Snowflake", "Gmail"],
     doc: "Retention offer matrix FY26.xlsx",
     suggestion: "Flag accounts about to churn and draft a save offer",
+    steps: 4,
   },
   {
     id: "collections",
     match: /collection|dunning|overdue|receivable|arrears|payment reminder/i,
     agent: "Collections Outreach",
     role: "Sequences reminders across email and voice, and books a payment plan when asked.",
+    impact: "Pulls days-sales-outstanding down without adding headcount to the finance team.",
     category: "Finance",
     tools: ["Twilio", "NetSuite", "Gmail"],
     doc: "Collections policy & tone of voice.docx",
     suggestion: "Chase overdue invoices without annoying good customers",
+    steps: 4,
   },
   {
     id: "onboarding",
     match: /onboard|kyc|know your customer|activation|provision|sign.?up/i,
     agent: "Onboarding Copilot",
     role: "Walks a new customer through setup, checks documents and escalates exceptions.",
+    impact: "Shortens time-to-first-value and stops good sign-ups stalling on paperwork.",
     category: "Customer success",
     tools: ["HubSpot", "SharePoint", "Postgres"],
     doc: "Onboarding checklist & KYC rules.pdf",
     suggestion: "Guide new customers through onboarding and document checks",
+    steps: 4,
   },
   {
     id: "claims",
     match: /claim|underwrit|policyholder|adjuster|settlement/i,
     agent: "Claims Intake",
     role: "Reads the claim and attachments, checks cover and prepares the adjuster's summary.",
+    impact: "Gets the adjuster a decision-ready file instead of an inbox of attachments.",
     category: "Operations",
     tools: ["Guidewire", "SharePoint", "Snowflake"],
     doc: "Policy wordings & exclusions.pdf",
     suggestion: "Read incoming claims and prepare the adjuster summary",
+    steps: 5,
   },
   {
     id: "rfp",
     match: /rfp|rfi|tender|procurement|questionnaire|bid/i,
     agent: "RFP Responder",
     role: "Answers security and procurement questionnaires from approved sources only.",
+    impact: "Turns a week of copy-and-paste per bid into a reviewed draft the same day.",
     category: "Revenue",
     tools: ["SharePoint", "Google Drive"],
     doc: "Security whitepaper & SOC 2 evidence.pdf",
     suggestion: "Answer security questionnaires from our approved docs",
+    steps: 4,
   },
   {
     id: "fraud",
     match: /fraud|aml|money launder|suspicious|risk scor/i,
     agent: "Fraud Review Assistant",
     role: "Summarises flagged cases with the evidence trail so analysts decide faster.",
+    impact: "Clears the alert backlog by handing analysts the evidence already assembled.",
     category: "Risk",
     tools: ["Snowflake", "ServiceNow"],
     doc: "AML red flags & escalation SOP.pdf",
     suggestion: "Summarise flagged transactions for the fraud analyst",
+    steps: 5,
   },
   {
     id: "network",
     match: /network|outage|incident|downtime|noc|sre|latency|fault/i,
     agent: "Incident Copilot",
     role: "Correlates alerts, drafts the incident note and suggests the runbook step.",
+    impact: "Cuts the minutes between the first alert and the first useful action.",
     category: "Operations",
     tools: ["ServiceNow", "Slack", "Postgres"],
     doc: "Engineering runbooks (space: OPS)",
     suggestion: "Correlate alerts and draft the incident note",
+    steps: 6,
   },
   {
     id: "field",
     match: /field|technician|dispatch|site visit|installation|engineer visit/i,
     agent: "Field Dispatch Assistant",
     role: "Briefs the technician before a visit and files the report after it.",
+    impact: "Raises first-visit fix rate and gets the paperwork done before the van moves on.",
     category: "Operations",
     tools: ["Salesforce", "Twilio", "Calendly"],
     doc: "Field service handbook.pdf",
     suggestion: "Brief technicians before each site visit",
+    steps: 4,
   },
   {
     id: "sales",
     match: /pipeline|prospect|lead|sdr|quota|cross.?sell|upsell|account executive/i,
     agent: "Pipeline Research",
     role: "Builds a pre-call brief from CRM history, news and open support tickets.",
+    impact: "Every meeting starts prepared, without the rep spending an hour on research.",
     category: "Revenue",
     tools: ["Salesforce", "Web Search", "Gmail"],
     doc: "Account plans & battlecards FY26.pdf",
     suggestion: "Build a pre-call brief for every meeting on my calendar",
+    steps: 5,
   },
   {
     id: "marketing",
     match: /campaign|marketing|content|brand voice|seo|newsletter/i,
     agent: "Campaign Copy Assistant",
     role: "Drafts campaign copy in the approved voice and checks claims against legal.",
+    impact: "More campaigns out of the same team, with the claims check already done.",
     category: "Marketing",
     tools: ["Google Drive", "Web Search"],
     doc: "Brand voice & claims guidelines.pdf",
     suggestion: "Draft campaign copy in our approved brand voice",
+    steps: 4,
   },
   {
     id: "hr",
     match: /\bhr\b|employee|recruit|payroll|leave policy|people team|talent/i,
     agent: "People Helpdesk",
     role: "Answers policy questions on leave, benefits and travel with citations.",
+    impact: "The people team stops answering the same twenty questions every week.",
     category: "People",
     tools: ["Workday", "SharePoint"],
     doc: "Employee handbook 2026.pdf",
     suggestion: "Answer employee policy questions with citations",
+    steps: 3,
   },
   {
     id: "compliance",
     match: /complian|regulat|audit|gdpr|hipaa|dpdp|sox|governance/i,
     agent: "Compliance Reviewer",
     role: "Reviews content and decisions against the regulatory playbook before they ship.",
+    impact: "Catches the breach before the regulator does, and leaves an audit trail.",
     category: "Risk",
     tools: ["SharePoint", "Jira"],
     doc: "Regulatory playbook & control library.pdf",
     suggestion: "Check content against our regulatory playbook",
+    steps: 4,
   },
   {
     id: "billing",
     match: /billing|invoice|charge|refund|subscription|plan change/i,
     agent: "Billing Query Agent",
     role: "Explains charges, spots duplicates and prepares refunds for approval.",
+    impact: "Resolves the single biggest driver of contact volume at first touch.",
     category: "Finance",
     tools: ["NetSuite", "Zendesk", "Postgres"],
     doc: "Billing rules & refund policy.docx",
     suggestion: "Explain charges and prepare refunds for approval",
+    steps: 4,
   },
   {
     id: "supply",
     match: /supply|inventory|logistics|warehouse|shipment|procure|vendor/i,
     agent: "Supply Signal Watch",
     role: "Watches orders and supplier signals, then flags what will slip and why.",
+    impact: "Turns a slipped delivery into a warning days earlier, while it can still be fixed.",
     category: "Operations",
     tools: ["SAP", "Snowflake", "Slack"],
     doc: "Supplier SLAs & escalation paths.xlsx",
     suggestion: "Flag shipments that are about to slip",
+    steps: 5,
   },
   {
     id: "analytics",
     match: /report|dashboard|analytic|insight|data team|self.?serve|bi\b/i,
     agent: "Insights Analyst",
     role: "Answers business questions over the governed warehouse and shows its working.",
+    impact: "The data team stops being a ticket queue for one-off numbers.",
     category: "Data",
     tools: ["Snowflake", "Postgres"],
     doc: "Metric definitions & data dictionary.csv",
     suggestion: "Answer business questions over our warehouse",
+    steps: 3,
   },
   {
     id: "voice",
     match: /ivr|voice|inbound call|outbound call|telephony|speech/i,
     agent: "Voice Front Desk",
     role: "Takes the call, identifies the caller and resolves or routes without a menu tree.",
+    impact: "Callers say what they want instead of pressing 1, and hold time drops.",
     category: "Voice",
     tools: ["Twilio", "Salesforce"],
     doc: "Call handling scripts.docx",
     suggestion: "Answer inbound calls and route without a menu tree",
+    steps: 5,
   },
 ];
 
@@ -355,7 +398,7 @@ function findMetrics(text: string): string[] {
   const out: string[] = [];
   const patterns = [
     /[$₹€£]\s?\d[\d,.]*\s?(?:k|m|bn?|billion|million|crore|lakh)?\b(?:\s+[a-z]{3,14}){0,2}/gi,
-    /\b\d[\d,.]*\s?(?:k|m|bn?|million|billion|crore|lakh)?\+?\s+(?:customers?|subscribers?|users?|employees?|stores?|agents?|tickets?|claims?|accounts?|branches?|sites?)\b/gi,
+    /\b\d[\d,.]*\s?(?:k|m|bn?|million|billion|crore|lakh)?\+?\s+(?:customers?|subscribers?|users?|employees?|stores?|agents?|tickets?|claims?|accounts?|branches?|sites?(?:\s+visits?)?|calls?)\b/gi,
     /\b\d{1,3}(?:\.\d+)?%\s+(?:of\s+)?[a-z]{3,14}(?:\s+[a-z]{3,14})?/gi,
   ];
   patterns.forEach((pattern) => {
@@ -411,18 +454,31 @@ export function analyseBrief(text: string): BriefProfile {
     }
   });
 
-  const scored = USE_CASES.map((useCase) => ({
-    id: useCase.id,
-    hits: (body.match(new RegExp(useCase.match.source, "gi")) ?? []).length,
-  }))
+  // A brief normally says what matters most — "the board has made prepaid churn
+  // the number one priority". A workload named in one of those sentences counts
+  // for more than a passing mention, so the lead agent is the one the account
+  // actually cares about rather than whichever word appears most often.
+  const emphasis = body
+    .split(/(?<=[.!?])\s+/)
+    .filter((sentence) =>
+      /priorit|number one|board|objective|goal|strategic|mandate|initiative|focus/i.test(sentence),
+    )
+    .join(" ");
+
+  const scored = USE_CASES.map((useCase) => {
+    const pattern = new RegExp(useCase.match.source, "gi");
+    const hits = (body.match(pattern) ?? []).length;
+    const stressed = emphasis ? (emphasis.match(pattern) ?? []).length : 0;
+    return { id: useCase.id, hits: hits + stressed * 3 };
+  })
     .filter((entry) => entry.hits > 0)
     .sort((a, b) => b.hits - a.hits);
 
-  let useCases = scored.slice(0, 5).map((entry) => entry.id);
+  let useCases = scored.slice(0, 6).map((entry) => entry.id);
   // A brief that never names a workload still deserves a plausible workspace.
-  if (useCases.length < 3 && industry) {
+  if (useCases.length < 4 && industry) {
     INDUSTRIES[industry].useCases.forEach((id) => {
-      if (useCases.length < 4 && !useCases.includes(id)) useCases.push(id);
+      if (useCases.length < 5 && !useCases.includes(id)) useCases.push(id);
     });
   }
   if (!useCases.length) useCases = ["support", "onboarding", "analytics"];
@@ -476,4 +532,37 @@ export function briefSuggestions(profile: BriefProfile | undefined): string[] {
     .map((id) => findUseCase(id)?.suggestion)
     .filter((suggestion): suggestion is string => Boolean(suggestion))
     .slice(0, 3);
+}
+
+/**
+ * The agents we would build for this account — the ranked workloads the brief
+ * named, each turned into something the rep can point at on screen. Everything
+ * downstream (the registry, the store, the blueprints, the home shelf) reads
+ * from this one list so a demo never contradicts itself.
+ */
+export function briefAgentPlan(
+  profile: BriefProfile | undefined,
+  company: string,
+): AgentProposal[] {
+  if (!profile?.useCases.length) return [];
+  const plan: AgentProposal[] = [];
+  profile.useCases.forEach((id, index) => {
+    const useCase = findUseCase(id);
+    if (!useCase) return;
+    plan.push({
+      id: useCase.id,
+      // The lead agent wears the account's name; the rest keep the plain one so
+      // the list doesn't read like a chant.
+      name: index === 0 ? `${company} ${useCase.agent}` : useCase.agent,
+      agent: useCase.agent,
+      role: useCase.role,
+      impact: useCase.impact,
+      category: useCase.category,
+      tools: useCase.tools,
+      doc: useCase.doc,
+      suggestion: useCase.suggestion,
+      steps: useCase.steps,
+    });
+  });
+  return plan;
 }

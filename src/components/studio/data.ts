@@ -1,8 +1,9 @@
 import {
+  briefAgentPlan,
   briefDocs,
   briefSuggestions,
   briefSystems,
-  findUseCase,
+  type AgentProposal,
   type BriefProfile,
 } from "./brand/brief";
 
@@ -80,29 +81,34 @@ const OWNERS = ["Priya N.", "Ana M.", "Daniel R.", "Marcus T.", "You"];
 
 /** Agents implied by the account brief — the workloads it actually mentions. */
 function agentsFromBrief(company: string, brief: BriefProfile): Agent[] {
-  return brief.useCases
-    .map((id, index) => {
-      const useCase = findUseCase(id);
-      if (!useCase) return null;
-      const live = index < 3;
-      return {
-        id,
-        name: index === 0 ? `${company} ${useCase.agent}` : useCase.agent,
-        role: useCase.role,
-        model: MODELS[index % 3],
-        status: live ? ("live" as const) : index === 3 ? ("paused" as const) : ("draft" as const),
-        runs: live ? RUN_SEEDS[index] : 0,
-        successRate: live ? 97 - index * 2 : 0,
-        latency: live ? LATENCIES[index] : "—",
-        updated:
-          ["12 min ago", "2 hours ago", "Yesterday", "3 days ago", "Just now"][index] ?? "Today",
-        tools: useCase.tools,
-        knowledge: [useCase.doc, `${company} product handbook`],
-        owner: OWNERS[index % OWNERS.length],
-        category: useCase.category,
-      } satisfies Agent;
-    })
-    .filter((agent): agent is Agent => Boolean(agent));
+  return briefAgentPlan(brief, company).map((proposal, index) => {
+    const live = index < 3;
+    return {
+      id: proposal.id,
+      name: proposal.name,
+      role: proposal.role,
+      model: MODELS[index % 3],
+      status: live ? ("live" as const) : index === 3 ? ("paused" as const) : ("draft" as const),
+      runs: live ? RUN_SEEDS[index] : 0,
+      successRate: live ? 97 - index * 2 : 0,
+      latency: live ? LATENCIES[index] : "—",
+      updated:
+        ["12 min ago", "2 hours ago", "Yesterday", "3 days ago", "Just now", "Today"][index] ??
+        "Today",
+      tools: proposal.tools,
+      knowledge: [proposal.doc, `${company} product handbook`],
+      owner: OWNERS[index % OWNERS.length],
+      category: proposal.category,
+    } satisfies Agent;
+  });
+}
+
+/**
+ * The pitch list: what we would build for this account, in order. Empty until a
+ * brief is read — the home shelf only appears once there is something to say.
+ */
+export function makeAgentPlan(company: string, brief?: BriefProfile): AgentProposal[] {
+  return briefAgentPlan(brief, company);
 }
 
 export function makeAgents(company: string, brief?: BriefProfile): Agent[] {
@@ -201,7 +207,30 @@ export function makeAgents(company: string, brief?: BriefProfile): Agent[] {
   ];
 }
 
-export function makeStoreAgents(company: string): StoreAgent[] {
+/** Installs read as plausible rather than exact — nobody audits a demo shelf. */
+const STORE_INSTALLS = ["12.4k", "9.1k", "7.8k", "5.2k", "11.0k", "3.6k"];
+
+export function makeStoreAgents(company: string, brief?: BriefProfile): StoreAgent[] {
+  const plan = briefAgentPlan(brief, company);
+  if (plan.length) {
+    // With a brief in hand the shelf leads with the agents we would actually
+    // build for this account, then falls back to the catalogue.
+    const fromBrief = plan.map((proposal, index) => ({
+      id: `plan-${proposal.id}`,
+      name: proposal.agent,
+      publisher: "Lyzr",
+      description: proposal.role,
+      category: proposal.category,
+      installs: STORE_INSTALLS[index % STORE_INSTALLS.length],
+      rating: 4.9 - index * 0.1,
+    }));
+    const seen = new Set(fromBrief.map((item) => item.name));
+    return [...fromBrief, ...catalogue(company).filter((item) => !seen.has(item.name))].slice(0, 9);
+  }
+  return catalogue(company);
+}
+
+function catalogue(company: string): StoreAgent[] {
   return [
     {
       id: "kb-builder",
@@ -654,6 +683,18 @@ export const BLUEPRINTS = [
     steps: 4,
   },
 ];
+
+/** Blueprints follow the brief too, so the shelf matches the agent registry. */
+export function makeBlueprints(company: string, brief?: BriefProfile) {
+  const plan = briefAgentPlan(brief, company);
+  if (!plan.length) return BLUEPRINTS;
+  return plan.slice(0, 6).map((proposal) => ({
+    id: `bp-${proposal.id}`,
+    name: `${proposal.agent} Blueprint`,
+    description: proposal.role,
+    steps: proposal.steps,
+  }));
+}
 
 export const PREBUILT = [
   {

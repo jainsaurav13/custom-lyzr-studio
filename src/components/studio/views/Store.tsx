@@ -4,7 +4,7 @@ import { Blocks, Download, Search, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { useBrand } from "../brand/BrandProvider";
-import { BLUEPRINTS, makeStoreAgents } from "../data";
+import { makeBlueprints, makeStoreAgents } from "../data";
 import { Badge, Button, Card, inputClass } from "../ui";
 
 /** Two shelves share this screen: installable agents, and wired-up blueprints. */
@@ -14,7 +14,7 @@ export function StoreView({ mode = "store" }: { mode?: "store" | "blueprints" })
 
 function AppStorePanel() {
   const { kit } = useBrand();
-  const items = makeStoreAgents(kit.company);
+  const items = makeStoreAgents(kit.company, kit.brief);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const categories = ["All", ...Array.from(new Set(items.map((item) => item.category)))];
@@ -117,6 +117,7 @@ function AppStorePanel() {
 /** Blueprints are the same shelf, but pre-wired multi-step flows. */
 function BlueprintsPanel() {
   const { kit } = useBrand();
+  const blueprints = makeBlueprints(kit.company, kit.brief);
   return (
     <div className="space-y-[var(--st-gap)] pt-6">
       <div>
@@ -133,7 +134,7 @@ function BlueprintsPanel() {
       </div>
 
       <div className="grid gap-[var(--st-gap)] md:grid-cols-2 xl:grid-cols-3">
-        {BLUEPRINTS.map((blueprint) => (
+        {blueprints.map((blueprint) => (
           <Card key={blueprint.id} className="flex flex-col p-5">
             <span className="flex h-10 w-10 items-center justify-center rounded-[var(--st-radius-sm)] bg-[var(--st-raised)]">
               <Blocks className="h-4 w-4 text-[var(--st-text)]" />

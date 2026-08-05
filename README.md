@@ -29,11 +29,15 @@ Other scripts: `npm run build`, `npm run preview`, `npm run typecheck`,
      pulls out the logo, palette, typefaces and whether the site runs light or
      dark, then applies the lot.
 3. On **Content**, drop in the account brief you already wrote — PDF, Word,
-   txt or markdown — or paste the text. The
-   studio reads the industry, the workloads and the systems named in it, then
-   rebuilds the agents, knowledge base, connectors and composer suggestions to
-   match — so the demo is about their business, not ours. Everything it took is
-   shown back and can be edited or removed.
+   txt or markdown — or paste the text. The studio reads the industry, the
+   workloads and the systems named in it, and works out **the agents we would
+   build for that account**. Those agents then fill the whole product: a shelf
+   on the home screen ("Agents we can build for Acme", each with what it does,
+   why it is worth building and which of their systems it touches), the agent
+   registry, the store shelf, the blueprints, the knowledge base, the
+   connectors and the composer chips. Whichever workload the brief calls the
+   priority leads the list and carries the customer's name. The panel shows the
+   agent list back, and any one of them can be removed before you share.
 4. Adjust anything on **Theme** (colours, background, sidebar treatment) and
    **Type** (typefaces, corner radius, density).
 5. **Share → Copy share link**, and send it. The recipient needs no account.

@@ -17,11 +17,13 @@ import {
 import { cn } from "@/lib/utils";
 
 import { useBrand } from "../brand/BrandProvider";
+import { industryLabel } from "../brand/brief";
 import {
   ARCHITECT_STEPS,
-  BLUEPRINTS,
   BUILD_MODES,
   COMPOSER_PROMPTS,
+  makeAgentPlan,
+  makeBlueprints,
   makeSuggestions,
   PREBUILT,
   type Agent,
@@ -54,6 +56,8 @@ export function HomeView({
   const [building, setBuilding] = useState<string | null>(null);
   const placeholder = useTypedPlaceholder(prompt.length === 0);
   const suggestions = makeSuggestions(kit.brief);
+  const plan = makeAgentPlan(kit.company, kit.brief);
+  const blueprints = makeBlueprints(kit.company, kit.brief);
 
   const submit = (text: string) => {
     const clean = text.trim();
@@ -153,6 +157,68 @@ export function HomeView({
         ))}
       </div>
 
+      {plan.length ? (
+        <section className="mt-10">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <SectionTitle>Agents we can build for {kit.company}</SectionTitle>
+            <p className="text-[11px] text-[var(--st-text-faint)]">
+              Read from your account brief
+              {industryLabel(kit.brief) ? ` · ${industryLabel(kit.brief)}` : ""}
+            </p>
+          </div>
+
+          {kit.brief?.metrics.length ? (
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {kit.brief.metrics.map((metric) => (
+                <Badge key={metric} tone="accent">
+                  {metric}
+                </Badge>
+              ))}
+            </div>
+          ) : null}
+
+          <div className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {plan.map((proposal) => (
+              <Card
+                key={proposal.id}
+                onClick={() => submit(proposal.suggestion)}
+                className="group flex cursor-pointer flex-col p-4 transition-colors hover:border-[var(--st-primary)]"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-[11px] text-[var(--st-text-faint)]">{proposal.category}</p>
+                  <span className="text-[11px] text-[var(--st-text-faint)]">
+                    {proposal.steps} steps
+                  </span>
+                </div>
+                <p
+                  className="mt-1 text-sm font-semibold text-[var(--st-text)]"
+                  style={{ fontFamily: "var(--st-font-head)" }}
+                >
+                  {proposal.name}
+                </p>
+                <p className="mt-1.5 text-xs leading-relaxed text-[var(--st-text-muted)]">
+                  {proposal.role}
+                </p>
+                <p className="mt-2 flex items-start gap-1.5 text-xs leading-relaxed text-[var(--st-accent-ink)]">
+                  <Sparkles className="mt-0.5 h-3 w-3 shrink-0" />
+                  {proposal.impact}
+                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-1.5 border-t border-[var(--st-border)] pt-3">
+                  {proposal.tools.slice(0, 3).map((tool) => (
+                    <Badge key={tool} tone="neutral">
+                      {tool}
+                    </Badge>
+                  ))}
+                  <span className="ml-auto text-[11px] font-medium text-[var(--st-text-faint)] transition-colors group-hover:text-[var(--st-primary-ink)]">
+                    Build this →
+                  </span>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <Section title="Build">
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {BUILD_MODES.map((mode) => {
@@ -187,7 +253,7 @@ export function HomeView({
         <div>
           <SectionTitle>Blueprints</SectionTitle>
           <div className="mt-3 space-y-3">
-            {BLUEPRINTS.map((blueprint) => (
+            {blueprints.slice(0, 3).map((blueprint) => (
               <Card key={blueprint.id} className="flex items-start gap-3 p-4">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--st-radius-sm)] bg-[var(--st-raised)]">
                   <Blocks className="h-4 w-4 text-[var(--st-text)]" />
@@ -233,7 +299,9 @@ export function HomeView({
         </div>
       </div>
 
-      <Section title={`Your agents at ${kit.company}`}>
+      {/* With a brief loaded the shelf above already names these agents, so the
+          screen would only repeat itself. */}
+      <Section title={`Your agents at ${kit.company}`} hidden={plan.length > 0}>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {agents.slice(0, 3).map((agent) => (
             <Card
@@ -270,7 +338,16 @@ function SectionTitle({ children }: { children: ReactNode }) {
   );
 }
 
-function Section({ title, children }: { title: string; children: ReactNode }) {
+function Section({
+  title,
+  hidden,
+  children,
+}: {
+  title: string;
+  hidden?: boolean;
+  children: ReactNode;
+}) {
+  if (hidden) return null;
   return (
     <section className="mt-8">
       <SectionTitle>{title}</SectionTitle>

@@ -19,7 +19,13 @@ import {
 import { cn } from "@/lib/utils";
 
 import { useBrand } from "./brand/BrandProvider";
-import { analyseBrief, briefSystems, industryLabel, INDUSTRIES, findUseCase } from "./brand/brief";
+import {
+  analyseBrief,
+  briefAgentPlan,
+  briefSystems,
+  industryLabel,
+  INDUSTRIES,
+} from "./brand/brief";
 import { readBriefFile } from "./brand/brief-file";
 import { fileToLogo, rankBrandColors } from "./brand/image";
 import {
@@ -793,6 +799,7 @@ function ContentTab({
   const [reading, setReading] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
   const brief = kit.brief;
+  const plan = briefAgentPlan(brief, kit.company);
 
   const analyse = (raw: string) => {
     const clean = raw.trim();
@@ -915,22 +922,37 @@ function ContentTab({
 
           <div>
             <p className="mb-2 text-xs font-medium">
-              Workloads · {brief.useCases.length} agent{brief.useCases.length === 1 ? "" : "s"}
+              Agents we can build for {kit.company} · {plan.length}
             </p>
-            <div className="flex flex-wrap gap-1.5">
-              {brief.useCases.map((id) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => drop(id)}
-                  title="Remove"
-                  className="inline-flex items-center gap-1 rounded-full border border-[var(--st-primary-a30)] bg-[var(--st-primary-soft)] px-2.5 py-1 text-[11px] text-[var(--st-primary-ink)]"
+            <ul className="space-y-1.5">
+              {plan.map((proposal) => (
+                <li
+                  key={proposal.id}
+                  className="flex items-start gap-2 rounded-[var(--st-radius-sm)] border border-[var(--st-border)] bg-[var(--st-surface)] px-2.5 py-2"
                 >
-                  {findUseCase(id)?.agent ?? id}
-                  <X className="h-3 w-3 opacity-60" />
-                </button>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[11px] font-medium text-[var(--st-text)]">
+                      {proposal.name}
+                    </span>
+                    <span className="mt-0.5 block text-[11px] leading-snug text-[var(--st-text-muted)]">
+                      {proposal.role}
+                    </span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => drop(proposal.id)}
+                    title="Remove this agent"
+                    aria-label={`Remove ${proposal.name}`}
+                    className="mt-0.5 shrink-0 text-[var(--st-text-faint)] transition-colors hover:text-[var(--st-text)]"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </li>
               ))}
-            </div>
+            </ul>
+            <p className="mt-2 text-[11px] text-[var(--st-text-faint)]">
+              These fill the registry, the store shelf, the blueprints and the home screen.
+            </p>
           </div>
 
           {briefSystems(brief).length ? (
