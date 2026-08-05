@@ -39,16 +39,21 @@ data is sample data. Leave it in place.
 
 ## Deploying
 
-`npm run build` produces `dist/client` (static assets) and `dist/server`
-(the SSR + API handler). It is an ordinary TanStack Start app, so any Node host
-works — Vercel, Netlify, Fly, Render, a container:
+`npm run build` produces `dist/client` (static assets) and `dist/server` (the
+SSR + API handler). `server.js` in the repo root wires those together into an
+ordinary Node server:
 
 ```bash
 npm run build
-npm run preview          # serves the production build locally
-# or run the built server directly:
-node dist/server/server.js
+npm start                # http://localhost:3000 — honours PORT and HOST
 ```
+
+That runs anywhere Node does: Render, Railway, Fly, a container, a VM. Set the
+start command to `npm start` and the build command to `npm install && npm run
+build`. Platforms that build the app themselves (Vercel, Netlify) can import the
+repo directly and ignore `server.js`.
+
+`npm run preview` serves the same production build locally without `server.js`.
 
 The one server-side piece is `/api/brand-scan`, which reads a prospect's website.
 It needs outbound HTTPS. Everything else is static.
