@@ -1,13 +1,18 @@
 import { useState } from "react";
-import { Download, Search, Star } from "lucide-react";
+import { Blocks, Download, Search, Star } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
 import { useBrand } from "../brand/BrandProvider";
-import { makeStoreAgents } from "../data";
+import { BLUEPRINTS, makeStoreAgents } from "../data";
 import { Badge, Button, Card, inputClass } from "../ui";
 
-export function StoreView() {
+/** Two shelves share this screen: installable agents, and wired-up blueprints. */
+export function StoreView({ mode = "store" }: { mode?: "store" | "blueprints" }) {
+  return mode === "blueprints" ? <BlueprintsPanel /> : <AppStorePanel />;
+}
+
+function AppStorePanel() {
   const { kit } = useBrand();
   const items = makeStoreAgents(kit.company);
   const [query, setQuery] = useState("");
@@ -100,6 +105,52 @@ export function StoreView() {
               <Badge tone="neutral">{item.installs} installs</Badge>
               <Button size="sm" variant="primary">
                 <Download className="h-3.5 w-3.5" /> Install
+              </Button>
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Blueprints are the same shelf, but pre-wired multi-step flows. */
+function BlueprintsPanel() {
+  const { kit } = useBrand();
+  return (
+    <div className="space-y-[var(--st-gap)] pt-6">
+      <div>
+        <h1
+          className="text-xl font-semibold text-[var(--st-text)]"
+          style={{ fontFamily: "var(--st-font-head)" }}
+        >
+          Blueprints
+        </h1>
+        <p className="mt-1 max-w-2xl text-sm text-[var(--st-text-muted)]">
+          Opinionated multi-step flows you can drop into the {kit.company} workspace and adapt —
+          each one arrives with its agents, tools and checks already wired together.
+        </p>
+      </div>
+
+      <div className="grid gap-[var(--st-gap)] md:grid-cols-2 xl:grid-cols-3">
+        {BLUEPRINTS.map((blueprint) => (
+          <Card key={blueprint.id} className="flex flex-col p-5">
+            <span className="flex h-10 w-10 items-center justify-center rounded-[var(--st-radius-sm)] bg-[var(--st-raised)]">
+              <Blocks className="h-4 w-4 text-[var(--st-text)]" />
+            </span>
+            <h3
+              className="mt-3 text-sm font-semibold text-[var(--st-text)]"
+              style={{ fontFamily: "var(--st-font-head)" }}
+            >
+              {blueprint.name}
+            </h3>
+            <p className="mt-2 flex-1 text-xs text-[var(--st-text-muted)]">
+              {blueprint.description}
+            </p>
+            <div className="mt-4 flex items-center justify-between gap-3">
+              <Badge tone="neutral">{blueprint.steps} steps</Badge>
+              <Button size="sm" variant="primary">
+                <Download className="h-3.5 w-3.5" /> Use blueprint
               </Button>
             </div>
           </Card>

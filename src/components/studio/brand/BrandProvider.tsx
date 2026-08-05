@@ -63,7 +63,8 @@ export function BrandProvider({
   const [kit, setKitState] = useState<BrandKit>(() => mergeKit(initialKit ?? undefined));
 
   const theme = useMemo(() => deriveTheme(kit), [kit]);
-  useWebFonts([kit.fontHeading, kit.fontBody]);
+  // Instrument Serif is the italic accent in the hero headline, whatever the brand.
+  useWebFonts([kit.fontHeading, kit.fontBody, "Instrument Serif"]);
 
   const link = useMemo(() => shareUrl(kit), [kit]);
 

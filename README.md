@@ -5,7 +5,9 @@ thirty seconds and handed over as a link. The prospect sees the platform wearing
 *their* logo, colours and typeface, filled with *their* company name, instead of
 imagining it.
 
-The app is a single page: the studio itself, at `/`.
+The app is a single page: the studio itself, at `/`. Home is the Architect —
+describe an agent in the composer and it drafts one, the same way the real
+studio does.
 
 ## Quick start
 
@@ -79,8 +81,9 @@ src/
     BrandSettingsPanel.tsx   the Brand Studio drawer
     BrandMark.tsx            logo rendering, wordmark and dark-sidebar handling
     StudioShell.tsx          sidebar, top bar, view switching
-    views/                   Home, Agents, Agent Builder, Store, Knowledge,
-                             Tools, Workflows, Analytics, Settings
+    views/                   Home (Architect composer), Agents, Agent Builder,
+                             Store/Blueprints, Knowledge, Tools, Workflows,
+                             Voice, Safety, Analytics, Settings
     charts.tsx, ui.tsx       themed primitives — nothing hard-codes a colour
     data.ts                  sample content, generated from the prospect's name
 ```
@@ -111,7 +114,10 @@ working even if the customer's CDN blocks hotlinking.
   tab warns past 6,000 characters.
 - Typefaces load from Google Fonts. A brand font that isn't there falls back to
   the system stack.
-- The studio content is a reconstruction of Lyzr Studio's structure (agents,
-  agent store, knowledge base, tools, workflows, guardrails, credits), not a
-  copy of the live product. Adjust `data.ts` and the nav in `StudioShell.tsx` as
-  the real product moves.
+- The studio content is a reconstruction of Lyzr Studio — the navigation, the
+  Architect home and the build modes follow the live product, but the screens
+  behind them are illustrative rather than a copy. Adjust `data.ts` and the nav
+  in `StudioShell.tsx` as the real product moves.
+- The Architect is theatre: `draftFromPrompt()` in `data.ts` maps a prompt to a
+  plausible agent with keyword rules. No model is called, and the studio needs
+  no API key.

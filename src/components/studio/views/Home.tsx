@@ -1,228 +1,382 @@
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   ArrowUpRight,
-  Bot,
-  Clock3,
-  MessagesSquare,
-  Plus,
-  Rocket,
-  ShieldCheck,
+  Blocks,
+  Check,
+  Loader2,
+  MessageSquare,
+  Mic,
+  Network,
+  Paperclip,
+  Phone,
+  SendHorizontal,
   Sparkles,
-  TrendingUp,
+  Workflow,
 } from "lucide-react";
 
+import { cn } from "@/lib/utils";
+
 import { useBrand } from "../brand/BrandProvider";
-import { BarList, Sparkline, UsageAreaChart } from "../charts";
-import { AGENT_VOLUME, makeActivity, SPARK_TRENDS, USAGE_SERIES, type Agent } from "../data";
-import { Badge, Button, Card, CardHeader, StatusDot } from "../ui";
+import {
+  ARCHITECT_STEPS,
+  BLUEPRINTS,
+  BUILD_MODES,
+  COMPOSER_PROMPTS,
+  PREBUILT,
+  SUGGESTIONS,
+  type Agent,
+} from "../data";
+import { Badge, Button, Card } from "../ui";
 
-const STATS = [
-  {
-    key: "agents",
-    label: "Agents in production",
-    value: "11",
-    delta: "+3 this month",
-    icon: Bot,
-    trend: SPARK_TRENDS.agents,
-  },
-  {
-    key: "conversations",
-    label: "Conversations (30d)",
-    value: "52,309",
-    delta: "+18.2%",
-    icon: MessagesSquare,
-    trend: SPARK_TRENDS.conversations,
-  },
-  {
-    key: "latency",
-    label: "Median latency",
-    value: "1.3s",
-    delta: "−0.4s",
-    icon: Clock3,
-    trend: SPARK_TRENDS.latency,
-  },
-  {
-    key: "savings",
-    label: "Hours returned",
-    value: "4,180",
-    delta: "+41%",
-    icon: TrendingUp,
-    trend: SPARK_TRENDS.savings,
-  },
-];
+const MODE_ICONS = {
+  agent: MessageSquare,
+  managerial: Network,
+  superflow: Workflow,
+  voice: Phone,
+} as const;
 
+/**
+ * The studio's front door: describe the agent you want and the Architect builds
+ * it. Everything under the composer is the same set of shortcuts the product
+ * offers — build modes, blueprints, pre-built agents.
+ */
 export function HomeView({
   agents,
   onOpenAgent,
-  onCreate,
+  onArchitect,
 }: {
   agents: Agent[];
   onOpenAgent: (id: string) => void;
-  onCreate: () => void;
+  onArchitect: (prompt: string) => void;
 }) {
   const { kit } = useBrand();
-  const activity = makeActivity(kit.company);
+  const [prompt, setPrompt] = useState("");
+  const [building, setBuilding] = useState<string | null>(null);
+  const placeholder = useTypedPlaceholder(prompt.length === 0);
+
+  const submit = (text: string) => {
+    const clean = text.trim();
+    if (!clean || building) return;
+    setBuilding(clean);
+  };
+
+  if (building) {
+    return <ArchitectBuilding prompt={building} onDone={() => onArchitect(building)} />;
+  }
 
   return (
-    <div className="space-y-[var(--st-gap)]">
-      <Card className="relative overflow-hidden">
-        <div
-          className="pointer-events-none absolute inset-0 opacity-90"
-          style={{
-            background:
-              "radial-gradient(620px 200px at 8% 0%, var(--st-primary-a15), transparent 70%), radial-gradient(420px 180px at 92% 10%, var(--st-accent-soft), transparent 70%)",
+    <div className="mx-auto w-full max-w-5xl px-1 pb-10 pt-6 sm:pt-10">
+      <div className="flex flex-col items-center text-center">
+        <button className="inline-flex items-center gap-1.5 rounded-full border border-[var(--st-border-strong)] bg-[var(--st-surface)] px-4 py-2 text-sm font-medium transition-colors hover:bg-[var(--st-raised)]">
+          <Sparkles className="h-3.5 w-3.5 text-[var(--st-accent-ink)]" />
+          Explore Architect
+          <ArrowUpRight className="h-3.5 w-3.5 opacity-60" />
+        </button>
+
+        <h1
+          className="mt-7 text-4xl font-semibold leading-[1.08] tracking-[-0.03em] text-[var(--st-text)] sm:text-5xl"
+          style={{ fontFamily: "var(--st-font-head)" }}
+        >
+          Build agents. Automate your work.
+          <br />
+          <span
+            className="italic"
+            style={{
+              fontFamily: '"Instrument Serif", "Playfair Display", Georgia, serif',
+              color: "var(--st-accent-ink)",
+              fontWeight: 400,
+            }}
+          >
+            Reclaim
+          </span>{" "}
+          your life.
+        </h1>
+
+        <p className="mt-4 flex flex-wrap items-center justify-center gap-2 text-sm text-[var(--st-text-muted)]">
+          Describe what you want to build. We&apos;ll bring it to life.
+          <Badge tone="neutral">Beta</Badge>
+        </p>
+      </div>
+
+      <Card className="mt-7 overflow-hidden">
+        <textarea
+          value={prompt}
+          onChange={(event) => setPrompt(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+              submit(prompt);
+            }
           }}
+          rows={3}
+          placeholder={placeholder}
+          aria-label="Describe the agent you want to build"
+          className="w-full resize-none bg-transparent px-5 pb-2 pt-5 text-[15px] leading-relaxed text-[var(--st-text)] placeholder:text-[var(--st-text-faint)] focus:outline-none"
         />
-        <div className="relative flex flex-wrap items-end justify-between gap-6 p-6">
-          <div className="min-w-0">
-            <Badge tone="brand">
-              <Sparkles className="h-3 w-3" /> {kit.company} workspace
-            </Badge>
-            <h1
-              className="mt-3 text-2xl font-semibold tracking-tight text-[var(--st-text)]"
-              style={{ fontFamily: "var(--st-font-head)" }}
+        <div className="flex items-center justify-between gap-3 px-4 pb-4">
+          <button
+            className="rounded-full p-2 text-[var(--st-text-faint)] transition-colors hover:bg-[var(--st-raised)] hover:text-[var(--st-text)]"
+            aria-label="Attach a file"
+          >
+            <Paperclip className="h-4 w-4" />
+          </button>
+          <div className="flex items-center gap-1">
+            <button
+              className="rounded-full p-2 text-[var(--st-text-faint)] transition-colors hover:bg-[var(--st-raised)] hover:text-[var(--st-text)]"
+              aria-label="Dictate"
             >
-              Good morning, Alex
-            </h1>
-            <p className="mt-1.5 max-w-xl text-sm text-[var(--st-text-muted)]">
-              Your agents handled{" "}
-              <strong className="font-semibold text-[var(--st-text)]">2,144</strong> conversations
-              yesterday with a 96% resolution rate. Two knowledge sources finished re-indexing
-              overnight.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Button variant="primary" size="lg" onClick={onCreate}>
-              <Plus className="h-4 w-4" /> Create agent
-            </Button>
-            <Button variant="outline" size="lg">
-              <Rocket className="h-4 w-4" /> Deploy to production
-            </Button>
+              <Mic className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => submit(prompt)}
+              disabled={!prompt.trim()}
+              aria-label="Build this agent"
+              className="rounded-[var(--st-radius-sm)] p-2.5 transition-opacity disabled:opacity-40"
+              style={{ background: "var(--st-primary)", color: "var(--st-primary-on)" }}
+            >
+              <SendHorizontal className="h-4 w-4" />
+            </button>
           </div>
         </div>
       </Card>
 
-      <div className="grid gap-[var(--st-gap)] sm:grid-cols-2 xl:grid-cols-4">
-        {STATS.map((stat) => (
-          <Card key={stat.key} className="p-4">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-xs text-[var(--st-text-muted)]">
-                <stat.icon className="h-3.5 w-3.5" /> {stat.label}
-              </span>
-            </div>
-            <div className="mt-3 flex items-end justify-between gap-3">
-              <div>
-                <p
-                  className="text-2xl font-semibold tabular-nums text-[var(--st-text)]"
-                  style={{ fontFamily: "var(--st-font-head)" }}
-                >
-                  {stat.value}
-                </p>
-                <p className="mt-1 flex items-center gap-1 text-xs text-[var(--st-success)]">
-                  <ArrowUpRight className="h-3 w-3" /> {stat.delta}
-                </p>
-              </div>
-              <Sparkline points={stat.trend} invert={stat.key === "latency"} />
-            </div>
-          </Card>
+      <div className="mt-4 flex flex-wrap justify-center gap-2">
+        {SUGGESTIONS.map((suggestion) => (
+          <button
+            key={suggestion}
+            onClick={() => submit(suggestion)}
+            className="rounded-[var(--st-radius-sm)] border border-[var(--st-border)] bg-[var(--st-surface)] px-4 py-2.5 text-sm text-[var(--st-text-muted)] transition-colors hover:border-[var(--st-border-strong)] hover:text-[var(--st-text)]"
+          >
+            {suggestion}
+          </button>
         ))}
       </div>
 
-      <div className="grid gap-[var(--st-gap)] xl:grid-cols-[1.6fr_1fr]">
-        <Card>
-          <CardHeader
-            title="Conversation volume"
-            subtitle="Last 30 days · all agents"
-            action={<Badge tone="neutral">30d</Badge>}
-          />
-          <div className="px-3 pb-4">
-            <UsageAreaChart data={USAGE_SERIES} />
-          </div>
-        </Card>
-
-        <Card>
-          <CardHeader title="Busiest agents" subtitle="Runs in the last 30 days" />
-          <div className="px-5 pb-5">
-            <BarList data={AGENT_VOLUME} />
-          </div>
-        </Card>
-      </div>
-
-      <div className="grid gap-[var(--st-gap)] xl:grid-cols-[1.6fr_1fr]">
-        <Card>
-          <CardHeader
-            title="Continue building"
-            subtitle="Recently edited by your team"
-            action={
-              <Button size="sm" variant="ghost" onClick={onCreate}>
-                <Plus className="h-3.5 w-3.5" /> New
-              </Button>
-            }
-          />
-          <div className="grid gap-3 px-5 pb-5 md:grid-cols-2">
-            {agents.slice(0, 4).map((agent) => (
-              <button
-                key={agent.id}
-                onClick={() => onOpenAgent(agent.id)}
-                className="rounded-[var(--st-radius-sm)] border border-[var(--st-border)] bg-[var(--st-surface-2)] p-4 text-left transition-colors hover:border-[var(--st-primary)]"
+      <Section title="Build">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {BUILD_MODES.map((mode) => {
+            const Icon = MODE_ICONS[mode.id];
+            return (
+              <Card
+                key={mode.id}
+                className="cursor-pointer p-4 transition-colors hover:border-[var(--st-border-strong)]"
+                onClick={() =>
+                  submit(`Create a ${mode.name.toLowerCase()} agent for ${kit.company}`)
+                }
               >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="flex items-center gap-2 text-sm font-medium text-[var(--st-text)]">
-                    <StatusDot
-                      tone={
-                        agent.status === "live"
-                          ? "success"
-                          : agent.status === "paused"
-                            ? "warning"
-                            : "muted"
-                      }
-                    />
-                    <span className="truncate">{agent.name}</span>
+                <span className="flex h-9 w-9 items-center justify-center rounded-[var(--st-radius-sm)] bg-[var(--st-raised)]">
+                  <Icon className="h-4 w-4 text-[var(--st-text)]" />
+                </span>
+                <p
+                  className="mt-3 text-sm font-semibold text-[var(--st-text)]"
+                  style={{ fontFamily: "var(--st-font-head)" }}
+                >
+                  {mode.name}
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-[var(--st-text-muted)]">
+                  {mode.description}
+                </p>
+              </Card>
+            );
+          })}
+        </div>
+      </Section>
+
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        <div>
+          <SectionTitle>Blueprints</SectionTitle>
+          <div className="mt-3 space-y-3">
+            {BLUEPRINTS.map((blueprint) => (
+              <Card key={blueprint.id} className="flex items-start gap-3 p-4">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--st-radius-sm)] bg-[var(--st-raised)]">
+                  <Blocks className="h-4 w-4 text-[var(--st-text)]" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-sm font-medium text-[var(--st-text)]">
+                    {blueprint.name}
                   </span>
-                  <Badge tone="neutral">{agent.model}</Badge>
-                </div>
-                <p className="mt-2 line-clamp-2 text-xs text-[var(--st-text-muted)]">
-                  {agent.role}
-                </p>
-                <p className="mt-3 text-[11px] text-[var(--st-text-faint)]">
-                  {agent.owner} · updated {agent.updated}
-                </p>
-              </button>
+                  <span className="mt-1 block text-xs text-[var(--st-text-muted)]">
+                    {blueprint.description}
+                  </span>
+                  <span className="mt-2 block text-[11px] text-[var(--st-text-faint)]">
+                    {blueprint.steps} steps
+                  </span>
+                </span>
+              </Card>
             ))}
           </div>
-        </Card>
+        </div>
 
-        <Card>
-          <CardHeader title="Activity" subtitle="Workspace audit trail" />
-          <ul className="space-y-3 px-5 pb-5">
-            {activity.map((item) => (
-              <li key={item.id} className="flex gap-3 text-xs">
-                <span className="mt-1.5">
-                  <StatusDot
-                    tone={
-                      item.tone === "success"
-                        ? "success"
-                        : item.tone === "warning"
-                          ? "warning"
-                          : "muted"
-                    }
-                  />
+        <div>
+          <SectionTitle>Pre-built agents</SectionTitle>
+          <div className="mt-3 space-y-3">
+            {PREBUILT.map((item) => (
+              <Card key={item.id} className="flex items-start gap-3 p-4">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--st-radius-sm)] bg-[var(--st-primary-soft)] text-xs font-semibold text-[var(--st-primary-ink)]">
+                  {item.name.slice(0, 2).toUpperCase()}
                 </span>
-                <span className="min-w-0 flex-1 text-[var(--st-text-muted)]">
-                  <span className="font-medium text-[var(--st-text)]">{item.actor}</span>{" "}
-                  {item.action} <span className="text-[var(--st-primary-ink)]">{item.target}</span>
-                  <span className="ml-1 text-[var(--st-text-faint)]">· {item.time}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="truncate text-sm font-medium text-[var(--st-text)]">
+                      {item.name}
+                    </span>
+                    <Badge tone="neutral">{item.tag}</Badge>
+                  </span>
+                  <span className="mt-1 block text-xs text-[var(--st-text-muted)]">
+                    {item.description}
+                  </span>
+                </span>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <Section title={`Your agents at ${kit.company}`}>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {agents.slice(0, 3).map((agent) => (
+            <Card
+              key={agent.id}
+              onClick={() => onOpenAgent(agent.id)}
+              className="cursor-pointer p-4 transition-colors hover:border-[var(--st-border-strong)]"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="truncate text-sm font-medium text-[var(--st-text)]">
+                  {agent.name}
+                </span>
+                <Badge tone={agent.status === "live" ? "success" : "neutral"}>{agent.status}</Badge>
+              </div>
+              <p className="mt-2 line-clamp-2 text-xs text-[var(--st-text-muted)]">{agent.role}</p>
+              <p className="mt-3 text-[11px] text-[var(--st-text-faint)]">
+                {agent.runs.toLocaleString()} runs · updated {agent.updated}
+              </p>
+            </Card>
+          ))}
+        </div>
+      </Section>
+    </div>
+  );
+}
+
+function SectionTitle({ children }: { children: ReactNode }) {
+  return (
+    <h2
+      className="text-sm font-semibold text-[var(--st-text)]"
+      style={{ fontFamily: "var(--st-font-head)" }}
+    >
+      {children}
+    </h2>
+  );
+}
+
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="mt-8">
+      <SectionTitle>{title}</SectionTitle>
+      <div className="mt-3">{children}</div>
+    </section>
+  );
+}
+
+/** Cycles through example prompts, typing and deleting, like the real studio. */
+function useTypedPlaceholder(active: boolean): string {
+  const [text, setText] = useState("");
+  const state = useRef({ index: 0, char: 0, deleting: false });
+
+  useEffect(() => {
+    if (!active) return;
+    let timer: ReturnType<typeof setTimeout>;
+
+    const tick = () => {
+      const current = COMPOSER_PROMPTS[state.current.index % COMPOSER_PROMPTS.length];
+      const { deleting } = state.current;
+      state.current.char += deleting ? -1 : 1;
+      setText(current.slice(0, Math.max(0, state.current.char)));
+
+      let delay = deleting ? 24 : 52;
+      if (!deleting && state.current.char >= current.length) {
+        state.current.deleting = true;
+        delay = 2200;
+      } else if (deleting && state.current.char <= 0) {
+        state.current.deleting = false;
+        state.current.index += 1;
+        delay = 420;
+      }
+      timer = setTimeout(tick, delay);
+    };
+
+    timer = setTimeout(tick, 700);
+    return () => clearTimeout(timer);
+  }, [active]);
+
+  return active ? text || "Describe the agent you want…" : "";
+}
+
+/** The short "Architect is working" beat between prompt and builder. */
+function ArchitectBuilding({ prompt, onDone }: { prompt: string; onDone: () => void }) {
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    const timers = ARCHITECT_STEPS.map((_, index) =>
+      setTimeout(() => setStep(index + 1), 620 * (index + 1)),
+    );
+    const finish = setTimeout(onDone, 620 * ARCHITECT_STEPS.length + 700);
+    return () => {
+      timers.forEach(clearTimeout);
+      clearTimeout(finish);
+    };
+  }, [onDone]);
+
+  return (
+    <div className="mx-auto flex w-full max-w-2xl flex-col items-center px-1 pt-16 text-center">
+      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--st-primary-soft)]">
+        <Sparkles className="h-5 w-5 text-[var(--st-primary-ink)]" />
+      </span>
+      <h1
+        className="mt-5 text-2xl font-semibold tracking-tight text-[var(--st-text)]"
+        style={{ fontFamily: "var(--st-font-head)" }}
+      >
+        Architect is building your agent
+      </h1>
+      <p className="mt-2 max-w-lg text-sm text-[var(--st-text-muted)]">&ldquo;{prompt}&rdquo;</p>
+
+      <Card className="mt-8 w-full p-5 text-left">
+        <ul className="space-y-3">
+          {ARCHITECT_STEPS.map((label, index) => {
+            const done = step > index;
+            const active = step === index;
+            return (
+              <li key={label} className="flex items-center gap-3 text-sm">
+                <span
+                  className={cn(
+                    "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border",
+                    done
+                      ? "border-transparent bg-[var(--st-primary)] text-[var(--st-primary-on)]"
+                      : "border-[var(--st-border-strong)]",
+                  )}
+                >
+                  {done ? (
+                    <Check className="h-3 w-3" />
+                  ) : active ? (
+                    <Loader2 className="h-3 w-3 animate-spin text-[var(--st-text-muted)]" />
+                  ) : null}
+                </span>
+                <span
+                  className={
+                    done || active ? "text-[var(--st-text)]" : "text-[var(--st-text-faint)]"
+                  }
+                >
+                  {label}
                 </span>
               </li>
-            ))}
-          </ul>
-          <div className="border-t border-[var(--st-border)] px-5 py-3">
-            <p className="flex items-center gap-2 text-[11px] text-[var(--st-text-faint)]">
-              <ShieldCheck className="h-3.5 w-3.5" /> SOC 2 Type II · data stays in {kit.company}
-              &apos;s tenant
-            </p>
-          </div>
-        </Card>
-      </div>
+            );
+          })}
+        </ul>
+      </Card>
+
+      <Button variant="ghost" size="sm" className="mt-4" onClick={onDone}>
+        Skip
+      </Button>
     </div>
   );
 }

@@ -21,14 +21,22 @@ import { Badge, Button, Card, CardHeader, Field, inputClass, Tabs, Toggle } from
 
 type BuilderTab = "instructions" | "knowledge" | "tools" | "guardrails" | "deploy";
 
-export function AgentBuilderView({ agent, onBack }: { agent: Agent; onBack: () => void }) {
+export function AgentBuilderView({
+  agent,
+  architectPrompt,
+  onBack,
+}: {
+  agent: Agent;
+  architectPrompt?: string;
+  onBack: () => void;
+}) {
   const { kit } = useBrand();
   const [tab, setTab] = useState<BuilderTab>("instructions");
   const [model, setModel] = useState(agent.model);
   const [temperature, setTemperature] = useState(0.3);
   const [name, setName] = useState(agent.name);
   const [instructions, setInstructions] = useState(
-    `You are the ${agent.name} for ${kit.company}.\n\nAlways ground answers in the connected knowledge base and cite the source. If the answer is not in the knowledge base, say so and offer to route the request to a human. Never share pricing that is not in the approved matrix. Keep replies under 120 words unless the customer asks for detail.`,
+    `You are the ${agent.name} for ${kit.company}.${architectPrompt ? `\n\nWhat you were asked to do: ${architectPrompt}` : ""}\n\nAlways ground answers in the connected knowledge base and cite the source. If the answer is not in the knowledge base, say so and offer to route the request to a human. Never share pricing that is not in the approved matrix. Keep replies under 120 words unless the customer asks for detail.`,
   );
   const [guardrails, setGuardrails] = useState({
     pii: true,
@@ -48,7 +56,7 @@ export function AgentBuilderView({ agent, onBack }: { agent: Agent; onBack: () =
   }, [agent.id]);
 
   return (
-    <div className="space-y-[var(--st-gap)]">
+    <div className="space-y-[var(--st-gap)] pt-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <Button variant="ghost" size="icon" onClick={onBack} aria-label="Back to agents">
@@ -56,13 +64,16 @@ export function AgentBuilderView({ agent, onBack }: { agent: Agent; onBack: () =
           </Button>
           <div className="min-w-0">
             <h1
-              className="truncate text-lg font-semibold text-[var(--st-text)]"
+              className="flex items-center gap-2 truncate text-lg font-semibold text-[var(--st-text)]"
               style={{ fontFamily: "var(--st-font-head)" }}
             >
-              {name}
+              <span className="truncate">{name}</span>
+              {architectPrompt ? <Badge tone="brand">Draft</Badge> : null}
             </h1>
             <p className="text-xs text-[var(--st-text-faint)]">
-              v12 · saved {agent.updated} · {agent.owner}
+              {architectPrompt
+                ? "Drafted by Architect · not yet published"
+                : `v12 · saved ${agent.updated} · ${agent.owner}`}
             </p>
           </div>
         </div>

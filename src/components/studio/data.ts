@@ -490,3 +490,235 @@ export const WORKFLOW_EDGES: Array<[string, string]> = [
   ["draft", "guard"],
   ["guard", "send"],
 ];
+
+/* ------------------------------------------------------------------ *
+ * Architect — the prompt-to-agent flow on the home screen
+ * ------------------------------------------------------------------ */
+
+export const COMPOSER_PROMPTS = [
+  "Build a product recommendation agent",
+  "Summarise every support ticket overnight",
+  "Draft RFP answers from our security docs",
+  "Call leads that went quiet last quarter",
+];
+
+export const SUGGESTIONS = [
+  "Handle customer support questions for my company",
+  "Create a Deep research blog writer",
+  "Create a Personal Wealth goal tracker",
+];
+
+export const BUILD_MODES = [
+  { id: "agent", name: "Agent", description: "Single agent for a focused task or workflow." },
+  {
+    id: "managerial",
+    name: "Managerial",
+    description: "Orchestrate multiple agents with a manager.",
+  },
+  {
+    id: "superflow",
+    name: "SuperFlow",
+    description: "Multi-step flows that chain tools and agents.",
+  },
+  { id: "voice", name: "Voice", description: "Create voice-first agents for calls and IVR." },
+] as const;
+
+export const BLUEPRINTS = [
+  {
+    id: "storm",
+    name: "STORM-Style Multi-Perspective Research Blueprint",
+    description: "Researches a topic from several viewpoints, then synthesises one grounded brief.",
+    steps: 6,
+  },
+  {
+    id: "ticket",
+    name: "Ticket Triage & Resolution Blueprint",
+    description:
+      "Classify, retrieve, draft, check, then send — with a human step for low confidence.",
+    steps: 5,
+  },
+  {
+    id: "onboarding",
+    name: "Customer Onboarding Blueprint",
+    description: "Guides a new account through setup and books a specialist when it stalls.",
+    steps: 4,
+  },
+];
+
+export const PREBUILT = [
+  {
+    id: "jazon",
+    name: "Jazon AI SDR",
+    description: "Researches accounts and books meetings.",
+    tag: "Revenue",
+  },
+  {
+    id: "skott",
+    name: "Skott Marketer",
+    description: "Writes and schedules grounded content.",
+    tag: "Marketing",
+  },
+  {
+    id: "diane",
+    name: "Diane HR Assistant",
+    description: "Answers policy questions with citations.",
+    tag: "People",
+  },
+];
+
+export const VOICE_AGENTS = [
+  {
+    id: "ivr",
+    name: "Front-desk IVR",
+    number: "+1 415 555 0142",
+    minutes: "12,480",
+    status: "live" as const,
+  },
+  {
+    id: "collections",
+    name: "Payment reminder call",
+    number: "+44 20 7946 0812",
+    minutes: "3,210",
+    status: "live" as const,
+  },
+  {
+    id: "survey",
+    name: "Post-visit survey",
+    number: "Not assigned",
+    minutes: "0",
+    status: "draft" as const,
+  },
+];
+
+export const EVAL_RUNS = [
+  { id: "e1", name: "Groundedness — support corpus", cases: 240, passed: 231, when: "2 hours ago" },
+  { id: "e2", name: "Tone & policy compliance", cases: 120, passed: 118, when: "Yesterday" },
+  { id: "e3", name: "Refusal behaviour (red team)", cases: 90, passed: 84, when: "3 days ago" },
+  { id: "e4", name: "PII leakage probe", cases: 150, passed: 150, when: "Last week" },
+];
+
+const TOOL_HINTS: Array<{ match: RegExp; tools: string[]; category: string }> = [
+  {
+    match: /support|ticket|helpdesk|customer/i,
+    tools: ["Zendesk", "Slack", "Jira"],
+    category: "Customer support",
+  },
+  {
+    match: /sales|lead|sdr|pipeline|crm/i,
+    tools: ["Salesforce", "Gmail", "Web Search"],
+    category: "Revenue",
+  },
+  {
+    match: /research|blog|content|write/i,
+    tools: ["Web Search", "Google Drive"],
+    category: "Marketing",
+  },
+  {
+    match: /invoice|finance|ledger|wealth|budget/i,
+    tools: ["Snowflake", "NetSuite"],
+    category: "Finance",
+  },
+  { match: /call|voice|phone|ivr/i, tools: ["Twilio", "Calendly"], category: "Voice" },
+  { match: /hr|policy|employee|leave/i, tools: ["Workday", "SharePoint"], category: "People" },
+];
+
+/** Turn a free-text Architect prompt into a plausible draft agent. */
+export function draftFromPrompt(prompt: string, company: string): Agent {
+  const clean = prompt.trim().replace(/\s+/g, " ");
+  const hint = TOOL_HINTS.find((entry) => entry.match.test(clean));
+
+  // "Handle refund requests for our online store" -> "Refund Requests Agent"
+  const STOP = new Set([
+    "a",
+    "an",
+    "the",
+    "for",
+    "of",
+    "to",
+    "from",
+    "with",
+    "in",
+    "on",
+    "our",
+    "my",
+    "me",
+    "that",
+    "and",
+    "every",
+    "all",
+    "some",
+    "into",
+    "at",
+    "by",
+    "about",
+    "which",
+    "when",
+    "after",
+    "before",
+    "last",
+    "each",
+    "any",
+    "their",
+    "your",
+  ]);
+  const TRAILING = new Set([
+    "overnight",
+    "daily",
+    "nightly",
+    "weekly",
+    "monthly",
+    "automatically",
+    "quickly",
+    "instantly",
+    "today",
+    "now",
+  ]);
+  const VERBS =
+    /^(build|create|make|design|set|handle|answer|draft|write|summarise|summarize|call|manage|track|review|process|generate|help)$/i;
+
+  const tokens = clean
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+
+  const picked: string[] = [];
+  for (const word of tokens) {
+    if (!picked.length && (VERBS.test(word) || STOP.has(word))) continue;
+    // Once the subject has started, a connector ends it: "leads that went quiet".
+    if (STOP.has(word)) break;
+    picked.push(word);
+    if (picked.length === 3) break;
+  }
+  while (picked.length > 1 && TRAILING.has(picked[picked.length - 1])) picked.pop();
+
+  const title = picked.map((word) => word[0].toUpperCase() + word.slice(1)).join(" ");
+  const name = title
+    ? /agent|copilot|assistant|bot|analyst|responder|writer/i.test(title)
+      ? title
+      : `${title} Agent`
+    : `${company} Agent`;
+
+  return {
+    id: "architect-draft",
+    name,
+    role: clean,
+    model: "GPT-5.1",
+    status: "draft",
+    runs: 0,
+    successRate: 0,
+    latency: "—",
+    updated: "Just now",
+    tools: hint?.tools ?? ["Web Search"],
+    knowledge: [`${company} product handbook`],
+    owner: "You",
+    category: hint?.category ?? "General",
+  };
+}
+
+export const ARCHITECT_STEPS = [
+  "Reading your description",
+  "Choosing a model and tools",
+  "Drafting instructions and guardrails",
+  "Wiring the knowledge base",
+];

@@ -19,16 +19,17 @@ export const LYZR_KIT: BrandKit = {
   company: "Lyzr",
   product: "Studio",
   logoUrl: "",
-  primary: "#6D5AE6",
-  accent: "#22D3A6",
+  // Lyzr's own studio: near-black actions on white, one warm accent.
+  primary: "#111214",
+  accent: "#7A4A22",
   background: "",
-  mode: "dark",
+  mode: "light",
   sidebar: "tinted",
-  radius: 14,
+  radius: 12,
   density: "comfortable",
   fontHeading: "Inter",
   fontBody: "Inter",
-  texture: "glow",
+  texture: "none",
   sourceUrl: "",
 };
 
