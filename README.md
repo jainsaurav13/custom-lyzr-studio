@@ -66,10 +66,16 @@ build command to `npm ci && npm run build` and the start command to `npm start`,
 on Node 20.19 or newer. `render.yaml` in the repo root is that same
 configuration as a Render blueprint.
 
-This build targets Node, not serverless — `vite build` emits `dist/client` and
-`dist/server` whatever platform it runs on. Vercel and Netlify's zero-config
-detection expects functions output and will not serve it correctly; use a host
-that runs a Node process.
+**Vercel** works through `vercel.json` and `api/server.js`: the client build is
+served from the CDN and everything else is rewritten to one serverless function
+that wraps the same SSR handler. Import the repo and deploy — no settings to
+change. `vercel.json` raises the function timeout to 30s so a slow website scan
+still finishes.
+
+There is no zero-config path: `vite build` emits `dist/client` and `dist/server`
+whatever platform it runs on, so a host either runs `server.js` as a process or
+uses the `api/server.js` function. Netlify would need the equivalent of the
+latter.
 
 `npm run preview` serves the same production build locally without `server.js`.
 
