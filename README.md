@@ -62,9 +62,14 @@ npm start                # http://localhost:3000 — honours PORT and HOST
 ```
 
 That runs anywhere Node does: Render, Railway, Fly, a container, a VM. Set the
-start command to `npm start` and the build command to `npm install && npm run
-build`. Platforms that build the app themselves (Vercel, Netlify) can import the
-repo directly and ignore `server.js`.
+build command to `npm ci && npm run build` and the start command to `npm start`,
+on Node 20.19 or newer. `render.yaml` in the repo root is that same
+configuration as a Render blueprint.
+
+This build targets Node, not serverless — `vite build` emits `dist/client` and
+`dist/server` whatever platform it runs on. Vercel and Netlify's zero-config
+detection expects functions output and will not serve it correctly; use a host
+that runs a Node process.
 
 `npm run preview` serves the same production build locally without `server.js`.
 

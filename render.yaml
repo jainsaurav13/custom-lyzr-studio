@@ -1,0 +1,14 @@
+# One-click hosting on Render: New → Blueprint → point it at this repo.
+# Any other Node host works the same way — build, then `npm start`, which
+# serves dist/client and the SSR/API handler on $PORT.
+services:
+  - type: web
+    name: lyzr-brand-studio
+    runtime: node
+    plan: starter # `free` also works, but sleeps after 15 min idle
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
