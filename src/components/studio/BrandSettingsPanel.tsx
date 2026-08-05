@@ -8,6 +8,7 @@ import {
   Image as ImageIcon,
   Loader2,
   RotateCcw,
+  FileText,
   Save,
   Sparkles,
   Trash2,
@@ -18,6 +19,7 @@ import {
 import { cn } from "@/lib/utils";
 
 import { useBrand } from "./brand/BrandProvider";
+import { analyseBrief, briefSystems, industryLabel, INDUSTRIES, findUseCase } from "./brand/brief";
 import { fileToLogo, rankBrandColors } from "./brand/image";
 import {
   deleteDemo,
@@ -32,7 +34,7 @@ import {
 import type { BrandKit, ScanResult } from "./brand/types";
 import { Badge, Button, Field, inputClass, SegmentedControl, Tabs, Toggle } from "./ui";
 
-type PanelTab = "brand" | "theme" | "type" | "share";
+type PanelTab = "brand" | "content" | "theme" | "type" | "share";
 
 export function BrandSettingsPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { kit, update, reset, link, setKit } = useBrand();
@@ -91,6 +93,7 @@ export function BrandSettingsPanel({ open, onClose }: { open: boolean; onClose: 
                 onChange={setTab}
                 options={[
                   { value: "brand", label: "Brand" },
+                  { value: "content", label: "Content" },
                   { value: "theme", label: "Theme" },
                   { value: "type", label: "Type" },
                   { value: "share", label: "Share" },
@@ -100,6 +103,7 @@ export function BrandSettingsPanel({ open, onClose }: { open: boolean; onClose: 
 
             <div className="flex-1 space-y-6 overflow-y-auto p-5">
               {tab === "brand" ? <BrandTab kit={kit} update={update} /> : null}
+              {tab === "content" ? <ContentTab kit={kit} update={update} /> : null}
               {tab === "theme" ? <ThemeTab kit={kit} update={update} /> : null}
               {tab === "type" ? <TypeTab kit={kit} update={update} /> : null}
               {tab === "share" ? <ShareTab kit={kit} link={link} setKit={setKit} /> : null}
@@ -768,6 +772,185 @@ function ShareTab({
           ))}
         </ul>
       </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * Tab 2 — the account brief that drives the sample content
+ * ------------------------------------------------------------------ */
+
+function ContentTab({
+  kit,
+  update,
+}: {
+  kit: BrandKit;
+  update: (patch: Partial<BrandKit>) => void;
+}) {
+  const [text, setText] = useState("");
+  const [error, setError] = useState("");
+  const fileInput = useRef<HTMLInputElement>(null);
+  const brief = kit.brief;
+
+  const analyse = (raw: string) => {
+    const clean = raw.trim();
+    if (clean.length < 80) {
+      setError("That is a bit short to read anything from — paste a few paragraphs.");
+      return;
+    }
+    setError("");
+    update({ brief: analyseBrief(clean) });
+  };
+
+  const handleFile = async (file: File | undefined) => {
+    if (!file) return;
+    if (/\.(pdf|docx?)$/i.test(file.name)) {
+      setError(
+        `${file.name} is a ${file.name.split(".").pop()?.toUpperCase()} — open it, select all, and paste the text below.`,
+      );
+      return;
+    }
+    try {
+      const raw = await file.text();
+      setText(raw.slice(0, 200_000));
+      analyse(raw);
+    } catch {
+      setError("That file could not be read.");
+    }
+  };
+
+  const drop = (id: string) => {
+    if (!brief) return;
+    update({ brief: { ...brief, useCases: brief.useCases.filter((entry) => entry !== id) } });
+  };
+
+  return (
+    <div className="space-y-5">
+      <p className="text-xs text-[var(--st-text-muted)]">
+        Paste the account brief you already wrote. The studio reads the industry, the workloads and
+        the systems, then fills the agents, knowledge base and connectors to match — so the demo is
+        about their business, not ours.
+      </p>
+
+      <div
+        onClick={() => fileInput.current?.click()}
+        className="flex cursor-pointer items-center justify-center gap-2 rounded-[var(--st-radius-sm)] border border-dashed border-[var(--st-border-strong)] px-4 py-3 text-xs text-[var(--st-text-muted)] transition-colors hover:border-[var(--st-primary)]"
+      >
+        <FileText className="h-3.5 w-3.5" /> Upload a .txt or .md brief
+      </div>
+      <input
+        ref={fileInput}
+        type="file"
+        accept=".txt,.md,.markdown,.csv,.json,text/plain"
+        className="hidden"
+        onChange={(event) => handleFile(event.target.files?.[0] ?? undefined)}
+      />
+
+      <Field label="Or paste the brief" hint={text ? `${text.length} chars` : "a few paragraphs"}>
+        <textarea
+          value={text}
+          onChange={(event) => setText(event.target.value)}
+          rows={7}
+          placeholder="Acme Telecom serves 12 million subscribers across three markets. Support handles 40k tickets a month in Zendesk, churn in prepaid is the board priority this year…"
+          className={cn(inputClass, "resize-y text-xs leading-relaxed")}
+        />
+      </Field>
+
+      <div className="flex flex-wrap gap-2">
+        <Button variant="primary" size="sm" onClick={() => analyse(text)}>
+          <Sparkles className="h-3.5 w-3.5" /> Read the brief
+        </Button>
+        {brief ? (
+          <Button variant="ghost" size="sm" onClick={() => update({ brief: undefined })}>
+            <Trash2 className="h-3.5 w-3.5" /> Clear
+          </Button>
+        ) : null}
+      </div>
+
+      {error ? (
+        <p className="rounded-[var(--st-radius-sm)] border border-[var(--st-border)] bg-[var(--st-surface-2)] p-3 text-xs text-[var(--st-warning)]">
+          {error}
+        </p>
+      ) : null}
+
+      {brief ? (
+        <div className="space-y-4 rounded-[var(--st-radius)] border border-[var(--st-border)] bg-[var(--st-surface-2)] p-4">
+          <div>
+            <p className="text-xs font-medium">What the studio took from it</p>
+            <p className="mt-1 text-[11px] italic text-[var(--st-text-muted)]">
+              &ldquo;{brief.note}&rdquo;
+            </p>
+          </div>
+
+          <Field label="Industry">
+            <select
+              value={brief.industry}
+              onChange={(event) => update({ brief: { ...brief, industry: event.target.value } })}
+              className={inputClass}
+            >
+              <option value="">Not specific</option>
+              {Object.entries(INDUSTRIES).map(([key, entry]) => (
+                <option key={key} value={key}>
+                  {entry.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          <div>
+            <p className="mb-2 text-xs font-medium">
+              Workloads · {brief.useCases.length} agent{brief.useCases.length === 1 ? "" : "s"}
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {brief.useCases.map((id) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => drop(id)}
+                  title="Remove"
+                  className="inline-flex items-center gap-1 rounded-full border border-[var(--st-primary-a30)] bg-[var(--st-primary-soft)] px-2.5 py-1 text-[11px] text-[var(--st-primary-ink)]"
+                >
+                  {findUseCase(id)?.agent ?? id}
+                  <X className="h-3 w-3 opacity-60" />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {briefSystems(brief).length ? (
+            <div>
+              <p className="mb-2 text-xs font-medium">Systems shown as connected</p>
+              <div className="flex flex-wrap gap-1.5">
+                {briefSystems(brief)
+                  .slice(0, 10)
+                  .map((system) => (
+                    <Badge key={system} tone="neutral">
+                      {system}
+                    </Badge>
+                  ))}
+              </div>
+            </div>
+          ) : null}
+
+          {brief.metrics.length ? (
+            <div>
+              <p className="mb-2 text-xs font-medium">Numbers picked up</p>
+              <div className="flex flex-wrap gap-1.5">
+                {brief.metrics.map((metric) => (
+                  <Badge key={metric} tone="accent">
+                    {metric}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          <p className="text-[11px] text-[var(--st-text-faint)]">
+            {industryLabel(brief) || "No industry detected"} · only this summary travels in the
+            share link, never the brief text.
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 }

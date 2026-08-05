@@ -1,3 +1,11 @@
+import {
+  briefDocs,
+  briefSuggestions,
+  briefSystems,
+  findUseCase,
+  type BriefProfile,
+} from "./brand/brief";
+
 /**
  * Mock content for the studio. Most of it is generated from the prospect's
  * company name so a branded demo reads like their own workspace, not ours.
@@ -65,7 +73,40 @@ export const MODELS = [
   "Azure GPT-4.1",
 ];
 
-export function makeAgents(company: string): Agent[] {
+/** Deterministic-ish numbers so a demo never jitters between renders. */
+const RUN_SEEDS = [18420, 6310, 3877, 942, 2140, 214];
+const LATENCIES = ["1.2s", "0.9s", "2.0s", "3.4s", "1.6s", "6.1s"];
+const OWNERS = ["Priya N.", "Ana M.", "Daniel R.", "Marcus T.", "You"];
+
+/** Agents implied by the account brief — the workloads it actually mentions. */
+function agentsFromBrief(company: string, brief: BriefProfile): Agent[] {
+  return brief.useCases
+    .map((id, index) => {
+      const useCase = findUseCase(id);
+      if (!useCase) return null;
+      const live = index < 3;
+      return {
+        id,
+        name: index === 0 ? `${company} ${useCase.agent}` : useCase.agent,
+        role: useCase.role,
+        model: MODELS[index % 3],
+        status: live ? ("live" as const) : index === 3 ? ("paused" as const) : ("draft" as const),
+        runs: live ? RUN_SEEDS[index] : 0,
+        successRate: live ? 97 - index * 2 : 0,
+        latency: live ? LATENCIES[index] : "—",
+        updated:
+          ["12 min ago", "2 hours ago", "Yesterday", "3 days ago", "Just now"][index] ?? "Today",
+        tools: useCase.tools,
+        knowledge: [useCase.doc, `${company} product handbook`],
+        owner: OWNERS[index % OWNERS.length],
+        category: useCase.category,
+      } satisfies Agent;
+    })
+    .filter((agent): agent is Agent => Boolean(agent));
+}
+
+export function makeAgents(company: string, brief?: BriefProfile): Agent[] {
+  if (brief?.useCases.length) return agentsFromBrief(company, brief);
   return [
     {
       id: "support-triage",
@@ -219,7 +260,47 @@ export function makeStoreAgents(company: string): StoreAgent[] {
   ];
 }
 
-export function makeDocs(company: string): KnowledgeDoc[] {
+export function makeDocs(company: string, brief?: BriefProfile): KnowledgeDoc[] {
+  const extra = briefDocs(brief);
+  if (extra.length) {
+    const statuses: KnowledgeDoc["status"][] = ["indexed", "indexed", "indexed", "processing"];
+    const types: KnowledgeDoc["type"][] = ["PDF", "DOCX", "URL", "CSV", "Confluence"];
+    return [
+      {
+        id: "d0",
+        name: `${company} product handbook.pdf`,
+        type: "PDF",
+        chunks: 1284,
+        status: "indexed",
+        size: "8.4 MB",
+        updated: "Today",
+      },
+      ...extra.slice(0, 6).map((name, index) => ({
+        id: `b${index}`,
+        name,
+        type: /\.docx$/i.test(name)
+          ? ("DOCX" as const)
+          : /\.csv|\.xlsx$/i.test(name)
+            ? ("CSV" as const)
+            : /^http|\(space:/i.test(name)
+              ? ("Confluence" as const)
+              : types[index % types.length],
+        chunks: 120 + index * 214,
+        status: statuses[index % statuses.length],
+        size: index % 3 === 0 ? "2.1 MB" : index % 3 === 1 ? "480 KB" : "—",
+        updated: ["Today", "2 hours ago", "Yesterday", "3 days ago", "Last week"][index % 5],
+      })),
+      {
+        id: "dx",
+        name: `help.${company.toLowerCase().replace(/\s+/g, "")}.com/*`,
+        type: "URL",
+        chunks: 3910,
+        status: "indexed",
+        size: "—",
+        updated: "2 hours ago",
+      },
+    ];
+  }
   return [
     {
       id: "d1",
@@ -502,11 +583,40 @@ export const COMPOSER_PROMPTS = [
   "Call leads that went quiet last quarter",
 ];
 
-export const SUGGESTIONS = [
+const DEFAULT_SUGGESTIONS = [
   "Handle customer support questions for my company",
   "Create a Deep research blog writer",
   "Create a Personal Wealth goal tracker",
 ];
+
+/** Composer chips: the brief's workloads when we have them, ours otherwise. */
+export function makeSuggestions(brief?: BriefProfile): string[] {
+  const fromBrief = briefSuggestions(brief);
+  return fromBrief.length >= 2 ? fromBrief : DEFAULT_SUGGESTIONS;
+}
+
+/** Connectors show as live when the brief named that system. */
+export function makeTools(brief?: BriefProfile): ToolIntegration[] {
+  const named = briefSystems(brief).map((system) => system.toLowerCase());
+  if (!named.length) return TOOLS;
+  const extra = named
+    .filter((system) => !TOOLS.some((tool) => tool.name.toLowerCase() === system))
+    .slice(0, 4)
+    .map((system) => ({
+      id: system.replace(/\W+/g, "-"),
+      name: system.replace(/\b\w/g, (char) => char.toUpperCase()),
+      category: "From the brief",
+      connected: true,
+      description: "Named in the account brief — shown here as an existing connection.",
+    }));
+  return [
+    ...TOOLS.map((tool) => ({
+      ...tool,
+      connected: named.includes(tool.name.toLowerCase()) ? true : tool.connected,
+    })),
+    ...extra,
+  ];
+}
 
 export const BUILD_MODES = [
   { id: "agent", name: "Agent", description: "Single agent for a focused task or workflow." },

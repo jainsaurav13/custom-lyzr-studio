@@ -3,6 +3,8 @@ export type SidebarStyle = "tinted" | "contrast" | "brand";
 export type Density = "comfortable" | "compact";
 export type Texture = "none" | "glow" | "grid";
 
+export type { BriefProfile } from "./brief";
+
 /**
  * Everything that makes the studio look like the prospect's own product.
  * Kept deliberately small and flat — the whole kit is serialised into the
@@ -24,6 +26,8 @@ export interface BrandKit {
   fontBody: string;
   texture: Texture;
   sourceUrl: string;
+  /** Derived from an uploaded account brief; drives the sample content. */
+  brief?: import("./brief").BriefProfile;
 }
 
 export interface ScanResult {

@@ -22,8 +22,8 @@ import {
   BLUEPRINTS,
   BUILD_MODES,
   COMPOSER_PROMPTS,
+  makeSuggestions,
   PREBUILT,
-  SUGGESTIONS,
   type Agent,
 } from "../data";
 import { Badge, Button, Card } from "../ui";
@@ -53,6 +53,7 @@ export function HomeView({
   const [prompt, setPrompt] = useState("");
   const [building, setBuilding] = useState<string | null>(null);
   const placeholder = useTypedPlaceholder(prompt.length === 0);
+  const suggestions = makeSuggestions(kit.brief);
 
   const submit = (text: string) => {
     const clean = text.trim();
@@ -74,7 +75,7 @@ export function HomeView({
         </button>
 
         <h1
-          className="mt-7 text-4xl font-semibold leading-[1.08] tracking-[-0.03em] text-[var(--st-text)] sm:text-5xl"
+          className="mt-6 text-3xl font-semibold leading-[1.1] tracking-[-0.03em] text-[var(--st-text)] sm:text-[2.6rem]"
           style={{ fontFamily: "var(--st-font-head)" }}
         >
           Build agents. Automate your work.
@@ -98,7 +99,7 @@ export function HomeView({
         </p>
       </div>
 
-      <Card className="mt-7 overflow-hidden">
+      <Card className="mx-auto mt-6 max-w-3xl overflow-hidden">
         <textarea
           value={prompt}
           onChange={(event) => setPrompt(event.target.value)}
@@ -108,12 +109,12 @@ export function HomeView({
               submit(prompt);
             }
           }}
-          rows={3}
+          rows={2}
           placeholder={placeholder}
           aria-label="Describe the agent you want to build"
-          className="w-full resize-none bg-transparent px-5 pb-2 pt-5 text-[15px] leading-relaxed text-[var(--st-text)] placeholder:text-[var(--st-text-faint)] focus:outline-none"
+          className="w-full resize-none bg-transparent px-4 pb-1 pt-3.5 text-sm leading-relaxed text-[var(--st-text)] placeholder:text-[var(--st-text-faint)] focus:outline-none"
         />
-        <div className="flex items-center justify-between gap-3 px-4 pb-4">
+        <div className="flex items-center justify-between gap-3 px-3 pb-3">
           <button
             className="rounded-full p-2 text-[var(--st-text-faint)] transition-colors hover:bg-[var(--st-raised)] hover:text-[var(--st-text)]"
             aria-label="Attach a file"
@@ -131,7 +132,7 @@ export function HomeView({
               onClick={() => submit(prompt)}
               disabled={!prompt.trim()}
               aria-label="Build this agent"
-              className="rounded-[var(--st-radius-sm)] p-2.5 transition-opacity disabled:opacity-40"
+              className="rounded-[var(--st-radius-sm)] p-2 transition-opacity disabled:opacity-40"
               style={{ background: "var(--st-primary)", color: "var(--st-primary-on)" }}
             >
               <SendHorizontal className="h-4 w-4" />
@@ -140,12 +141,12 @@ export function HomeView({
         </div>
       </Card>
 
-      <div className="mt-4 flex flex-wrap justify-center gap-2">
-        {SUGGESTIONS.map((suggestion) => (
+      <div className="mx-auto mt-3 flex max-w-3xl flex-wrap justify-center gap-2">
+        {suggestions.map((suggestion) => (
           <button
             key={suggestion}
             onClick={() => submit(suggestion)}
-            className="rounded-[var(--st-radius-sm)] border border-[var(--st-border)] bg-[var(--st-surface)] px-4 py-2.5 text-sm text-[var(--st-text-muted)] transition-colors hover:border-[var(--st-border-strong)] hover:text-[var(--st-text)]"
+            className="rounded-[var(--st-radius-sm)] border border-[var(--st-border)] bg-[var(--st-surface)] px-3.5 py-2 text-[13px] text-[var(--st-text-muted)] transition-colors hover:border-[var(--st-border-strong)] hover:text-[var(--st-text)]"
           >
             {suggestion}
           </button>

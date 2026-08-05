@@ -14,7 +14,7 @@ const ICONS: Record<KnowledgeDoc["type"], typeof FileText> = {
 
 export function KnowledgeView() {
   const { kit } = useBrand();
-  const docs = makeDocs(kit.company);
+  const docs = makeDocs(kit.company, kit.brief);
   const indexed = docs.filter((doc) => doc.status === "indexed").length;
 
   return (

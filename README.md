@@ -28,12 +28,18 @@ Other scripts: `npm run build`, `npm run preview`, `npm run typecheck`,
    - **Use their website** — type `acme.com`. The server fetches the page and
      pulls out the logo, palette, typefaces and whether the site runs light or
      dark, then applies the lot.
-3. Adjust anything on **Theme** (colours, background, sidebar treatment) and
+3. On **Content**, paste (or upload) the account brief you already wrote. The
+   studio reads the industry, the workloads and the systems named in it, then
+   rebuilds the agents, knowledge base, connectors and composer suggestions to
+   match — so the demo is about their business, not ours. Everything it took is
+   shown back and can be edited or removed.
+4. Adjust anything on **Theme** (colours, background, sidebar treatment) and
    **Type** (typefaces, corner radius, density).
-4. **Share → Copy share link**, and send it. The recipient needs no account.
+5. **Share → Copy share link**, and send it. The recipient needs no account.
 
 Nothing is stored server-side: the entire brand kit is encoded into the URL, so
-the link *is* the demo. *Saved demos* on the Share tab keeps recent kits in the
+the link *is* the demo. Only the small profile derived from a brief travels with
+it — never the brief text. *Saved demos* on the Share tab keeps recent kits in the
 rep's own browser (localStorage) for juggling several accounts.
 
 Every screen carries a small strip saying the workspace is illustrative and the
@@ -77,6 +83,7 @@ src/
       color.ts          hex/HSL maths, contrast, ramps; no dependencies
       kit.ts            defaults, presets, theme derivation, URL encode/decode
       image.ts          logo downscaling + palette extraction from pixels
+      brief.ts          account brief -> industry, workloads, systems, metrics
       BrandProvider.tsx context, CSS-variable injection, web fonts, URL sync
     BrandSettingsPanel.tsx   the Brand Studio drawer
     BrandMark.tsx            logo rendering, wordmark and dark-sidebar handling

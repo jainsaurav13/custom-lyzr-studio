@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Check, Plug, Plus } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
 import { useBrand } from "../brand/BrandProvider";
-import { TOOLS } from "../data";
+import { makeTools } from "../data";
 import { Badge, Button, Card } from "../ui";
 
 export function ToolsView() {
   const { kit } = useBrand();
+  const tools = useMemo(() => makeTools(kit.brief), [kit.brief]);
   const [connected, setConnected] = useState<string[]>(
-    TOOLS.filter((tool) => tool.connected).map((tool) => tool.id),
+    tools.filter((tool) => tool.connected).map((tool) => tool.id),
   );
 
   return (
@@ -24,7 +25,7 @@ export function ToolsView() {
             Tools & connectors
           </h1>
           <p className="mt-1 text-sm text-[var(--st-text-muted)]">
-            {connected.length} of {TOOLS.length} connected in the {kit.company} tenant. Credentials
+            {connected.length} of {tools.length} connected in the {kit.company} tenant. Credentials
             are stored in your own vault.
           </p>
         </div>
@@ -34,7 +35,7 @@ export function ToolsView() {
       </div>
 
       <div className="grid gap-[var(--st-gap)] sm:grid-cols-2 xl:grid-cols-3">
-        {TOOLS.map((tool) => {
+        {tools.map((tool) => {
           const on = connected.includes(tool.id);
           return (
             <Card key={tool.id} className="flex flex-col p-5">
