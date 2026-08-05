@@ -1,0 +1,41 @@
+@import "tailwindcss" source(none);
+@source "../src";
+
+/*
+ * The studio paints itself entirely from the --st-* custom properties that
+ * `deriveTheme()` puts on its root element, so there is deliberately no design
+ * system here — only the page shell and a sane default before hydration.
+ */
+
+:root {
+  color-scheme: dark;
+}
+
+@layer base {
+  html,
+  body {
+    margin: 0;
+    background: #0b0c12;
+    -webkit-font-smoothing: antialiased;
+    font-family:
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      "Segoe UI",
+      Roboto,
+      sans-serif;
+  }
+
+  /* Colour inputs look like OS chrome by default; make them read as swatches. */
+  input[type="color"] {
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 4px;
+  }
+}
