@@ -1,0 +1,2438 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Interactive risk lab for the NVIDIA GPU-backstop project finance structure.">
+<title>NVIDIA Backstop Lab</title>
+<style>
+/* ============================================================
+   TOKENS
+   Ground: cold-metal slate — the palette of a datacenter hall,
+   not a document. Accent: instrument blue (dataviz slot 1).
+   ============================================================ */
+:root {
+  color-scheme: light;
+
+  --page:        #e8edf0;
+  --surface:     #fbfcfd;
+  --surface-2:   #f1f5f7;
+  --surface-3:   #e6ecef;
+
+  --ink:         #0c1214;
+  --ink-2:       #46545b;
+  --ink-3:       #78888f;
+
+  --rule:        #dbe3e8;
+  --rule-2:      #c2cfd6;
+
+  --accent:      #2a78d6;
+  --accent-ink:  #1c5cab;
+  --accent-wash: rgba(42,120,214,.09);
+
+  /* dataviz categorical, light steps */
+  --s1: #2a78d6;  --s2: #eb6834;  --s3: #1baf7a;  --s4: #eda100;
+  --s5: #e87ba4;  --s6: #008300;  --s7: #4a3aa7;  --s8: #e34948;
+
+  /* status (fixed, never themed) */
+  --good: #0ca30c;  --warn: #fab219;  --serious: #ec835a;  --crit: #d03b3b;
+  --good-ink: #006300;  --crit-ink: #a82c2c;
+
+  --grid:  #e4e9ec;
+  --axis:  #c2cfd6;
+
+  --shadow: 0 1px 2px rgba(12,18,20,.05), 0 8px 24px -12px rgba(12,18,20,.14);
+
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  --rail: 348px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page:      #0a0f12;
+    --surface:   #161d21;
+    --surface-2: #1c252a;
+    --surface-3: #232e34;
+
+    --ink:       #f1f6f8;
+    --ink-2:     #a7b6bd;
+    --ink-3:     #74848b;
+
+    --rule:      #253138;
+    --rule-2:    #35474f;
+
+    --accent:      #3987e5;
+    --accent-ink:  #86b6ef;
+    --accent-wash: rgba(57,135,229,.14);
+
+    --s1: #3987e5;  --s2: #d95926;  --s3: #199e70;  --s4: #c98500;
+    --s5: #d55181;  --s6: #008300;  --s7: #9085e9;  --s8: #e66767;
+
+    --good-ink: #0ca30c;  --crit-ink: #e66767;
+
+    --grid: #222d33;
+    --axis: #35474f;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page:      #0a0f12;
+  --surface:   #161d21;
+  --surface-2: #1c252a;
+  --surface-3: #232e34;
+  --ink:       #f1f6f8;
+  --ink-2:     #a7b6bd;
+  --ink-3:     #74848b;
+  --rule:      #253138;
+  --rule-2:    #35474f;
+  --accent:      #3987e5;
+  --accent-ink:  #86b6ef;
+  --accent-wash: rgba(57,135,229,.14);
+  --s1: #3987e5;  --s2: #d95926;  --s3: #199e70;  --s4: #c98500;
+  --s5: #d55181;  --s6: #008300;  --s7: #9085e9;  --s8: #e66767;
+  --good-ink: #0ca30c;  --crit-ink: #e66767;
+  --grid: #222d33;
+  --axis: #35474f;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+}
+
+/* ============================================================ RESET-ish */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+h1,h2,h3,h4,p,figure { margin: 0; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+
+/* ============================================================ TYPE ROLES */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 500;
+}
+.num { font-variant-numeric: tabular-nums; font-family: var(--mono); }
+
+/* ============================================================ HEADER */
+.topbar {
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rule);
+}
+.topbar-in {
+  max-width: 1680px; margin: 0 auto;
+  padding: 11px 22px;
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+}
+.brand { display: flex; align-items: baseline; gap: 10px; margin-right: auto; }
+.brand h1 {
+  font-size: 16px; font-weight: 640; letter-spacing: -.015em;
+}
+.brand .sub {
+  font-family: var(--mono); font-size: 11px; color: var(--ink-3);
+  letter-spacing: .02em;
+}
+.presets { display: flex; gap: 5px; flex-wrap: wrap; }
+.preset {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .03em;
+  padding: 5px 10px; border-radius: 5px;
+  border: 1px solid var(--rule-2); background: var(--surface);
+  color: var(--ink-2); cursor: pointer;
+  transition: background .12s, color .12s, border-color .12s;
+  white-space: nowrap;
+}
+.preset:hover { background: var(--surface-3); color: var(--ink); }
+.preset[aria-pressed="true"] {
+  background: var(--accent); border-color: var(--accent); color: #fff;
+}
+.icon-btn {
+  width: 30px; height: 30px; display: grid; place-items: center;
+  border-radius: 5px; border: 1px solid var(--rule-2);
+  background: var(--surface); cursor: pointer; color: var(--ink-2);
+}
+.icon-btn:hover { background: var(--surface-3); color: var(--ink); }
+
+/* ============================================================ SHELL */
+.shell {
+  max-width: 1680px; margin: 0 auto;
+  display: grid; grid-template-columns: var(--rail) minmax(0,1fr);
+  align-items: start;
+}
+@media (max-width: 1080px) { .shell { grid-template-columns: 1fr; } }
+
+/* ============================================================ RAIL */
+.rail {
+  position: sticky; top: 53px;
+  max-height: calc(100vh - 53px);
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: 16px 14px 60px 18px;
+  border-right: 1px solid var(--rule);
+}
+@media (max-width: 1080px) {
+  .rail { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--rule); }
+}
+.rail::-webkit-scrollbar { width: 9px; }
+.rail::-webkit-scrollbar-thumb { background: var(--rule-2); border-radius: 9px; border: 3px solid var(--page); }
+
+.group { border-top: 1px solid var(--rule); }
+.group:first-of-type { border-top: 0; }
+.group > summary {
+  list-style: none; cursor: pointer;
+  padding: 11px 2px 9px; display: flex; align-items: center; gap: 8px;
+}
+.group > summary::-webkit-details-marker { display: none; }
+.group > summary::after {
+  content: ""; margin-left: auto;
+  width: 6px; height: 6px; border-right: 1.5px solid var(--ink-3); border-bottom: 1.5px solid var(--ink-3);
+  transform: rotate(45deg) translate(-2px,-2px); transition: transform .16s;
+}
+.group[open] > summary::after { transform: rotate(-135deg) translate(-2px,-2px); }
+.group > summary h3 { font-size: 12.5px; font-weight: 620; letter-spacing: -.005em; }
+.group-body { padding: 2px 0 15px; display: flex; flex-direction: column; gap: 13px; }
+
+/* control */
+.ctl-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 5px; }
+.ctl-head label { font-size: 12.5px; color: var(--ink-2); line-height: 1.3; }
+.ctl-val {
+  margin-left: auto; font-family: var(--mono); font-size: 12px;
+  font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600;
+  background: var(--surface-3); padding: 1px 6px; border-radius: 4px;
+  border: 1px solid var(--rule); white-space: nowrap;
+}
+.ctl-note { font-size: 11px; color: var(--ink-3); margin-top: 4px; line-height: 1.35; }
+
+input[type=range] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 18px; background: transparent; cursor: pointer; display: block;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  height: 3px; border-radius: 3px; background: var(--rule-2);
+}
+input[type=range]::-moz-range-track { height: 3px; border-radius: 3px; background: var(--rule-2); }
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--surface);
+  box-shadow: 0 0 0 1px var(--accent); margin-top: -5.5px;
+}
+input[type=range]::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%; background: var(--accent);
+  border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--accent);
+}
+input[type=range].is-off::-webkit-slider-thumb { background: var(--ink-3); box-shadow: 0 0 0 1px var(--ink-3); }
+
+select, input[type=number] {
+  width: 100%; font: inherit; font-size: 12.5px;
+  padding: 6px 8px; border-radius: 5px;
+  border: 1px solid var(--rule-2); background: var(--surface); color: var(--ink);
+}
+.seg { display: flex; gap: 0; border: 1px solid var(--rule-2); border-radius: 5px; overflow: hidden; }
+.seg button {
+  flex: 1; padding: 6px 4px; border: 0; background: var(--surface);
+  font-family: var(--mono); font-size: 11px; cursor: pointer; color: var(--ink-2);
+  border-left: 1px solid var(--rule-2);
+}
+.seg button:first-child { border-left: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+
+.switch { display: flex; align-items: flex-start; gap: 9px; cursor: pointer; }
+.switch input { margin: 2px 0 0; accent-color: var(--accent); width: 15px; height: 15px; flex: none; }
+.switch span { font-size: 12.5px; color: var(--ink-2); line-height: 1.35; }
+
+.rail-actions { display: flex; gap: 6px; padding: 14px 0 0; border-top: 1px solid var(--rule); }
+.rail-actions button {
+  flex: 1; padding: 7px; border-radius: 5px; border: 1px solid var(--rule-2);
+  background: var(--surface); cursor: pointer; font-size: 12px; color: var(--ink-2);
+}
+.rail-actions button:hover { background: var(--surface-3); color: var(--ink); }
+
+/* ============================================================ MAIN */
+main { padding: 20px 22px 100px; min-width: 0; display: flex; flex-direction: column; gap: 26px; }
+
+section { scroll-margin-top: 64px; }
+@media (max-width: 1080px) { section { scroll-margin-top: 150px; } }
+.sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.sec-head h2 { font-size: 17px; font-weight: 640; letter-spacing: -.02em; }
+.sec-head p { font-size: 13px; color: var(--ink-2); max-width: 70ch; }
+.sec-rule { height: 1px; background: var(--rule); margin-bottom: 14px; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--rule);
+  border-radius: 9px; padding: 16px 18px 14px; box-shadow: var(--shadow);
+  min-width: 0;
+}
+.card > figcaption, .card-head { margin-bottom: 12px; }
+.card-head h3 { font-size: 13.5px; font-weight: 620; letter-spacing: -.01em; }
+.card-head p { font-size: 12px; color: var(--ink-3); margin-top: 2px; max-width: 68ch; }
+
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+@media (max-width: 1400px) { .grid3 { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 900px)  { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+/* ============================================================ VERDICT */
+.verdict {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 11px;
+  box-shadow: var(--shadow); overflow: hidden;
+  display: grid; grid-template-columns: minmax(300px, 1.05fr) minmax(0, 1.6fr);
+}
+@media (max-width: 1000px) { .verdict { grid-template-columns: 1fr; } }
+.hero { padding: 20px 22px 22px; border-right: 1px solid var(--rule); }
+@media (max-width: 1000px) { .hero { border-right: 0; border-bottom: 1px solid var(--rule); } }
+.hero .eyebrow { display: block; margin-bottom: 9px; }
+.hero-fig {
+  font-size: 50px; line-height: 1; font-weight: 620; letter-spacing: -.035em;
+  display: flex; align-items: baseline; gap: 8px;
+}
+.hero-fig small { font-size: 19px; font-weight: 560; letter-spacing: -.01em; color: var(--ink-2); }
+.hero-sub { font-size: 12.5px; color: var(--ink-2); margin-top: 9px; max-width: 42ch; line-height: 1.45; }
+.hero-bar { margin-top: 15px; }
+
+.tiles { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); }
+@media (max-width: 1300px) { .tiles { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+.tile {
+  padding: 14px 16px 13px;
+  border-left: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+}
+.tile:nth-child(4n+1) { border-left: 0; }
+@media (max-width: 1300px) { .tile:nth-child(odd) { border-left: 0; } .tile:nth-child(4n+1) { border-left: 0; } }
+.tile-label { font-size: 11.5px; color: var(--ink-3); display: flex; align-items: center; gap: 5px; }
+.tile-val {
+  font-size: 25px; font-weight: 620; letter-spacing: -.025em; margin-top: 3px; line-height: 1.05;
+}
+.tile-val small { font-size: 14px; font-weight: 550; color: var(--ink-2); letter-spacing: 0; }
+.tile-note { font-size: 11px; color: var(--ink-3); margin-top: 3px; font-variant-numeric: tabular-nums; }
+
+/* status pill */
+.pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase;
+  padding: 3px 8px 3px 6px; border-radius: 20px; font-weight: 600;
+  border: 1px solid; white-space: nowrap;
+}
+.pill svg { flex: none; }
+.pill.ok    { color: var(--good-ink); border-color: color-mix(in srgb, var(--good) 40%, transparent);   background: color-mix(in srgb, var(--good) 11%, transparent); }
+.pill.warn  { color: #8a6100;         border-color: color-mix(in srgb, var(--warn) 55%, transparent);   background: color-mix(in srgb, var(--warn) 15%, transparent); }
+.pill.sev   { color: #a4522a;         border-color: color-mix(in srgb, var(--serious) 55%, transparent);background: color-mix(in srgb, var(--serious) 15%, transparent); }
+.pill.crit  { color: var(--crit-ink);  border-color: color-mix(in srgb, var(--crit) 45%, transparent);   background: color-mix(in srgb, var(--crit) 12%, transparent); }
+:root[data-theme="dark"] .pill.warn { color: var(--warn); }
+:root[data-theme="dark"] .pill.sev  { color: var(--serious); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .pill.warn { color: var(--warn); }
+  :root:not([data-theme="light"]) .pill.sev  { color: var(--serious); }
+}
+
+/* severity stripe on risk rows */
+.risk-list { display: flex; flex-direction: column; gap: 9px; }
+.risk {
+  display: grid; grid-template-columns: 3px 1fr; gap: 13px;
+  background: var(--surface-2); border: 1px solid var(--rule); border-radius: 7px; overflow: hidden;
+}
+.risk-stripe { background: var(--ink-3); }
+.risk.ok   .risk-stripe { background: var(--good); }
+.risk.warn .risk-stripe { background: var(--warn); }
+.risk.sev  .risk-stripe { background: var(--serious); }
+.risk.crit .risk-stripe { background: var(--crit); }
+.risk-body { padding: 11px 14px 12px 0; }
+.risk-top { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-bottom: 4px; }
+.risk-top h4 { font-size: 13px; font-weight: 620; }
+.risk-body p { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+.risk-body p .num { color: var(--ink); font-weight: 600; font-size: 12px; }
+
+/* ============================================================ CHART CHROME */
+.chart-wrap { overflow-x: auto; }
+svg.chart { display: block; width: 100%; height: auto; overflow: visible; }
+svg text { font-family: var(--sans); }
+svg .tick { font-family: var(--mono); font-size: 10px; fill: var(--ink-3); font-variant-numeric: tabular-nums; }
+svg .axlabel { font-size: 10.5px; fill: var(--ink-3); }
+svg .gridline { stroke: var(--grid); stroke-width: 1; }
+svg .baseline { stroke: var(--axis); stroke-width: 1; }
+svg .dlabel { font-family: var(--mono); font-size: 10px; fill: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 4px 15px; margin-top: 11px; }
+.legend .item { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--ink-2); }
+.legend .key { width: 10px; height: 10px; border-radius: 2.5px; flex: none; }
+.legend .key.line { height: 2.5px; border-radius: 2px; width: 14px; }
+.legend .key.dash { height: 0; border-top: 2px dashed currentColor; width: 14px; border-radius: 0; }
+
+.tt {
+  position: fixed; z-index: 90; pointer-events: none; opacity: 0;
+  transition: opacity .1s;
+  background: var(--surface); border: 1px solid var(--rule-2); border-radius: 7px;
+  box-shadow: var(--shadow); padding: 9px 11px; font-size: 12px; min-width: 150px;
+  color: var(--ink);
+}
+.tt.on { opacity: 1; }
+.tt h5 { font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase;
+         color: var(--ink-3); margin: 0 0 6px; font-weight: 600; }
+.tt-row { display: flex; align-items: center; gap: 7px; margin-top: 3px; }
+.tt-row .key { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+.tt-row .k { color: var(--ink-2); }
+.tt-row .v { margin-left: auto; font-family: var(--mono); font-variant-numeric: tabular-nums; font-weight: 600; }
+.tt-row.total { border-top: 1px solid var(--rule); margin-top: 6px; padding-top: 5px; }
+
+/* table view */
+.tbl-toggle {
+  margin-top: 10px; background: none; border: 0; padding: 0; cursor: pointer;
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ink-3); text-decoration: underline; text-underline-offset: 3px;
+}
+.tbl-toggle:hover { color: var(--accent); }
+.tbl-wrap { overflow-x: auto; margin-top: 10px; }
+table.data { border-collapse: collapse; width: 100%; font-size: 11.5px; }
+table.data th, table.data td {
+  text-align: right; padding: 5px 9px; border-bottom: 1px solid var(--rule);
+  font-variant-numeric: tabular-nums; font-family: var(--mono); white-space: nowrap;
+}
+table.data th {
+  font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3);
+  font-weight: 600; border-bottom: 1px solid var(--rule-2);
+}
+table.data th:first-child, table.data td:first-child { text-align: left; font-family: var(--sans); }
+table.data tr:hover td { background: var(--surface-2); }
+table.data td.neg { color: var(--crit-ink); }
+table.data tfoot td { border-top: 1px solid var(--rule-2); border-bottom: 0; font-weight: 650; }
+
+/* ============================================================ FLOW DIAGRAM */
+.flow-node rect { stroke-width: 1; }
+.flow-node .title { font-size: 12px; font-weight: 620; fill: var(--ink); }
+.flow-node .meta  { font-family: var(--mono); font-size: 10px; fill: var(--ink-2); font-variant-numeric: tabular-nums; }
+.flow-lbl { font-family: var(--mono); font-size: 10px; font-variant-numeric: tabular-nums; fill: var(--ink-2); }
+.flow-lbl.strong { fill: var(--ink); font-weight: 600; }
+
+/* ============================================================ AUDIT */
+.audit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px,1fr)); gap: 12px; }
+.flaw { background: var(--surface-2); border: 1px solid var(--rule); border-radius: 7px; padding: 13px 15px; }
+.flaw h4 { font-size: 12.5px; font-weight: 620; margin-bottom: 5px; display: flex; gap: 7px; align-items: center; }
+.flaw h4 .n {
+  font-family: var(--mono); font-size: 10px; color: var(--ink-3);
+  border: 1px solid var(--rule-2); border-radius: 3px; padding: 0 4px; flex: none;
+}
+.flaw p { font-size: 12px; color: var(--ink-2); line-height: 1.5; }
+.flaw p + p { margin-top: 6px; }
+.flaw code {
+  font-family: var(--mono); font-size: 11px; background: var(--surface-3);
+  padding: 1px 4px; border-radius: 3px; color: var(--ink);
+}
+.flaw .fix { color: var(--accent-ink); font-weight: 560; }
+
+.matrix { display: flex; gap: 10px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+
+.footnote { font-size: 11.5px; color: var(--ink-3); line-height: 1.5; max-width: 88ch; }
+.footnote code { font-family: var(--mono); font-size: 11px; }
+
+.mc-status { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+
+/* 12 summary tiles — column counts chosen to divide evenly so the divider
+   colour never shows through a half-empty trailing row */
+.mc-grid { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 1px; background: var(--rule); }
+@media (max-width: 1500px) { .mc-grid { grid-template-columns: repeat(4, minmax(0,1fr)); } }
+@media (max-width: 1000px) { .mc-grid { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+@media (max-width: 700px)  { .mc-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+
+@media print { .rail, .topbar { display: none; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <h1>NVIDIA Backstop Lab</h1>
+      <span class="sub" id="brandSub">20,000 GPU · $1.0B · 6yr</span>
+    </div>
+    <div class="presets" id="presets"></div>
+    <button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
+        <path d="M13.2 9.6A5.6 5.6 0 0 1 6.4 2.8 5.6 5.6 0 1 0 13.2 9.6Z" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<div class="shell">
+  <aside class="rail" id="rail"></aside>
+  <main>
+
+    <!-- ============ VERDICT ============ -->
+    <section id="verdict">
+      <div class="verdict">
+        <div class="hero">
+          <span class="eyebrow">NVIDIA net position · present value</span>
+          <div class="hero-fig" id="heroFig">—</div>
+          <p class="hero-sub" id="heroSub"></p>
+          <div class="hero-bar" id="heroBar"></div>
+        </div>
+        <div class="tiles" id="tiles"></div>
+      </div>
+    </section>
+
+    <!-- ============ FLOW ============ -->
+    <section id="flow">
+      <div class="sec-head">
+        <h2>Where the money goes</h2>
+        <p>Year-1 flows at the current settings. Arrow thickness is proportional to cash. The two green/amber arrows are the only places NVIDIA's balance sheet is engaged.</p>
+      </div>
+      <div class="sec-rule"></div>
+      <div class="card">
+        <div class="chart-wrap"><svg class="chart" id="flowSvg" viewBox="0 0 1000 430" role="img" aria-label="Flow of funds diagram"></svg></div>
+        <button class="tbl-toggle" data-tbl="flowTbl">Show as table</button>
+        <div id="flowTbl" hidden></div>
+      </div>
+    </section>
+
+    <!-- ============ PROJECTIONS ============ -->
+    <section id="proj">
+      <div class="sec-head">
+        <h2>The projection</h2>
+        <p>The workbook is a single year held flat forever. Almost every real risk in this structure lives in the shape of years 2 through 8 — rental price compression, contract roll-off, and the amortisation schedule.</p>
+      </div>
+      <div class="sec-rule"></div>
+      <div class="grid2">
+        <figure class="card">
+          <figcaption class="card-head">
+            <h3>Revenue by source</h3>
+            <p>Contracted take-or-pay holds regardless of utilisation. Spot is exposed to both price and utilisation. Backstop only appears when revenue falls under NVIDIA's floor.</p>
+          </figcaption>
+          <div class="chart-wrap"><svg class="chart" id="revSvg" viewBox="0 0 640 300" role="img" aria-label="Revenue by source, by year"></svg></div>
+          <div class="legend" id="revLegend"></div>
+          <button class="tbl-toggle" data-tbl="revTbl">Show as table</button>
+          <div id="revTbl" hidden></div>
+        </figure>
+        <figure class="card">
+          <figcaption class="card-head">
+            <h3>Where revenue goes</h3>
+            <p>Costs and debt service stacked against equity's residual. When the stack exceeds revenue, the residual is negative and equity funds the gap.</p>
+          </figcaption>
+          <div class="chart-wrap"><svg class="chart" id="costSvg" viewBox="0 0 640 300" role="img" aria-label="Cost and debt service by year"></svg></div>
+          <div class="legend" id="costLegend"></div>
+          <button class="tbl-toggle" data-tbl="costTbl">Show as table</button>
+          <div id="costTbl" hidden></div>
+        </figure>
+        <figure class="card">
+          <figcaption class="card-head">
+            <h3>Debt service cover, with and without the backstop</h3>
+            <p>The gap between the two lines <em>is</em> the credit value of NVIDIA's guarantee. Where the lower line sits under 1.00×, the lenders are being repaid by NVIDIA, not by the business.</p>
+          </figcaption>
+          <div class="chart-wrap"><svg class="chart" id="dscrSvg" viewBox="0 0 640 300" role="img" aria-label="DSCR by year"></svg></div>
+          <div class="legend" id="dscrLegend"></div>
+          <button class="tbl-toggle" data-tbl="dscrTbl">Show as table</button>
+          <div id="dscrTbl" hidden></div>
+        </figure>
+        <figure class="card">
+          <figcaption class="card-head">
+            <h3>NVIDIA's cumulative position</h3>
+            <p>Starts at the gross profit booked on the GPU sale, then erodes as backstop calls are paid. Crossing zero means the sale was, in hindsight, given away.</p>
+          </figcaption>
+          <div class="chart-wrap"><svg class="chart" id="nvSvg" viewBox="0 0 640 300" role="img" aria-label="NVIDIA cumulative position by year"></svg></div>
+          <div class="legend" id="nvLegend"></div>
+          <button class="tbl-toggle" data-tbl="nvTbl">Show as table</button>
+          <div id="nvTbl" hidden></div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ SENSITIVITY ============ -->
+    <section id="sens">
+      <div class="sec-head">
+        <h2>Sensitivity</h2>
+        <p>Two drivers dominate everything: what happens to the rental price, and how full the fleet stays. Pick an output and read the surface.</p>
+      </div>
+      <div class="sec-rule"></div>
+      <div class="grid2">
+        <figure class="card">
+          <figcaption class="card-head">
+            <h3>Price decay × utilisation</h3>
+            <p id="heatDesc"></p>
+          </figcaption>
+          <div class="matrix">
+            <select id="heatMetric" style="max-width:280px"></select>
+          </div>
+          <div class="chart-wrap"><svg class="chart" id="heatSvg" viewBox="0 0 640 380" role="img" aria-label="Sensitivity heatmap"></svg></div>
+          <button class="tbl-toggle" data-tbl="heatTbl">Show as table</button>
+          <div id="heatTbl" hidden></div>
+        </figure>
+        <figure class="card">
+          <figcaption class="card-head">
+            <h3>What actually moves the answer</h3>
+            <p id="tornDesc"></p>
+          </figcaption>
+          <div class="matrix">
+            <select id="tornMetric" style="max-width:280px"></select>
+          </div>
+          <div class="chart-wrap"><svg class="chart" id="tornSvg" viewBox="0 0 640 400" role="img" aria-label="Tornado sensitivity chart"></svg></div>
+          <div class="legend" id="tornLegend"></div>
+          <button class="tbl-toggle" data-tbl="tornTbl">Show as table</button>
+          <div id="tornTbl" hidden></div>
+        </figure>
+      </div>
+      <div class="grid3" style="margin-top:14px">
+        <div class="card" id="beCard"></div>
+        <figure class="card" style="grid-column: span 2">
+          <figcaption class="card-head">
+            <h3>Year-1 bridge</h3>
+            <p>Gross rentals down to what equity actually keeps, at the current settings.</p>
+          </figcaption>
+          <div class="chart-wrap"><svg class="chart" id="wfSvg" viewBox="0 0 780 300" role="img" aria-label="Year one cash waterfall"></svg></div>
+          <button class="tbl-toggle" data-tbl="wfTbl">Show as table</button>
+          <div id="wfTbl" hidden></div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ MONTE CARLO ============ -->
+    <section id="mc">
+      <div class="sec-head">
+        <h2>Monte Carlo</h2>
+        <p>Price decay and utilisation are drawn together from a common demand factor, so bad price outcomes arrive alongside bad utilisation — which is the whole point. A guarantee written against uncorrelated risks is cheap; this one is not.</p>
+      </div>
+      <div class="sec-rule"></div>
+      <div class="grid2">
+        <figure class="card">
+          <figcaption class="card-head">
+            <h3>NVIDIA net present value</h3>
+            <p>Distribution across <span class="num" id="mcNLabel">2,000</span> paths. The left tail is the deal risk: the sale's gross profit is capped, the backstop is not.</p>
+          </figcaption>
+          <div class="chart-wrap"><svg class="chart" id="mcNvSvg" viewBox="0 0 640 300" role="img" aria-label="Distribution of NVIDIA net present value"></svg></div>
+          <div class="legend" id="mcNvLegend"></div>
+        </figure>
+        <figure class="card">
+          <figcaption class="card-head">
+            <h3>Equity IRR</h3>
+            <p>The sponsor's outcome across the same paths. Note how much narrower this is than NVIDIA's — the backstop transfers left-tail risk from equity to NVIDIA.</p>
+          </figcaption>
+          <div class="chart-wrap"><svg class="chart" id="mcEqSvg" viewBox="0 0 640 300" role="img" aria-label="Distribution of equity IRR"></svg></div>
+          <div class="legend" id="mcEqLegend"></div>
+        </figure>
+      </div>
+      <div class="card" style="margin-top:14px" id="mcStats"></div>
+    </section>
+
+    <!-- ============ RISK ============ -->
+    <section id="risk">
+      <div class="sec-head">
+        <h2>Risk register</h2>
+        <p>Live against the current settings. Severities recompute as you move the controls.</p>
+      </div>
+      <div class="sec-rule"></div>
+      <div class="risk-list" id="riskList"></div>
+    </section>
+
+    <!-- ============ AUDIT ============ -->
+    <section id="audit">
+      <div class="sec-head">
+        <h2>What the workbook actually does — and what it misses</h2>
+        <p>The source file is five sheets and twenty-one formulas. Below is every formula it contains, a tie-out proving this tool reproduces it exactly, and the twelve places where the arithmetic is right but the model is wrong.</p>
+      </div>
+      <div class="sec-rule"></div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-head">
+          <h3>Tie-out to the source workbook</h3>
+          <p>With <strong>Reproduce workbook</strong> selected, this tool must equal the Excel cell for cell. Any non-zero difference is a bug in this tool.</p>
+        </div>
+        <div id="tieout"></div>
+      </div>
+      <div class="audit-grid" id="flaws"></div>
+    </section>
+
+    <p class="footnote" style="margin-top:8px">
+      Built from <code>AI_GPU_Project_Finance_Model_Template.xlsx</code> (5 sheets: Assumptions, Operations, Backstop, Credit, Equity Returns).
+      All figures are modelled illustrations from the assumptions you set, not forecasts, and not sourced from any NVIDIA disclosure.
+      Present values discount year-1 onward; the GPU sale and equity draw are treated as t&nbsp;=&nbsp;0.
+    </p>
+  </main>
+</div>
+
+<div class="tt" id="tt" role="tooltip" aria-hidden="true"></div>
+<script>
+/* ============================================================================
+   NVIDIA BACKSTOP LAB
+   A rebuild of AI_GPU_Project_Finance_Model_Template.xlsx as a live model.
+
+   The source workbook is 5 sheets / 21 formulas, single-period, held flat.
+   This engine keeps every one of those formulas intact (see WORKBOOK preset +
+   the tie-out table) and then extends it along the axes the workbook cannot
+   see: time, price decay, contract cover, cost fixity, caps, tax, and
+   correlated demand risk.
+   ========================================================================== */
+
+/* ------------------------------------------------------------------ utils */
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const sum = a => a.reduce((s, x) => s + x, 0);
+const MINUS = '−';
+
+function fmtUSD(v, force) {
+  if (v == null || !isFinite(v)) return '—';
+  const s = v < 0 ? MINUS : '';
+  const a = Math.abs(v);
+  if (a >= 1e9) return s + '$' + (a / 1e9).toFixed(a / 1e9 >= 10 ? 1 : 2) + 'B';
+  if (a >= 1e6) return s + '$' + (a / 1e6).toFixed(a / 1e6 >= 10 ? 0 : 1) + 'M';
+  if (a >= 1e3) return s + '$' + (a / 1e3).toFixed(0) + 'K';
+  return s + '$' + a.toFixed(force ? 2 : 0);
+}
+const fmtM = v => (v == null || !isFinite(v)) ? '—'
+  : (v < 0 ? MINUS : '') + '$' + (Math.abs(v) / 1e6).toFixed(Math.abs(v) >= 1e8 ? 0 : 1) + 'M';
+const fmtPct = (v, d = 1) => (v == null || !isFinite(v)) ? '—'
+  : (v < 0 ? MINUS : '') + (Math.abs(v) * 100).toFixed(d) + '%';
+const fmtX = v => v == null ? '—' : (isFinite(v) ? v.toFixed(2) + '×' : '∞');
+const fmtInt = v => v.toLocaleString('en-US');
+
+/* ------------------------------------------------------------- controls spec */
+const SPEC = [
+  { g: 'Fleet & capital', open: true, items: [
+    { k: 'gpus', l: 'GPUs deployed', min: 1000, max: 100000, step: 1000, d: 20000, f: fmtInt },
+    { k: 'gpuCost', l: 'Cost per GPU', min: 10000, max: 60000, step: 1000, d: 30000, f: v => '$' + fmtInt(v) },
+    { k: 'otherCapexPerGpu', l: 'Datacenter capex per GPU', min: 0, max: 50000, step: 1000, d: 20000, f: v => '$' + fmtInt(v),
+      note: 'Shell, power, cooling, networking. The workbook fixes this at $400M for 20,000 GPUs, i.e. $20k each — but never rescales it when fleet size changes.' },
+    { k: 'debtPct', l: 'Debt share of capex', min: 0, max: 0.9, step: 0.01, d: 0.75, f: v => fmtPct(v, 0) },
+    { k: 'rate', l: 'Interest rate', min: 0.03, max: 0.18, step: 0.0025, d: 0.08, f: v => fmtPct(v, 2) },
+    { k: 'tenor', l: 'Loan tenor', min: 3, max: 10, step: 1, d: 6, f: v => v + ' yrs' },
+    { k: 'ioYears', l: 'Interest-only period', min: 0, max: 4, step: 1, d: 0, f: v => v + ' yrs' },
+    { k: 'amort', l: 'Amortisation', type: 'seg', opts: [['straight', 'Straight-line'], ['annuity', 'Annuity']], d: 'straight' },
+  ]},
+  { g: 'Demand & pricing', open: true, items: [
+    { k: 'util0', l: 'Year-1 utilisation', min: 0.1, max: 1, step: 0.01, d: 0.75, f: v => fmtPct(v, 0) },
+    { k: 'utilDrift', l: 'Utilisation drift / yr', min: -0.12, max: 0.06, step: 0.005, d: 0, f: v => (v >= 0 ? '+' : MINUS) + (Math.abs(v) * 100).toFixed(1) + 'pp' },
+    { k: 'price0', l: 'Rental rate, year 1', min: 0.4, max: 10, step: 0.05, d: 4, f: v => '$' + v.toFixed(2) + '/hr' },
+    { k: 'priceDecay', l: 'Rental price decay / yr', min: -0.1, max: 0.55, step: 0.01, d: 0, f: v => (v >= 0 ? MINUS : '+') + (Math.abs(v) * 100).toFixed(0) + '%',
+      note: 'The variable the workbook does not have. Each GPU generation resets the price of the last one.' },
+    { k: 'contractedPct', l: 'Fleet under take-or-pay', min: 0, max: 1, step: 0.05, d: 0, f: v => fmtPct(v, 0),
+      note: 'Contracted capacity is paid in full at the year-1 rate whether or not the customer uses it, so this slice is immune to both utilisation and price. The workbook has no equivalent — it treats every GPU-hour as spot.' },
+    { k: 'contractYears', l: 'Contract term', min: 0, max: 10, step: 1, d: 3, f: v => v + ' yrs' },
+    { k: 'hours', l: 'Sellable hours / yr', min: 6000, max: 8760, step: 60, d: 8760, f: fmtInt },
+  ]},
+  { g: 'Operating costs & tax', items: [
+    { k: 'fixedOpexPerGpu', l: 'Fixed opex per GPU / yr', min: 0, max: 12000, step: 250, d: 0, f: v => '$' + fmtInt(v),
+      note: 'Power, colo, staff, maintenance — incurred whether or not the GPU is rented. The workbook sets this to zero and makes 100% of opex flex with revenue.' },
+    { k: 'varOpexPct', l: 'Variable opex, % of revenue', min: 0, max: 0.5, step: 0.01, d: 0.25, f: v => fmtPct(v, 0) },
+    { k: 'opexInfl', l: 'Fixed opex inflation / yr', min: -0.05, max: 0.2, step: 0.005, d: 0, f: v => fmtPct(v, 1) },
+    { k: 'taxRate', l: 'Cash tax rate', min: 0, max: 0.35, step: 0.01, d: 0, f: v => fmtPct(v, 0) },
+    { k: 'gpuLife', l: 'GPU depreciation life', min: 2, max: 8, step: 1, d: 5, f: v => v + ' yrs' },
+  ]},
+  { g: 'NVIDIA backstop terms', open: true, items: [
+    { k: 'floorUtil', l: 'Guaranteed floor utilisation', min: 0, max: 1, step: 0.01, d: 0.5, f: v => fmtPct(v, 0) },
+    { k: 'sharePct', l: 'NVIDIA share of upside', min: 0, max: 0.5, step: 0.01, d: 0.1, f: v => fmtPct(v, 0) },
+    { k: 'basis', l: 'Floor is valued at', type: 'seg', d: 'spot',
+      opts: [['spot', 'Spot price'], ['fixed', 'Year-1 price']],
+      note: 'The workbook multiplies the shortfall by the CURRENT rental rate, so the guarantee shrinks exactly as prices fall. Switch to year-1 price to see what a real revenue floor costs.' },
+    { k: 'backstopYears', l: 'Backstop term', min: 0, max: 10, step: 1, d: 6, f: v => v + ' yrs' },
+    { k: 'annualCapPct', l: 'Annual cap, % of floor revenue', min: 0, max: 1, step: 0.05, d: 1, f: v => v >= 1 ? 'uncapped' : fmtPct(v, 0) },
+    { k: 'aggCapPctGP', l: 'Aggregate cap, % of gross profit', min: 0, max: 400, step: 10, d: 400, f: v => v >= 400 ? 'uncapped' : v + '%',
+      note: 'Where the guarantee stops. A cap protects NVIDIA and simultaneously destroys the credit support the lenders thought they had.' },
+  ]},
+  { g: 'NVIDIA economics', items: [
+    { k: 'nvGrossMargin', l: 'Gross margin on GPU sale', min: 0, max: 0.9, step: 0.01, d: 0.75, f: v => fmtPct(v, 0) },
+    { k: 'incrementality', l: 'Sale is incremental', min: 0, max: 1, step: 0.05, d: 1, f: v => fmtPct(v, 0),
+      note: 'How much of this order would NOT have happened without the backstop. At 100% the guarantee buys real revenue; at 0% NVIDIA wrote a free option on demand it already had.' },
+    { k: 'nvEquityPct', l: 'NVIDIA equity in the SPV', min: 0, max: 0.5, step: 0.01, d: 0, f: v => fmtPct(v, 0) },
+    { k: 'nvDiscount', l: 'Discount rate', min: 0, max: 0.25, step: 0.005, d: 0.1, f: v => fmtPct(v, 1) },
+  ]},
+  { g: 'Exit & horizon', items: [
+    { k: 'horizon', l: 'Analysis horizon', min: 3, max: 12, step: 1, d: 8, f: v => v + ' yrs' },
+    { k: 'residualPct', l: 'GPU residual at exit', min: 0, max: 0.6, step: 0.01, d: 0.1, f: v => fmtPct(v, 0) },
+    { k: 'shellResidPct', l: 'Datacenter residual at exit', min: 0, max: 1, step: 0.05, d: 0.3, f: v => fmtPct(v, 0) },
+  ]},
+  { g: 'Monte Carlo', items: [
+    { k: 'mcPaths', l: 'Paths', min: 500, max: 5000, step: 500, d: 2000, f: fmtInt },
+    { k: 'sdDecay', l: 'Price decay volatility', min: 0, max: 0.3, step: 0.01, d: 0.1, f: v => fmtPct(v, 0) + 'pp' },
+    { k: 'sdUtil', l: 'Utilisation volatility', min: 0, max: 0.35, step: 0.01, d: 0.12, f: v => fmtPct(v, 0) + 'pp' },
+    { k: 'rho', l: 'Price / utilisation correlation', min: 0, max: 1, step: 0.05, d: 0.75, f: v => v.toFixed(2),
+      note: 'At 0 the two risks diversify. At 1 they are the same risk — cheap GPUs and empty GPUs arrive together, and the backstop is called precisely when NVIDIA can least afford it.' },
+    { k: 'shockProb', l: 'Annual demand-shock probability', min: 0, max: 0.3, step: 0.01, d: 0.06, f: v => fmtPct(v, 0) },
+    { k: 'shockSize', l: 'Shock severity', min: 0, max: 0.7, step: 0.05, d: 0.35, f: v => fmtPct(v, 0) },
+  ]},
+];
+
+const FIELD = {};
+SPEC.forEach(g => g.items.forEach(i => FIELD[i.k] = i));
+
+/* ------------------------------------------------------------------ presets */
+const WORKBOOK = {
+  gpus: 20000, gpuCost: 30000, otherCapexPerGpu: 20000, debtPct: 0.75, rate: 0.08,
+  tenor: 6, ioYears: 0, amort: 'straight',
+  util0: 0.75, utilDrift: 0, price0: 4, priceDecay: 0, contractedPct: 0, contractYears: 3, hours: 8760,
+  fixedOpexPerGpu: 0, varOpexPct: 0.25, opexInfl: 0, taxRate: 0, gpuLife: 5,
+  floorUtil: 0.5, sharePct: 0.1, basis: 'spot', backstopYears: 6, annualCapPct: 1, aggCapPctGP: 400,
+  nvGrossMargin: 0.75, incrementality: 1, nvEquityPct: 0, nvDiscount: 0.1,
+  horizon: 6, residualPct: 0, shellResidPct: 0,
+  mcPaths: 2000, sdDecay: 0.1, sdUtil: 0.12, rho: 0.75, shockProb: 0.06, shockSize: 0.35,
+};
+
+const REPAIRED = Object.assign({}, WORKBOOK, {
+  fixedOpexPerGpu: 4500, varOpexPct: 0.08, opexInfl: 0.03, taxRate: 0.21,
+  priceDecay: 0.12, utilDrift: -0.01, contractedPct: 0.4, contractYears: 3,
+  basis: 'fixed', backstopYears: 5, aggCapPctGP: 150,
+  horizon: 8, residualPct: 0.1, shellResidPct: 0.3,
+});
+
+const PRESETS = [
+  { id: 'workbook', name: 'Reproduce workbook', v: WORKBOOK,
+    blurb: 'Every assumption exactly as the Excel has it: one year, no decay, no fixed costs, no tax, no caps.' },
+  { id: 'repaired', name: 'Base (repaired)', v: REPAIRED,
+    blurb: 'The same deal with the workbook’s structural gaps filled in: price decay, fixed operating costs, contract cover, tax, caps and a term structure.' },
+  { id: 'holds', name: 'Demand holds', v: Object.assign({}, REPAIRED, {
+      priceDecay: 0.05, util0: 0.85, utilDrift: 0, contractedPct: 0.55, contractYears: 4 }),
+    blurb: 'Scarcity persists. Mild price erosion, fleet stays near full, strong contract book.' },
+  { id: 'pricewar', name: 'Price war', v: Object.assign({}, REPAIRED, {
+      priceDecay: 0.28, util0: 0.7, utilDrift: -0.02 }),
+    blurb: 'Capacity arrives faster than demand. The fleet still fills, but at collapsing rates — the case a utilisation-based floor is blind to.' },
+  { id: 'airpocket', name: 'Air pocket', v: Object.assign({}, REPAIRED, {
+      priceDecay: 0.35, util0: 0.45, utilDrift: -0.03, contractedPct: 0.15, contractYears: 2 }),
+    blurb: 'A demand pause. Both price and utilisation break at once, and the contract book has rolled off.' },
+  { id: 'telecom', name: '2001 redux', v: Object.assign({}, REPAIRED, {
+      priceDecay: 0.45, util0: 0.3, utilDrift: -0.02, contractedPct: 0.1, contractYears: 1,
+      rate: 0.12, aggCapPctGP: 120 }),
+    blurb: 'The dark-fibre ending: overbuild, price collapse, credit repricing, and vendor financing that turns into a write-off.' },
+];
+
+/* ------------------------------------------------------------------- state */
+let P = Object.assign({}, REPAIRED);
+let activePreset = 'repaired';
+
+/* ============================================================== THE ENGINE */
+function project(p) {
+  const N = p.gpus;
+  const capexGpu = N * p.gpuCost;
+  const capexOther = N * p.otherCapexPerGpu;
+  const capex = capexGpu + capexOther;
+  const debt = capex * p.debtPct;
+  const equity = capex - debt;
+  const H = Math.round(p.horizon);
+  const capacity = N * p.hours;                 // GPU-hours available per year
+
+  const grossProfitRaw = capexGpu * p.nvGrossMargin;
+  const grossProfitEcon = grossProfitRaw * p.incrementality;
+  const aggCap = (p.aggCapPctGP >= 400) ? Infinity : (p.aggCapPctGP / 100) * grossProfitRaw;
+
+  // annuity payment if selected
+  const amortYrs = Math.max(1, Math.round(p.tenor) - Math.round(p.ioYears));
+  const pmt = p.rate > 0
+    ? debt * p.rate / (1 - Math.pow(1 + p.rate, -amortYrs))
+    : debt / amortYrs;
+
+  let bal = debt, aggPaid = 0, nol = 0;
+  const years = [];
+
+  // optional demand shock (used by the Monte Carlo): a level break from
+  // `shockYear` onward, hitting utilisation and price together.
+  const shockYr = p.shockYear || 0;
+  const shocked = t => shockYr > 0 && t >= shockYr;
+
+  for (let t = 1; t <= H; t++) {
+    let price = p.price0 * Math.pow(1 - p.priceDecay, t - 1);
+    let util = clamp(p.util0 + p.utilDrift * (t - 1), 0.02, 1);
+    if (shocked(t)) {
+      price *= (1 - (p.shockPriceCut || 0));
+      util = clamp(util * (1 - (p.shockUtilCut || 0)), 0.01, 1);
+    }
+    const cov = (t <= Math.round(p.contractYears)) ? p.contractedPct : 0;
+
+    // take-or-pay slice is paid in full at the year-1 rate regardless of use
+    const revContract = capacity * cov * p.price0;
+    const revSpot = capacity * (1 - cov) * util * price;
+    const revenue = revContract + revSpot;
+    const effUtil = revenue / (capacity * p.price0 || 1); // revenue expressed in yr-1-price utilisation units
+
+    // ---- backstop
+    const inTerm = t <= Math.round(p.backstopYears);
+    const refPrice = (p.basis === 'fixed') ? p.price0 : price;
+    const guaranteed = inTerm ? p.floorUtil * capacity * refPrice : 0;
+    const bsGross = Math.max(0, guaranteed - revenue);
+    const annCap = (p.annualCapPct >= 1) ? Infinity : p.annualCapPct * guaranteed;
+    const bsPaid = Math.max(0, Math.min(bsGross, annCap, aggCap - aggPaid));
+    aggPaid += bsPaid;
+    const bsUnpaid = bsGross - bsPaid;
+    const upside = inTerm ? Math.max(0, revenue - guaranteed) * p.sharePct : 0;
+
+    // ---- costs
+    const opexFixed = p.fixedOpexPerGpu * N * Math.pow(1 + p.opexInfl, t - 1);
+    const opexVar = p.varOpexPct * revenue;
+    const opex = opexFixed + opexVar;
+    const ebitda = revenue + bsPaid - upside - opex;
+
+    // ---- debt
+    const interest = bal * p.rate;
+    let principal = 0;
+    if (t > Math.round(p.ioYears) && t <= Math.round(p.tenor)) {
+      principal = (p.amort === 'annuity') ? Math.max(0, pmt - interest) : debt / amortYrs;
+      principal = Math.min(principal, bal);
+    }
+    const debtService = interest + principal;
+
+    // ---- tax with loss carry-forward
+    const depGpu = t <= Math.round(p.gpuLife) ? capexGpu / Math.round(p.gpuLife) : 0;
+    const depOther = t <= 20 ? capexOther / 20 : 0;
+    const dep = depGpu + depOther;
+    let taxable = ebitda - interest - dep, tax = 0;
+    if (taxable <= 0) { nol += -taxable; }
+    else { const use = Math.min(nol, taxable); nol -= use; tax = (taxable - use) * p.taxRate; }
+
+    const cfads = ebitda - tax;
+    const dscr = debtService > 0 ? cfads / debtService : Infinity;
+    const dscrNoBs = debtService > 0 ? (cfads - bsPaid) / debtService : Infinity;
+
+    bal = bal - principal;
+    let equityCF = cfads - debtService;
+    let terminal = 0;
+    if (t === H) {
+      terminal = capexGpu * p.residualPct + capexOther * p.shellResidPct - bal;
+      equityCF += terminal;
+    }
+
+    years.push({ t, price, util, effUtil, cov, revContract, revSpot, revenue,
+      guaranteed, bsGross, bsPaid, bsUnpaid, upside, opexFixed, opexVar, opex, ebitda,
+      interest, principal, debtService, dep, tax, cfads, dscr, dscrNoBs,
+      balance: bal, equityCF, terminal });
+  }
+
+  // ---- aggregates
+  const d = p.nvDiscount;
+  const pv = arr => arr.reduce((s, v, i) => s + v / Math.pow(1 + d, i + 1), 0);
+
+  const pvBackstop = pv(years.map(y => y.bsPaid));
+  const pvUpside = pv(years.map(y => y.upside));
+  const pvNvEquity = pv(years.map(y => y.equityCF * p.nvEquityPct));
+  const nvT0 = grossProfitEcon - p.nvEquityPct * equity;
+  const nvNPV = nvT0 - pvBackstop + pvUpside + pvNvEquity;
+
+  const nvCum = []; let run = nvT0;
+  years.forEach(y => { run += -y.bsPaid + y.upside + y.equityCF * p.nvEquityPct; nvCum.push(run); });
+
+  const equityCFs = [-equity].concat(years.map(y => y.equityCF));
+  const eqIRR = irr(equityCFs);
+  const eqMOIC = equity > 0 ? sum(years.map(y => y.equityCF)) / equity : null;
+
+  const dscrs = years.map(y => y.dscr).filter(isFinite);
+  const minDSCR = dscrs.length ? Math.min.apply(null, dscrs) : null;
+  const minDSCRNoBs = years.map(y => y.dscrNoBs).filter(isFinite);
+
+  return {
+    p, years, capexGpu, capexOther, capex, debt, equity, capacity,
+    grossProfitRaw, grossProfitEcon, aggCap,
+    pvBackstop, pvUpside, nvT0, nvNPV, nvCum,
+    eqIRR, eqMOIC, minDSCR,
+    minDSCRNoBs: minDSCRNoBs.length ? Math.min.apply(null, minDSCRNoBs) : null,
+    cumBackstop: sum(years.map(y => y.bsPaid)),
+    cumUnpaid: sum(years.map(y => y.bsUnpaid)),
+    cumUpside: sum(years.map(y => y.upside)),
+    giveback: grossProfitRaw > 0 ? pvBackstop / grossProfitRaw : 0,
+    yearsCalled: years.filter(y => y.bsPaid > 1).length,
+    yearsBelow1: years.filter(y => isFinite(y.dscr) && y.dscr < 1).length,
+    yearsBelow1NoBs: years.filter(y => isFinite(y.dscrNoBs) && y.dscrNoBs < 1).length,
+    capBinds: years.some(y => y.bsUnpaid > 1),
+  };
+}
+
+function irr(cf) {
+  const npv = r => cf.reduce((s, c, i) => s + c / Math.pow(1 + r, i), 0);
+  let lo = -0.9499, hi = 8;
+  let flo = npv(lo), fhi = npv(hi);
+  if (!isFinite(flo) || !isFinite(fhi) || flo * fhi > 0) return null;
+  for (let i = 0; i < 160; i++) {
+    const m = (lo + hi) / 2, fm = npv(m);
+    if (flo * fm <= 0) { hi = m; fhi = fm; } else { lo = m; flo = fm; }
+  }
+  return (lo + hi) / 2;
+}
+
+/* --------------------------------------------------------------- metrics */
+const METRICS = [
+  { k: 'nvNPV', l: 'NVIDIA net PV', mid: 0, fmt: fmtM, get: r => r.nvNPV, better: 'high',
+    desc: 'Gross profit booked on the sale, less the present value of backstop calls, plus the upside share.' },
+  { k: 'giveback', l: 'Give-back ratio', mid: 1, fmt: v => fmtPct(v, 0), get: r => r.giveback, better: 'low',
+    desc: 'Present value of backstop calls as a share of the gross profit on the sale. Above 100% the sale loses money.' },
+  { k: 'eqIRR', l: 'Equity IRR', mid: 0, fmt: v => fmtPct(v, 1), get: r => r.eqIRR, better: 'high',
+    desc: 'Sponsor return over the full horizon, including the exit.' },
+  { k: 'minDSCR', l: 'Minimum DSCR', mid: 1, fmt: fmtX, get: r => r.minDSCR, better: 'high',
+    desc: 'The worst year of debt-service cover. Below 1.00× the business cannot pay its lenders from operations.' },
+  { k: 'minDSCRNoBs', l: 'Min DSCR excl. backstop', mid: 1, fmt: fmtX, get: r => r.minDSCRNoBs, better: 'high',
+    desc: 'The same, with NVIDIA’s support removed — what the lenders are actually underwriting.' },
+  { k: 'cumBackstop', l: 'Cumulative backstop paid', mid: null, fmt: fmtM, get: r => r.cumBackstop, better: 'low',
+    desc: 'Total cash NVIDIA hands back over the term.' },
+];
+const METRIC = {}; METRICS.forEach(m => METRIC[m.k] = m);
+
+/* ============================================================ SVG HELPERS */
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) if (attrs[k] != null) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function txt(parent, x, y, s, cls, extra) {
+  const e = el('text', Object.assign({ x, y, class: cls || '' }, extra || {}), parent);
+  e.textContent = s;
+  return e;
+}
+const clear = n => { while (n.firstChild) n.removeChild(n.firstChild); };
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function luma(hex) {
+  const h = (hex || '').replace('#', '');
+  if (h.length !== 6) return 1;
+  const c = [0, 2, 4].map(i => {
+    const v = parseInt(h.slice(i, i + 2), 16) / 255;
+    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+}
+
+function niceTicks(min, max, n) {
+  if (min === max) { max = min + 1; }
+  const span = max - min;
+  const raw = span / Math.max(1, n);
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const norm = raw / mag;
+  const step = (norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 2.5 ? 2.5 : norm <= 5 ? 5 : 10) * mag;
+  // extend outward so the returned range always CONTAINS [min,max] — otherwise
+  // callers that take ticks[0] as the axis floor silently clip their own data
+  const out = [];
+  const start = Math.floor(min / step) * step;
+  const end = Math.ceil(max / step) * step;
+  for (let v = start; v <= end + step * 1e-9; v += step) out.push(+v.toFixed(10));
+  return out;
+}
+
+/* tooltip */
+const TT = () => document.getElementById('tt');
+function showTT(evt, html) {
+  const t = TT();
+  t.innerHTML = html;
+  t.classList.add('on');
+  t.setAttribute('aria-hidden', 'false');
+  const r = t.getBoundingClientRect();
+  let x = evt.clientX + 14, y = evt.clientY - 12;
+  if (x + r.width > window.innerWidth - 8) x = evt.clientX - r.width - 14;
+  if (y + r.height > window.innerHeight - 8) y = window.innerHeight - r.height - 8;
+  if (y < 8) y = 8;
+  t.style.left = x + 'px'; t.style.top = y + 'px';
+}
+function hideTT() { const t = TT(); t.classList.remove('on'); t.setAttribute('aria-hidden', 'true'); }
+
+function ttRows(title, rows, total) {
+  let h = '<h5>' + title + '</h5>';
+  rows.forEach(r => {
+    h += '<div class="tt-row">' + (r.c ? '<span class="key" style="background:' + r.c + '"></span>' : '') +
+      '<span class="k">' + r.k + '</span><span class="v">' + r.v + '</span></div>';
+  });
+  if (total) h += '<div class="tt-row total"><span class="k">' + total.k + '</span><span class="v">' + total.v + '</span></div>';
+  return h;
+}
+
+/* legend builder */
+function legend(node, items) {
+  node.innerHTML = items.map(i =>
+    '<span class="item"><span class="key' + (i.line ? ' line' : '') + '" style="background:' + i.c + '"></span>' + i.l + '</span>'
+  ).join('');
+}
+
+/* generic data table */
+function table(node, cols, rows, foot) {
+  let h = '<div class="tbl-wrap"><table class="data"><thead><tr>' +
+    cols.map(c => '<th>' + c + '</th>').join('') + '</tr></thead><tbody>';
+  rows.forEach(r => {
+    h += '<tr>' + r.map((c, i) => {
+      const neg = typeof c === 'string' && c.indexOf(MINUS) === 0;
+      return '<td' + (neg ? ' class="neg"' : '') + '>' + c + '</td>';
+    }).join('') + '</tr>';
+  });
+  h += '</tbody>' + (foot ? '<tfoot><tr>' + foot.map(c => '<td>' + c + '</td>').join('') + '</tr></tfoot>' : '') + '</table></div>';
+  node.innerHTML = h;
+}
+
+/* ======================================================= CHART: STACKED COL */
+function stackedColumns(svg, o) {
+  clear(svg);
+  const W = 640, Hh = 300, m = { t: 14, r: 14, b: 34, l: 54 };
+  const iw = W - m.l - m.r, ih = Hh - m.t - m.b;
+  const n = o.cats.length;
+  const band = iw / n;
+  const bw = Math.min(24, band * 0.62);
+
+  const tot = o.cats.map((_, i) => sum(o.series.map(s => Math.max(0, s.v[i]))));
+  const negTot = o.cats.map((_, i) => sum(o.series.map(s => Math.min(0, s.v[i]))));
+  const yMax = Math.max.apply(null, tot.concat(o.line ? o.line.v : []).concat([0]));
+  const yMin = Math.min.apply(null, negTot.concat(o.line ? o.line.v : []).concat([0]));
+  const ticks = niceTicks(yMin, yMax * 1.06, 5);
+  const lo = Math.min(ticks[0], yMin), hi = Math.max(ticks[ticks.length - 1], yMax);
+  const Y = v => m.t + ih - (v - lo) / (hi - lo) * ih;
+
+  ticks.forEach(v => {
+    el('line', { class: 'gridline', x1: m.l, x2: m.l + iw, y1: Y(v), y2: Y(v) }, svg);
+    txt(svg, m.l - 8, Y(v) + 3.5, o.yFmt(v), 'tick', { 'text-anchor': 'end' });
+  });
+  el('line', { class: 'baseline', x1: m.l, x2: m.l + iw, y1: Y(0), y2: Y(0) }, svg);
+
+  const surf = cssv('--surface');
+  o.cats.forEach((c, i) => {
+    const cx = m.l + band * i + band / 2;
+    txt(svg, cx, Hh - 12, c, 'tick', { 'text-anchor': 'middle' });
+
+    let acc = 0, accN = 0;
+    o.series.forEach(s => {
+      const v = s.v[i];
+      if (Math.abs(v) < 1e-6) return;
+      let y0, y1;
+      if (v > 0) { y0 = Y(acc); y1 = Y(acc + v); acc += v; }
+      else { y0 = Y(accN); y1 = Y(accN + v); accN += v; }
+      const top = Math.min(y0, y1), h = Math.abs(y1 - y0);
+      if (h < 0.4) return;
+      el('rect', { x: cx - bw / 2, y: top, width: bw, height: Math.max(0.8, h - 2),
+        fill: s.c, rx: 2 }, svg);
+    });
+
+    // hover target across the whole band
+    const hit = el('rect', { x: m.l + band * i, y: m.t, width: band, height: ih,
+      fill: 'transparent', style: 'cursor:crosshair' }, svg);
+    const rows = o.series.filter(s => Math.abs(s.v[i]) > 1e-6)
+      .map(s => ({ c: s.c, k: s.l, v: o.yFmtFull(s.v[i]) }));
+    if (o.line) rows.push({ c: o.line.c, k: o.line.l, v: o.yFmtFull(o.line.v[i]) });
+    const html = ttRows(o.catLabel ? o.catLabel(c) : c, rows,
+      o.totalLabel ? { k: o.totalLabel, v: o.yFmtFull(tot[i] + negTot[i]) } : null);
+    hit.addEventListener('mousemove', e => showTT(e, html));
+    hit.addEventListener('mouseleave', hideTT);
+  });
+
+  if (o.line) {
+    const pts = o.cats.map((_, i) => [m.l + band * i + band / 2, Y(o.line.v[i])]);
+    el('polyline', { points: pts.map(p => p.join(',')).join(' '), fill: 'none',
+      stroke: o.line.c, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round',
+      'stroke-dasharray': o.line.dash || null }, svg);
+    const last = pts[pts.length - 1];
+    el('circle', { cx: last[0], cy: last[1], r: 4, fill: o.line.c, stroke: surf, 'stroke-width': 2 }, svg);
+  }
+}
+
+/* ============================================================ CHART: LINES */
+function lineChart(svg, o) {
+  clear(svg);
+  const W = 640, Hh = 300, m = { t: 18, r: 74, b: 34, l: 54 };
+  if (!o.cats.length || !o.series.length || o.series.every(s => !s.v.length)) {
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + Hh);
+    txt(svg, W / 2, Hh / 2, o.empty || 'No data at these settings', 'axlabel',
+      { 'text-anchor': 'middle' });
+    return;
+  }
+  const iw = W - m.l - m.r, ih = Hh - m.t - m.b;
+  const n = o.cats.length;
+  const X = i => n === 1 ? m.l + iw / 2 : m.l + (iw * i) / (n - 1);
+
+  let all = [];
+  o.series.forEach(s => all = all.concat(s.v.filter(v => v != null && isFinite(v))));
+  (o.rules || []).forEach(r => all.push(r.v));
+  if (o.zero) all.push(0);
+  const ticks = niceTicks(Math.min.apply(null, all), Math.max.apply(null, all), 5);
+  const lo = ticks[0], hi = ticks[ticks.length - 1];
+  const Y = v => m.t + ih - (clamp(v, lo, hi) - lo) / (hi - lo || 1) * ih;
+
+  ticks.forEach(v => {
+    el('line', { class: 'gridline', x1: m.l, x2: m.l + iw, y1: Y(v), y2: Y(v) }, svg);
+    txt(svg, m.l - 8, Y(v) + 3.5, o.yFmt(v), 'tick', { 'text-anchor': 'end' });
+  });
+
+  // threshold rules: labelled inside the plot at the left, so the right margin
+  // stays free for the series end-labels
+  (o.rules || []).forEach(r => {
+    el('line', { x1: m.l, x2: m.l + iw, y1: Y(r.v), y2: Y(r.v),
+      stroke: r.c, 'stroke-width': 1, 'stroke-dasharray': '4 3', opacity: .85 }, svg);
+    const t = txt(svg, m.l + 5, Y(r.v) - 5, r.l, 'dlabel', { fill: r.c });
+    t.setAttribute('paint-order', 'stroke');
+    t.setAttribute('stroke', cssv('--surface'));
+    t.setAttribute('stroke-width', '3');
+  });
+
+  o.cats.forEach((c, i) => txt(svg, X(i), Hh - 12, c, 'tick', { 'text-anchor': 'middle' }));
+
+  const surf = cssv('--surface');
+  o.series.forEach(s => {
+    if (s.fill) {
+      const base = Y(clamp(0, lo, hi));
+      const pts = s.v.map((v, i) => X(i) + ',' + Y(v));
+      el('polygon', { points: X(0) + ',' + base + ' ' + pts.join(' ') + ' ' + X(n - 1) + ',' + base,
+        fill: s.c, opacity: .10 }, svg);
+    }
+    const pts = s.v.map((v, i) => X(i) + ',' + Y(v)).join(' ');
+    el('polyline', { points: pts, fill: 'none', stroke: s.c, 'stroke-width': 2,
+      'stroke-linejoin': 'round', 'stroke-linecap': 'round', 'stroke-dasharray': s.dash || null }, svg);
+    const li = s.v.length - 1;
+    if (s.v[li] != null && isFinite(s.v[li])) {
+      el('circle', { cx: X(li), cy: Y(s.v[li]), r: 4, fill: s.c, stroke: surf, 'stroke-width': 2 }, svg);
+      if (s.endLabel !== false) txt(svg, X(li) + 8, Y(s.v[li]) + 3.5, o.yFmt(s.v[li]), 'dlabel');
+    }
+  });
+
+  o.cats.forEach((c, i) => {
+    const hw = iw / Math.max(1, n - 1);
+    const hit = el('rect', { x: X(i) - hw / 2, y: m.t, width: hw, height: ih,
+      fill: 'transparent', style: 'cursor:crosshair' }, svg);
+    const html = ttRows(o.catLabel ? o.catLabel(c) : c,
+      o.series.map(s => ({ c: s.c, k: s.l, v: o.yFmtFull ? o.yFmtFull(s.v[i]) : o.yFmt(s.v[i]) })));
+    hit.addEventListener('mousemove', e => {
+      showTT(e, html);
+      cross.setAttribute('x1', X(i)); cross.setAttribute('x2', X(i));
+      cross.setAttribute('opacity', 1);
+    });
+    hit.addEventListener('mouseleave', () => { hideTT(); cross.setAttribute('opacity', 0); });
+  });
+  const cross = el('line', { y1: m.t, y2: m.t + ih, stroke: cssv('--rule-2'), 'stroke-width': 1, opacity: 0 }, svg);
+}
+
+/* ========================================================== CHART: HEATMAP */
+function heatmap(svg, o) {
+  clear(svg);
+  const W = 640, Hh = 380, m = { t: 16, r: 16, b: 92, l: 62 };
+  const iw = W - m.l - m.r, ih = Hh - m.t - m.b;
+  const nx = o.xs.length, ny = o.ys.length;
+  const cw = iw / nx, ch = ih / ny;
+
+  let vals = [];
+  o.z.forEach(row => row.forEach(v => { if (v != null && isFinite(v)) vals.push(v); }));
+  const vmin = Math.min.apply(null, vals), vmax = Math.max.apply(null, vals);
+  const mid = o.mid;
+
+  // sequential blue ramp (light->dark), and diverging blue<->red about `mid`
+  const BLUE = ['#cde2fb', '#b7d3f6', '#9ec5f4', '#86b6ef', '#6da7ec', '#5598e7', '#3987e5', '#2a78d6', '#256abf', '#1c5cab', '#184f95', '#104281', '#0d366b'];
+  const REDS = ['#f7d9d9', '#f0bcbc', '#e89d9d', '#e08080', '#d86363', '#d03b3b', '#b83232', '#9c2a2a', '#7d2121'];
+  const NEUT = cssv('--surface-3');
+
+  function color(v) {
+    if (v == null || !isFinite(v)) return NEUT;
+    if (mid == null) {
+      const t = (v - vmin) / (vmax - vmin || 1);
+      return BLUE[clamp(Math.round(t * (BLUE.length - 1)), 0, BLUE.length - 1)];
+    }
+    const up = o.better === 'low' ? -1 : 1;
+    const d = (v - mid) * up;
+    const scale = Math.max(Math.abs(vmax - mid), Math.abs(vmin - mid)) || 1;
+    const t = clamp(Math.abs(d) / scale, 0, 1);
+    if (Math.abs(d) < scale * 0.02) return NEUT;
+    return d > 0
+      ? BLUE[clamp(Math.round(t * 8) + 2, 0, BLUE.length - 1)]
+      : REDS[clamp(Math.round(t * 7) + 1, 0, REDS.length - 1)];
+  }
+
+  const surf = cssv('--surface');
+  for (let j = 0; j < ny; j++) {
+    for (let i = 0; i < nx; i++) {
+      const v = o.z[j][i];
+      const x = m.l + i * cw, y = m.t + j * ch;
+      const c = color(v);
+      el('rect', { x: x + 1, y: y + 1, width: cw - 2, height: ch - 2, fill: c, rx: 2 }, svg);
+      // value label — pick white or ink from the fill's own luminance so the
+      // number always clears contrast, whatever step the ramp landed on
+      const dark = luma(c) < 0.42;
+      if (cw > 40) {
+        const t2 = txt(svg, x + cw / 2, y + ch / 2 + 3.3, o.cellFmt(v), 'dlabel',
+          { 'text-anchor': 'middle' });
+        t2.setAttribute('fill', dark ? '#ffffff' : '#0c1214');
+        t2.setAttribute('font-size', '9.5');
+      }
+      const hit = el('rect', { x, y, width: cw, height: ch, fill: 'transparent', style: 'cursor:crosshair' }, svg);
+      const html = ttRows(o.metricLabel, [
+        { k: o.xLabel, v: o.xFmt(o.xs[i]) },
+        { k: o.yLabel, v: o.yFmt(o.ys[j]) },
+      ], { k: o.metricLabel, v: o.fullFmt(v) });
+      hit.addEventListener('mousemove', e => showTT(e, html));
+      hit.addEventListener('mouseleave', hideTT);
+    }
+  }
+
+  o.xs.forEach((x, i) => { if (nx <= 10 || i % 2 === 0)
+    txt(svg, m.l + i * cw + cw / 2, m.t + ih + 15, o.xFmt(x), 'tick', { 'text-anchor': 'middle' }); });
+  o.ys.forEach((y, j) => txt(svg, m.l - 8, m.t + j * ch + ch / 2 + 3.5, o.yFmt(y), 'tick', { 'text-anchor': 'end' }));
+  txt(svg, m.l + iw / 2, m.t + ih + 34, o.xTitle, 'axlabel', { 'text-anchor': 'middle' });
+  const yt = txt(svg, 0, 0, o.yTitle, 'axlabel', { 'text-anchor': 'middle',
+    transform: 'translate(14,' + (m.t + ih / 2) + ') rotate(-90)' });
+
+  // base-case marker
+  if (o.markX != null && o.markY != null) {
+    const i = o.xs.reduce((b, v, k) => Math.abs(v - o.markX) < Math.abs(o.xs[b] - o.markX) ? k : b, 0);
+    const j = o.ys.reduce((b, v, k) => Math.abs(v - o.markY) < Math.abs(o.ys[b] - o.markY) ? k : b, 0);
+    el('rect', { x: m.l + i * cw + 1, y: m.t + j * ch + 1, width: cw - 2, height: ch - 2,
+      fill: 'none', stroke: cssv('--ink'), 'stroke-width': 2, rx: 2 }, svg);
+  }
+
+  // scale legend
+  const lw = 168, lx = m.l, ly = m.t + ih + 50;
+  const steps = 11;
+  for (let s = 0; s < steps; s++) {
+    const v = vmin + (vmax - vmin) * s / (steps - 1);
+    el('rect', { x: lx + s * (lw / steps), y: ly, width: lw / steps - 1, height: 9,
+      fill: color(v), rx: 1 }, svg);
+  }
+  txt(svg, lx, ly + 24, o.fullFmt(vmin), 'tick');
+  txt(svg, lx + lw, ly + 24, o.fullFmt(vmax), 'tick', { 'text-anchor': 'end' });
+  txt(svg, lx + lw + 18, ly + 8, 'outlined cell = current settings', 'axlabel');
+}
+
+/* ========================================================== CHART: TORNADO */
+function tornado(svg, o) {
+  clear(svg);
+  const rows = o.rows;
+  const W = 640, rowH = 26, m = { t: 12, r: 66, b: 34, l: 172 };
+  const Hh = m.t + rows.length * rowH + m.b;
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + Hh);
+  const iw = W - m.l - m.r;
+
+  let ext = 0;
+  rows.forEach(r => { ext = Math.max(ext, Math.abs(r.lo - o.base), Math.abs(r.hi - o.base)); });
+  ext = ext || 1;
+  const X = v => m.l + iw / 2 + (v - o.base) / ext * (iw / 2) * 0.94;
+
+  el('line', { x1: X(o.base), x2: X(o.base), y1: m.t - 4, y2: m.t + rows.length * rowH + 2,
+    class: 'baseline' }, svg);
+  txt(svg, X(o.base), m.t + rows.length * rowH + 16, 'base ' + o.fmt(o.base), 'tick', { 'text-anchor': 'middle' });
+
+  const good = cssv('--s1'), bad = cssv('--s8');
+  rows.forEach((r, i) => {
+    const y = m.t + i * rowH;
+    const bh = 13;
+    [[r.lo, r.loLabel], [r.hi, r.hiLabel]].forEach(([v, lab]) => {
+      const isGood = o.better === 'low' ? (v < o.base) : (v > o.base);
+      const x0 = X(o.base), x1 = X(v);
+      const w = Math.abs(x1 - x0);
+      if (w < 0.6) return;
+      el('rect', { x: Math.min(x0, x1) + (x1 > x0 ? 1 : 0), y: y + (rowH - bh) / 2,
+        width: Math.max(1, w - 1), height: bh, rx: 2.5, fill: isGood ? good : bad }, svg);
+      const hit = el('rect', { x: Math.min(x0, x1) - 4, y: y, width: w + 8, height: rowH,
+        fill: 'transparent', style: 'cursor:crosshair' }, svg);
+      const html = ttRows(r.l, [
+        { k: lab, v: '' },
+        { k: o.metricLabel, v: o.fmt(v) },
+        { k: 'vs base', v: (v - o.base >= 0 ? '+' : MINUS) + o.fmt(Math.abs(v - o.base)).replace(MINUS, '') },
+      ]);
+      hit.addEventListener('mousemove', e => showTT(e, html));
+      hit.addEventListener('mouseleave', hideTT);
+    });
+    txt(svg, m.l - 12, y + rowH / 2 + 4, r.l, 'axlabel', { 'text-anchor': 'end' });
+    const swing = Math.max(Math.abs(r.lo - o.base), Math.abs(r.hi - o.base));
+    txt(svg, W - m.r + 8, y + rowH / 2 + 4, '±' + o.fmt(swing).replace(MINUS, ''), 'dlabel');
+  });
+}
+
+/* ======================================================== CHART: HISTOGRAM */
+function histogram(svg, o) {
+  clear(svg);
+  const W = 640, Hh = 300, m = { t: 26, r: 16, b: 40, l: 46 };
+  const iw = W - m.l - m.r, ih = Hh - m.t - m.b;
+  const vals = o.values.filter(v => v != null && isFinite(v));
+  if (!vals.length) return;
+  const lo0 = o.lo != null ? o.lo : Math.min.apply(null, vals);
+  const hi0 = o.hi != null ? o.hi : Math.max.apply(null, vals);
+  const nb = 34, bw = (hi0 - lo0) / nb || 1;
+  const bins = new Array(nb).fill(0);
+  vals.forEach(v => { bins[clamp(Math.floor((v - lo0) / bw), 0, nb - 1)]++; });
+  const cmax = Math.max.apply(null, bins);
+  const X = v => m.l + (clamp(v, lo0, hi0) - lo0) / (hi0 - lo0 || 1) * iw;
+  const Y = c => m.t + ih - c / cmax * ih;
+
+  niceTicks(0, cmax, 4).forEach(c => {
+    el('line', { class: 'gridline', x1: m.l, x2: m.l + iw, y1: Y(c), y2: Y(c) }, svg);
+    txt(svg, m.l - 8, Y(c) + 3.5, fmtInt(Math.round(c)), 'tick', { 'text-anchor': 'end' });
+  });
+
+  const cw = iw / nb;
+  bins.forEach((c, i) => {
+    if (!c) return;
+    const v0 = lo0 + i * bw;
+    const bad = o.threshold != null && (o.better === 'low' ? v0 > o.threshold : v0 + bw <= o.threshold);
+    el('rect', { x: m.l + i * cw + 1, y: Y(c), width: Math.max(1, cw - 2), height: m.t + ih - Y(c),
+      fill: bad ? cssv('--s8') : cssv('--s1'), rx: 2 }, svg);
+    const hit = el('rect', { x: m.l + i * cw, y: m.t, width: cw, height: ih, fill: 'transparent' }, svg);
+    const html = ttRows(o.fmt(v0) + '  →  ' + o.fmt(v0 + bw), [
+      { k: 'Paths', v: fmtInt(c) },
+      { k: 'Share', v: fmtPct(c / vals.length, 1) },
+    ]);
+    hit.addEventListener('mousemove', e => showTT(e, html));
+    hit.addEventListener('mouseleave', hideTT);
+  });
+
+  el('line', { class: 'baseline', x1: m.l, x2: m.l + iw, y1: m.t + ih, y2: m.t + ih }, svg);
+  niceTicks(lo0, hi0, 5)
+    .filter(v => v >= lo0 - 1e-9 && v <= hi0 + 1e-9)
+    .forEach(v => txt(svg, X(v), Hh - 20, o.fmt(v), 'tick', { 'text-anchor': 'middle' }));
+
+  // marker labels alternate between two rows so neighbouring markers never overlap
+  (o.marks || []).filter(mk => mk.v != null && isFinite(mk.v)).forEach((mk, i) => {
+    const x = X(mk.v);
+    const row = i % 2;
+    el('line', { x1: x, x2: x, y1: m.t - 2 + row * 11, y2: m.t + ih, stroke: mk.c,
+      'stroke-width': 1.5, 'stroke-dasharray': mk.dash || null }, svg);
+    const anchor = x > m.l + iw - 46 ? 'end' : x < m.l + 46 ? 'start' : 'middle';
+    const t = txt(svg, x, m.t - 5 + row * 11, mk.l, 'dlabel', { 'text-anchor': anchor, fill: mk.c });
+    t.setAttribute('paint-order', 'stroke');
+    t.setAttribute('stroke', cssv('--surface'));
+    t.setAttribute('stroke-width', '3');
+  });
+  if (o.xTitle) txt(svg, m.l + iw / 2, Hh - 4, o.xTitle, 'axlabel', { 'text-anchor': 'middle' });
+}
+
+/* ========================================================= CHART: WATERFALL */
+function waterfall(svg, o) {
+  clear(svg);
+  const W = 780, Hh = 300, m = { t: 22, r: 14, b: 52, l: 58 };
+  const iw = W - m.l - m.r, ih = Hh - m.t - m.b;
+  const n = o.steps.length, band = iw / n, bw = Math.min(46, band * 0.6);
+
+  let run = 0; const geo = [];
+  o.steps.forEach(s => {
+    if (s.total) { geo.push({ s, from: 0, to: s.v != null ? s.v : run }); run = s.v != null ? s.v : run; }
+    else { geo.push({ s, from: run, to: run + s.v }); run += s.v; }
+  });
+  let all = [0];
+  geo.forEach(g => { all.push(g.from, g.to); });
+  const ticks = niceTicks(Math.min.apply(null, all), Math.max.apply(null, all) * 1.05, 5);
+  const lo = ticks[0], hi = ticks[ticks.length - 1];
+  const Y = v => m.t + ih - (v - lo) / (hi - lo || 1) * ih;
+
+  ticks.forEach(v => {
+    el('line', { class: 'gridline', x1: m.l, x2: m.l + iw, y1: Y(v), y2: Y(v) }, svg);
+    txt(svg, m.l - 8, Y(v) + 3.5, fmtM(v), 'tick', { 'text-anchor': 'end' });
+  });
+  el('line', { class: 'baseline', x1: m.l, x2: m.l + iw, y1: Y(0), y2: Y(0) }, svg);
+
+  const up = cssv('--s1'), down = cssv('--s8'), tot = cssv('--ink-3');
+  geo.forEach((g, i) => {
+    const cx = m.l + band * i + band / 2;
+    const y0 = Y(g.from), y1 = Y(g.to);
+    const c = g.s.total ? tot : (g.to >= g.from ? up : down);
+    el('rect', { x: cx - bw / 2, y: Math.min(y0, y1), width: bw,
+      height: Math.max(1.5, Math.abs(y1 - y0)), fill: c, rx: 2.5 }, svg);
+    if (i < n - 1) {
+      el('line', { x1: cx + bw / 2, x2: m.l + band * (i + 1) + band / 2 - bw / 2,
+        y1: y1, y2: y1, stroke: cssv('--rule-2'), 'stroke-width': 1 }, svg);
+    }
+    txt(svg, cx, Math.min(y0, y1) - 6, (g.s.total ? '' : (g.s.v >= 0 ? '+' : MINUS)) +
+      fmtM(Math.abs(g.s.total ? g.to : g.s.v)).replace(MINUS, ''), 'dlabel', { 'text-anchor': 'middle' });
+    const words = g.s.l.split(' ');
+    let lineArr = [], line = '';
+    words.forEach(w => { if ((line + ' ' + w).trim().length > 12) { lineArr.push(line); line = w; } else line = (line + ' ' + w).trim(); });
+    lineArr.push(line);
+    lineArr.forEach((ln, k) => txt(svg, cx, m.t + ih + 16 + k * 11, ln, 'tick', { 'text-anchor': 'middle' }));
+    const hit = el('rect', { x: m.l + band * i, y: m.t, width: band, height: ih, fill: 'transparent' }, svg);
+    const html = ttRows(g.s.l, [
+      { k: g.s.total ? 'Level' : 'Change', v: fmtUSD(g.s.total ? g.to : g.s.v) },
+      { k: 'Running', v: fmtUSD(g.to) },
+    ]);
+    hit.addEventListener('mousemove', e => showTT(e, html));
+    hit.addEventListener('mouseleave', hideTT);
+  });
+}
+
+/* ====================================================== CHART: FLOW DIAGRAM */
+function flowDiagram(svg, r) {
+  clear(svg);
+  svg.setAttribute('viewBox', '0 0 1000 470');
+  const y1 = r.years[0];
+  const surf = cssv('--surface'), rule = cssv('--rule-2'), s2 = cssv('--surface-2');
+
+  const sources = [
+    { l: 'Equity sponsors', v: r.equity, tag: 't = 0', c: cssv('--s7') },
+    { l: 'Senior lenders', v: r.debt, tag: 't = 0', c: cssv('--s7') },
+    { l: 'Cloud customers', v: y1.revenue, tag: 'rentals, yr 1', c: cssv('--s1') },
+    { l: 'NVIDIA backstop', v: y1.bsPaid, tag: 'shortfall top-up', c: cssv('--s3'), nv: true },
+  ];
+  const uses = [
+    { l: 'NVIDIA — GPU sale', v: r.capexGpu, tag: 't = 0', c: cssv('--s3'), nv: true },
+    { l: 'Datacenter build', v: r.capexOther, tag: 't = 0', c: cssv('--s7') },
+    { l: 'Cash operating costs', v: y1.opex, tag: 'yr 1', c: cssv('--s2') },
+    { l: 'Lenders — debt service', v: y1.debtService, tag: 'yr 1', c: cssv('--s7') },
+    { l: 'NVIDIA — upside share', v: y1.upside, tag: 'yr 1', c: cssv('--s4'), nv: true },
+    { l: 'Equity — residual cash', v: Math.max(0, y1.cfads - y1.debtService), tag: 'yr 1', c: cssv('--s1') },
+  ];
+
+  const maxV = Math.max.apply(null, sources.concat(uses).map(d => d.v).concat([1]));
+  const wOf = v => v <= 0 ? 0 : clamp(1.5 + Math.sqrt(v / maxV) * 13, 1.5, 15);
+
+  const LX = 30, LW = 186, RX = 784, RW = 186, CX = 408, CW = 184;
+  const box = (x, y, w, h, d) => {
+    const g = el('g', { class: 'flow-node' }, svg);
+    el('rect', { x, y, width: w, height: h, rx: 7, fill: s2,
+      stroke: d.nv ? d.c : rule, 'stroke-width': d.nv ? 1.6 : 1 }, g);
+    txt(g, x + 12, y + 21, d.l, 'title');
+    txt(g, x + 12, y + 38, fmtM(d.v), 'meta');
+    const tagText = d.nv ? d.tag + '  \u00b7  NVDA' : d.tag;
+    const tg = txt(g, x + w - 12, y + 38, tagText, 'meta', { 'text-anchor': 'end', opacity: d.nv ? 1 : .72 });
+    if (d.nv) { tg.setAttribute('fill', d.c); tg.setAttribute('font-weight', '700'); }
+    return g;
+  };
+
+  const BH = 52, GAP = 22;
+  const sy = i => 40 + i * (BH + GAP);
+  const uy = i => 24 + i * (BH + 16);
+
+  // SPV
+  el('rect', { x: CX, y: 92, width: CW, height: 216, rx: 9, fill: cssv('--surface'),
+    stroke: cssv('--accent'), 'stroke-width': 1.6 }, svg);
+  const gc = el('g', { class: 'flow-node' }, svg);
+  txt(gc, CX + CW / 2, 128, 'GPU SPV / OpCo', 'title', { 'text-anchor': 'middle' });
+  txt(gc, CX + CW / 2, 148, 'the borrower', 'meta', { 'text-anchor': 'middle', opacity: .75 });
+  const kpis = [
+    ['Total capex', fmtM(r.capex)],
+    ['Yr-1 revenue', fmtM(y1.revenue + y1.bsPaid)],
+    ['Yr-1 EBITDA', fmtM(y1.ebitda)],
+    ['Yr-1 DSCR', fmtX(y1.dscr)],
+  ];
+  kpis.forEach((k, i) => {
+    const yy = 176 + i * 30;
+    txt(gc, CX + 14, yy, k[0], 'meta', { opacity: .8 });
+    const t = txt(gc, CX + CW - 14, yy, k[1], 'meta', { 'text-anchor': 'end' });
+    t.setAttribute('font-weight', '700');
+    t.setAttribute('fill', cssv('--ink'));
+    el('line', { x1: CX + 12, x2: CX + CW - 12, y1: yy + 9, y2: yy + 9,
+      stroke: cssv('--rule'), 'stroke-width': 1 }, gc);
+  });
+
+  const arrow = (x0, y0, x1, y1v, w, c, label, dashed) => {
+    if (w <= 0) return;
+    const mx = (x0 + x1) / 2;
+    const d = 'M' + x0 + ',' + y0 + ' C' + mx + ',' + y0 + ' ' + mx + ',' + y1v + ' ' + (x1 - 7) + ',' + y1v;
+    el('path', { d, fill: 'none', stroke: c, 'stroke-width': w, opacity: .42,
+      'stroke-linecap': 'round', 'stroke-dasharray': dashed ? '6 5' : null }, svg);
+    el('path', { d: 'M' + (x1 - 8) + ',' + (y1v - 5) + ' L' + x1 + ',' + y1v + ' L' + (x1 - 8) + ',' + (y1v + 5) + ' Z',
+      fill: c, opacity: .78 }, svg);
+    const t = txt(svg, mx, (y0 + y1v) / 2 - 6, label, 'flow-lbl strong', { 'text-anchor': 'middle' });
+    t.setAttribute('paint-order', 'stroke');
+    t.setAttribute('stroke', cssv('--surface'));
+    t.setAttribute('stroke-width', '3.5');
+  };
+
+  sources.forEach((d, i) => {
+    const y = sy(i);
+    box(LX, y, LW, BH, d);
+    const ty = 118 + i * 52;
+    arrow(LX + LW, y + BH / 2, CX, ty, wOf(d.v), d.c, fmtM(d.v), d.nv && d.v <= 0);
+  });
+  uses.forEach((d, i) => {
+    const y = uy(i);
+    box(RX, y, RW, BH, d);
+    const fy = 118 + i * 34;
+    arrow(CX + CW, fy, RX, y + BH / 2, wOf(d.v), d.c, fmtM(d.v));
+  });
+
+  txt(svg, LX, 24, 'SOURCES', 'flow-lbl', { opacity: .7, 'letter-spacing': '.12em' });
+  txt(svg, RX, 14, 'USES', 'flow-lbl', { opacity: .7, 'letter-spacing': '.12em' });
+  if (y1.bsPaid <= 0) {
+    txt(svg, LX, sy(3) + BH + 17, 'not called at these settings', 'flow-lbl', { opacity: .8 });
+  }
+  if (y1.bsUnpaid > 1) {
+    const t = txt(svg, LX, sy(3) + BH + 30, 'capped — ' + fmtM(y1.bsUnpaid) + ' of the shortfall is NOT paid', 'flow-lbl');
+    t.setAttribute('fill', cssv('--crit'));
+  }
+}
+
+/* ============================================================================
+   PART 2 — sensitivity, simulation, risk, and all the wiring.
+   ========================================================================== */
+
+/* ------------------------------------------------------------ Monte Carlo */
+function makeRng(seed) {
+  let s = seed >>> 0;
+  return function () { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+}
+function monteCarlo(p) {
+  const n = Math.round(p.mcPaths);
+  const rnd = makeRng(20260808);
+  const norm = () => {
+    let u = 0, v = 0;
+    while (u === 0) u = rnd();
+    while (v === 0) v = rnd();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  };
+  const H = Math.round(p.horizon);
+  const pShockAny = 1 - Math.pow(1 - p.shockProb, H);
+  const out = { nv: [], eq: [], minD: [], minDNoBs: [], bs: [], gb: [], demand: [] };
+  let called = 0, capHit = 0, below1 = 0, eqNeg = 0, nvNeg = 0;
+
+  for (let i = 0; i < n; i++) {
+    const z = norm(), e1 = norm(), e2 = norm();
+    const k = Math.sqrt(Math.max(0, 1 - p.rho * p.rho));
+    const f1 = p.rho * z + k * e1;   // price-decay factor
+    const f2 = p.rho * z + k * e2;   // utilisation factor
+
+    const q = Object.assign({}, p);
+    q.priceDecay = clamp(p.priceDecay + p.sdDecay * f1, -0.15, 0.8);
+    q.util0 = clamp(p.util0 - p.sdUtil * f2, 0.03, 1);
+    if (rnd() < pShockAny) {
+      q.shockYear = 1 + Math.floor(rnd() * H);
+      q.shockUtilCut = p.shockSize;
+      q.shockPriceCut = p.shockSize * 0.7;
+    }
+    const r = project(q);
+    out.nv.push(r.nvNPV);
+    out.eq.push(r.eqIRR == null ? -0.95 : r.eqIRR);
+    out.minD.push(r.minDSCR == null ? 99 : r.minDSCR);
+    out.minDNoBs.push(r.minDSCRNoBs == null ? 99 : r.minDSCRNoBs);
+    out.bs.push(r.cumBackstop);
+    out.gb.push(r.giveback);
+    out.demand.push(z);
+    if (r.yearsCalled > 0) called++;
+    if (r.capBinds) capHit++;
+    if (r.minDSCR != null && r.minDSCR < 1) below1++;
+    if (r.eqIRR == null || r.eqIRR < 0) eqNeg++;
+    if (r.nvNPV < 0) nvNeg++;
+  }
+  const pct = (a, q) => {
+    const s = a.slice().sort((x, y) => x - y);
+    return s[clamp(Math.floor(q * (s.length - 1)), 0, s.length - 1)];
+  };
+  const cvar = (a, q) => {
+    const s = a.slice().sort((x, y) => x - y);
+    const cut = Math.max(1, Math.floor(q * s.length));
+    return sum(s.slice(0, cut)) / cut;
+  };
+  // conditional: backstop called in the worst demand decile
+  const idx = out.demand.map((v, i) => [v, i]).sort((a, b) => b[0] - a[0]).slice(0, Math.max(1, Math.floor(n * 0.1)));
+  const tailBs = idx.map(x => out.bs[x[1]]);
+
+  return {
+    n, ...out,
+    nvMean: sum(out.nv) / n, nvP5: pct(out.nv, 0.05), nvP50: pct(out.nv, 0.5), nvP95: pct(out.nv, 0.95),
+    nvCVaR: cvar(out.nv, 0.05),
+    eqP5: pct(out.eq, 0.05), eqP50: pct(out.eq, 0.5), eqP95: pct(out.eq, 0.95),
+    bsMean: sum(out.bs) / n, bsP95: pct(out.bs, 0.95),
+    tailBsMean: sum(tailBs) / tailBs.length,
+    pCalled: called / n, pCap: capHit / n, pBelow1: below1 / n, pEqNeg: eqNeg / n, pNvNeg: nvNeg / n,
+  };
+}
+
+/* ------------------------------------------------------------- solvers */
+function solve(fn, lo, hi, target) {
+  let flo = fn(lo) - target, fhi = fn(hi) - target;
+  if (!isFinite(flo) || !isFinite(fhi) || flo * fhi > 0) return null;
+  for (let i = 0; i < 60; i++) {
+    const m = (lo + hi) / 2, fm = fn(m) - target;
+    if (flo * fm <= 0) { hi = m; fhi = fm; } else { lo = m; flo = fm; }
+  }
+  return (lo + hi) / 2;
+}
+const withP = (over) => project(Object.assign({}, P, over));
+
+/* ----------------------------------------------------------- the rail UI */
+function buildRail() {
+  const rail = document.getElementById('rail');
+  let h = '';
+  SPEC.forEach((g, gi) => {
+    h += '<details class="group"' + (g.open ? ' open' : '') + '><summary><h3>' + g.g + '</h3></summary><div class="group-body">';
+    g.items.forEach(it => {
+      h += '<div class="ctl" data-k="' + it.k + '">';
+      h += '<div class="ctl-head"><label for="c_' + it.k + '">' + it.l + '</label>' +
+        (it.type === 'seg' ? '' : '<span class="ctl-val" id="v_' + it.k + '"></span>') + '</div>';
+      if (it.type === 'seg') {
+        h += '<div class="seg" id="c_' + it.k + '" role="group" aria-label="' + it.l + '">' +
+          it.opts.map(o => '<button type="button" data-v="' + o[0] + '">' + o[1] + '</button>').join('') + '</div>';
+      } else {
+        h += '<input type="range" id="c_' + it.k + '" min="' + it.min + '" max="' + it.max +
+          '" step="' + it.step + '" value="' + P[it.k] + '">';
+      }
+      if (it.note) h += '<p class="ctl-note">' + it.note + '</p>';
+      h += '</div>';
+    });
+    h += '</div></details>';
+  });
+  h += '<div class="rail-actions"><button type="button" id="resetBtn">Reset to base</button>' +
+       '<button type="button" id="linkBtn">Copy scenario link</button></div>';
+  rail.innerHTML = h;
+
+  SPEC.forEach(g => g.items.forEach(it => {
+    const node = document.getElementById('c_' + it.k);
+    if (it.type === 'seg') {
+      node.addEventListener('click', e => {
+        const b = e.target.closest('button'); if (!b) return;
+        P[it.k] = b.dataset.v; activePreset = null; syncRail(); schedule();
+      });
+    } else {
+      node.addEventListener('input', () => {
+        P[it.k] = parseFloat(node.value); activePreset = null; syncRail(); schedule();
+      });
+    }
+  }));
+  document.getElementById('resetBtn').addEventListener('click', () => applyPreset('repaired'));
+  document.getElementById('linkBtn').addEventListener('click', function () {
+    const url = location.origin + location.pathname + '#' + serialize();
+    navigator.clipboard && navigator.clipboard.writeText(url);
+    this.textContent = 'Copied'; setTimeout(() => this.textContent = 'Copy scenario link', 1400);
+  });
+}
+
+function syncRail() {
+  SPEC.forEach(g => g.items.forEach(it => {
+    const node = document.getElementById('c_' + it.k);
+    if (!node) return;
+    if (it.type === 'seg') {
+      [].forEach.call(node.querySelectorAll('button'), b =>
+        b.setAttribute('aria-pressed', String(b.dataset.v === P[it.k])));
+    } else {
+      if (parseFloat(node.value) !== P[it.k]) node.value = P[it.k];
+      const v = document.getElementById('v_' + it.k);
+      if (v) v.textContent = it.f(P[it.k]);
+      node.classList.toggle('is-off', P[it.k] === 0 && it.min < 0);
+    }
+  }));
+  [].forEach.call(document.querySelectorAll('#presets .preset'), b =>
+    b.setAttribute('aria-pressed', String(b.dataset.id === activePreset)));
+}
+
+function buildPresets() {
+  const node = document.getElementById('presets');
+  node.innerHTML = PRESETS.map(p =>
+    '<button type="button" class="preset" data-id="' + p.id + '" title="' + p.blurb + '">' + p.name + '</button>').join('');
+  node.addEventListener('click', e => {
+    const b = e.target.closest('.preset'); if (!b) return;
+    applyPreset(b.dataset.id);
+  });
+}
+function applyPreset(id) {
+  const p = PRESETS.find(x => x.id === id);
+  if (!p) return;
+  P = Object.assign({}, p.v);
+  activePreset = id;
+  syncRail(); schedule();
+}
+
+/* ---------------------------------------------------------- URL encoding */
+function serialize() {
+  return Object.keys(FIELD).map(k => k + '=' + P[k]).join('&');
+}
+function deserialize(s) {
+  if (!s) return false;
+  let hit = false;
+  s.replace(/^#/, '').split('&').forEach(pair => {
+    const [k, v] = pair.split('=');
+    if (!(k in FIELD)) return;
+    P[k] = FIELD[k].type === 'seg' ? v : parseFloat(v);
+    if (FIELD[k].type !== 'seg' && !isFinite(P[k])) P[k] = FIELD[k].d;
+    hit = true;
+  });
+  return hit;
+}
+
+/* ================================================================ RENDER */
+let raf = null, mcTimer = null;
+function schedule() {
+  if (raf) cancelAnimationFrame(raf);
+  raf = requestAnimationFrame(() => { raf = null; renderFast(); });
+  clearTimeout(mcTimer);
+  mcTimer = setTimeout(renderSlow, 140);
+  try { history.replaceState(null, '', '#' + serialize()); } catch (e) {}
+}
+
+let R = null;
+function renderFast() {
+  R = project(P);
+  document.getElementById('brandSub').textContent =
+    fmtInt(P.gpus) + ' GPU · ' + fmtUSD(R.capex) + ' · ' + Math.round(P.tenor) + 'yr @ ' + fmtPct(P.rate, 2);
+  renderVerdict(R);
+  flowDiagram(document.getElementById('flowSvg'), R);
+  renderFlowTable(R);
+  renderProjection(R);
+  renderWaterfall(R);
+  renderRisk(R);
+}
+function renderSlow() {
+  if (!R) return;
+  renderHeat(R);
+  renderTornado(R);
+  renderBreakeven(R);
+  const mc = monteCarlo(P);
+  renderMC(R, mc);
+  renderRisk(R, mc);
+}
+
+/* ---------------------------------------------------------- verdict block */
+function sevOf(v, bands, better) {
+  // bands ascending: [warnAt, seriousAt, critAt] in "worse" direction
+  const worse = better === 'low' ? (a, b) => a > b : (a, b) => a < b;
+  if (v == null) return 'warn';
+  if (worse(v, bands[2])) return 'crit';
+  if (worse(v, bands[1])) return 'sev';
+  if (worse(v, bands[0])) return 'warn';
+  return 'ok';
+}
+const ICON = {
+  ok: '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1.6 5.2 4 7.6 8.6 2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  warn: '<svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M5 .8 9.6 8.8H.4z" opacity=".25"/><path d="M5 .8 9.6 8.8H.4z" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><rect x="4.4" y="3.6" width="1.2" height="2.6" rx=".6"/><circle cx="5" cy="7.3" r=".65"/></svg>',
+  sev: '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="5" cy="5" r="4"/><path d="M5 2.8v2.6" stroke-linecap="round"/><circle cx="5" cy="7.2" r=".7" fill="currentColor" stroke="none"/></svg>',
+  crit: '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="5" cy="5" r="4"/><path d="M3.2 3.2 6.8 6.8M6.8 3.2 3.2 6.8" stroke-linecap="round"/></svg>',
+};
+const LABELS = { ok: 'ok', warn: 'watch', sev: 'serious', crit: 'critical' };
+const pill = (sev, text) => '<span class="pill ' + sev + '">' + ICON[sev] + (text || LABELS[sev]) + '</span>';
+
+function renderVerdict(r) {
+  const sev = r.nvNPV < 0 ? 'crit' : r.giveback > 0.6 ? 'sev' : r.giveback > 0.3 ? 'warn' : 'ok';
+  const fig = document.getElementById('heroFig');
+  fig.innerHTML = fmtUSD(r.nvNPV) + ' <small>vs ' + fmtUSD(r.grossProfitEcon) + ' sale profit alone</small>';
+  fig.style.color = r.nvNPV < 0 ? 'var(--crit-ink)' : 'var(--ink)';
+
+  const yrs = r.yearsCalled;
+  document.getElementById('heroSub').innerHTML =
+    'Gross profit of <strong>' + fmtUSD(r.grossProfitEcon) + '</strong> on the GPU sale, less <strong>' +
+    fmtUSD(r.pvBackstop) + '</strong> of backstop calls' +
+    (yrs ? ' across <strong>' + yrs + '</strong> year' + (yrs > 1 ? 's' : '') : ' (never called)') +
+    ', plus <strong>' + fmtUSD(r.pvUpside) + '</strong> of upside share. Present valued at ' +
+    fmtPct(P.nvDiscount, 1) + '.';
+
+  // meter: how much of the sale profit the guarantee gives back
+  const share = clamp(r.giveback, 0, 1.6);
+  const over = share > 1;
+  document.getElementById('heroBar').innerHTML =
+    '<div style="display:flex;align-items:center;gap:9px;margin-bottom:6px">' +
+    pill(sev, 'give-back ' + fmtPct(r.giveback, 0)) +
+    '<span style="font-size:11.5px;color:var(--ink-3)">of gross profit returned via the backstop</span></div>' +
+    '<div style="height:9px;border-radius:5px;background:var(--surface-3);overflow:hidden;position:relative">' +
+    '<div style="height:100%;width:' + clamp(share / 1.6 * 100, 0, 100) + '%;background:' +
+    (over ? 'var(--crit)' : share > 0.6 ? 'var(--serious)' : share > 0.3 ? 'var(--warn)' : 'var(--s1)') + '"></div>' +
+    '<div style="position:absolute;left:62.5%;top:0;bottom:0;width:1px;background:var(--ink-3)"></div>' +
+    '</div>' +
+    '<div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-3);margin-top:4px;font-family:var(--mono)">' +
+    '<span>0%</span><span>100% — profit fully returned</span><span>160%</span></div>';
+
+  const dNo = r.minDSCRNoBs;
+  const tiles = [
+    { l: 'Min DSCR', v: fmtX(r.minDSCR), n: 'excl. backstop ' + fmtX(dNo),
+      sev: sevOf(r.minDSCR, [1.35, 1.15, 1.0], 'high') },
+    { l: 'Equity IRR', v: r.eqIRR == null ? 'wiped out' : fmtPct(r.eqIRR, 1),
+      n: r.eqMOIC != null ? fmtX(r.eqMOIC) + ' MOIC on ' + fmtUSD(r.equity) : '',
+      sev: sevOf(r.eqIRR, [0.15, 0.06, 0], 'high') },
+    { l: 'Backstop called', v: r.cumBackstop > 0 ? fmtUSD(r.cumBackstop) : 'never',
+      n: r.yearsCalled + ' of ' + r.years.length + ' years' + (r.cumUnpaid > 1 ? ' · ' + fmtUSD(r.cumUnpaid) + ' capped out' : ''),
+      sev: r.cumUnpaid > 1 ? 'crit' : r.cumBackstop > r.grossProfitRaw ? 'sev' : r.cumBackstop > 0 ? 'warn' : 'ok' },
+    { l: 'Max exposure', v: fmtUSD(maxExposure(r)),
+      n: (maxExposure(r) / (r.grossProfitRaw || 1)).toFixed(1) + '× the profit on the sale',
+      sev: sevOf(r.grossProfitRaw / (maxExposure(r) || 1), [0.8, 0.45, 0.25], 'high') },
+  ];
+  document.getElementById('tiles').innerHTML = tiles.map(t =>
+    '<div class="tile"><div class="tile-label">' + t.l + ' ' + pill(t.sev) + '</div>' +
+    '<div class="tile-val">' + t.v + '</div>' +
+    '<div class="tile-note">' + t.n + '</div></div>').join('');
+}
+
+/* worst-case undiscounted backstop: revenue goes to zero for the whole term */
+function maxExposure(r) {
+  const p = r.p, cap = p.gpus * p.hours;
+  let tot = 0;
+  for (let t = 1; t <= Math.round(p.backstopYears) && t <= r.years.length; t++) {
+    const refP = p.basis === 'fixed' ? p.price0 : p.price0 * Math.pow(1 - p.priceDecay, t - 1);
+    tot += p.floorUtil * cap * refP;
+  }
+  return Math.min(tot, r.aggCap);
+}
+
+/* ------------------------------------------------------------ flow table */
+function renderFlowTable(r) {
+  const y = r.years[0];
+  table(document.getElementById('flowTbl'), ['Flow', 'Direction', 'Timing', 'Amount'], [
+    ['Equity sponsors', 'into SPV', 't = 0', fmtUSD(r.equity)],
+    ['Senior lenders', 'into SPV', 't = 0', fmtUSD(r.debt)],
+    ['GPU purchase from NVIDIA', 'out of SPV', 't = 0', fmtUSD(r.capexGpu)],
+    ['Datacenter build', 'out of SPV', 't = 0', fmtUSD(r.capexOther)],
+    ['Customer rentals', 'into SPV', 'year 1', fmtUSD(y.revenue)],
+    ['NVIDIA backstop payment', 'into SPV', 'year 1', fmtUSD(y.bsPaid)],
+    ['Cash operating costs', 'out of SPV', 'year 1', fmtUSD(y.opex)],
+    ['Interest', 'out of SPV', 'year 1', fmtUSD(y.interest)],
+    ['Principal', 'out of SPV', 'year 1', fmtUSD(y.principal)],
+    ['NVIDIA upside share', 'out of SPV', 'year 1', fmtUSD(y.upside)],
+    ['Cash tax', 'out of SPV', 'year 1', fmtUSD(y.tax)],
+  ], ['Residual to equity', '', 'year 1', fmtUSD(y.cfads - y.debtService)]);
+}
+
+/* ------------------------------------------------------------- projection */
+function renderProjection(r) {
+  const cats = r.years.map(y => 'Y' + y.t);
+  const S = k => cssv(k);
+
+  stackedColumns(document.getElementById('revSvg'), {
+    cats,
+    series: [
+      { l: 'Contracted (take-or-pay)', c: S('--s1'), v: r.years.map(y => y.revContract) },
+      { l: 'Spot rentals', c: S('--s2'), v: r.years.map(y => y.revSpot) },
+      { l: 'NVIDIA backstop', c: S('--s3'), v: r.years.map(y => y.bsPaid) },
+    ],
+    yFmt: v => fmtM(v), yFmtFull: v => fmtUSD(v),
+    catLabel: c => 'Year ' + c.slice(1), totalLabel: 'Total cash revenue',
+   
+  });
+  legend(document.getElementById('revLegend'), [
+    { l: 'Contracted (take-or-pay)', c: S('--s1') },
+    { l: 'Spot rentals', c: S('--s2') },
+    { l: 'NVIDIA backstop', c: S('--s3') },
+  ]);
+  table(document.getElementById('revTbl'),
+    ['Year', 'Rental $/hr', 'Utilisation', 'Contracted', 'Spot', 'Backstop', 'Total'],
+    r.years.map(y => ['Year ' + y.t, '$' + y.price.toFixed(2), fmtPct(y.util, 0),
+      fmtM(y.revContract), fmtM(y.revSpot), fmtM(y.bsPaid), fmtM(y.revenue + y.bsPaid)]));
+
+  stackedColumns(document.getElementById('costSvg'), {
+    cats,
+    series: [
+      { l: 'Operating costs', c: S('--s1'), v: r.years.map(y => y.opex) },
+      { l: 'Interest', c: S('--s2'), v: r.years.map(y => y.interest) },
+      { l: 'Principal', c: S('--s3'), v: r.years.map(y => y.principal) },
+      { l: 'NVIDIA upside share', c: S('--s4'), v: r.years.map(y => y.upside) },
+      { l: 'Cash tax', c: S('--s5'), v: r.years.map(y => y.tax) },
+    ],
+    line: { l: 'Cash revenue incl. backstop', c: S('--s7'), v: r.years.map(y => y.revenue + y.bsPaid) },
+    yFmt: v => fmtM(v), yFmtFull: v => fmtUSD(v),
+    catLabel: c => 'Year ' + c.slice(1),
+  });
+  legend(document.getElementById('costLegend'), [
+    { l: 'Operating costs', c: S('--s1') }, { l: 'Interest', c: S('--s2') },
+    { l: 'Principal', c: S('--s3') }, { l: 'NVIDIA upside share', c: S('--s4') },
+    { l: 'Cash tax', c: S('--s5') },
+    { l: 'Cash revenue incl. backstop', c: S('--s7'), line: true },
+  ]);
+  table(document.getElementById('costTbl'),
+    ['Year', 'Revenue', 'Opex', 'EBITDA', 'Interest', 'Principal', 'Tax', 'Equity CF'],
+    r.years.map(y => ['Year ' + y.t, fmtM(y.revenue + y.bsPaid), fmtM(y.opex), fmtM(y.ebitda),
+      fmtM(y.interest), fmtM(y.principal), fmtM(y.tax), fmtM(y.equityCF)]));
+
+  const dY = r.years.filter(y => y.debtService > 1);
+  lineChart(document.getElementById('dscrSvg'), {
+    cats: dY.map(y => 'Y' + y.t),
+    series: [
+      { l: 'DSCR (with backstop)', c: S('--s1'), v: dY.map(y => clamp(y.dscr, -1, 8)) },
+      { l: 'DSCR (backstop removed)', c: S('--s2'), v: dY.map(y => clamp(y.dscrNoBs, -1, 8)), dash: '5 4' },
+    ],
+    rules: [
+      { v: 1, l: '1.00× default', c: cssv('--crit') },
+      { v: 1.25, l: '1.25× covenant', c: cssv('--warn') },
+    ],
+    yFmt: v => v.toFixed(2) + '×', yFmtFull: v => v.toFixed(2) + '×',
+    catLabel: c => 'Year ' + c.slice(1),
+    empty: 'No debt service at these settings — the deal is all-equity',
+  });
+  legend(document.getElementById('dscrLegend'), [
+    { l: 'DSCR (with backstop)', c: S('--s1'), line: true },
+    { l: 'DSCR (backstop removed)', c: S('--s2'), line: true },
+  ]);
+  table(document.getElementById('dscrTbl'),
+    ['Year', 'CFADS', 'Debt service', 'DSCR', 'DSCR excl. backstop', 'Closing debt'],
+    r.years.map(y => ['Year ' + y.t, fmtM(y.cfads),
+      y.debtService > 1 ? fmtM(y.debtService) : 'repaid',
+      y.debtService > 1 ? fmtX(y.dscr) : '\u2014',
+      y.debtService > 1 ? fmtX(y.dscrNoBs) : '\u2014', fmtM(y.balance)]));
+
+  lineChart(document.getElementById('nvSvg'), {
+    cats: ['t0'].concat(cats),
+    series: [{ l: 'NVIDIA cumulative position', c: S('--s1'), v: [r.nvT0].concat(r.nvCum), fill: true }],
+    rules: [{ v: 0, l: 'break-even', c: cssv('--crit') }],
+    zero: true,
+    yFmt: v => fmtM(v), yFmtFull: v => fmtUSD(v),
+    catLabel: c => c === 't0' ? 'At the sale' : 'Year ' + c.slice(1),
+  });
+  legend(document.getElementById('nvLegend'), [
+    { l: 'Cumulative: sale profit − backstop + upside share', c: S('--s1'), line: true },
+  ]);
+  table(document.getElementById('nvTbl'),
+    ['Period', 'Backstop paid', 'Upside received', 'Net for the year', 'Cumulative'],
+    [['At the sale', '—', fmtM(r.grossProfitEcon), fmtM(r.nvT0), fmtM(r.nvT0)]].concat(
+      r.years.map((y, i) => ['Year ' + y.t, fmtM(-y.bsPaid), fmtM(y.upside),
+        fmtM(-y.bsPaid + y.upside + y.equityCF * P.nvEquityPct), fmtM(r.nvCum[i])])));
+}
+
+/* -------------------------------------------------------------- waterfall */
+function renderWaterfall(r) {
+  const y = r.years[0];
+  const steps = [
+    { l: 'Customer rentals', v: y.revenue, total: false },
+    { l: 'NVIDIA backstop', v: y.bsPaid },
+    { l: 'Operating costs', v: -y.opex },
+    { l: 'NVIDIA upside share', v: -y.upside },
+    { l: 'EBITDA', total: true },
+    { l: 'Cash tax', v: -y.tax },
+    { l: 'Interest', v: -y.interest },
+    { l: 'Principal', v: -y.principal },
+    { l: 'Cash to equity', total: true },
+  ];
+  waterfall(document.getElementById('wfSvg'), { steps });
+  table(document.getElementById('wfTbl'), ['Line', 'Amount', 'Running'],
+    (() => { let run = 0; return steps.map(s => {
+      if (!s.total) run += s.v;
+      return [s.l, s.total ? '—' : fmtUSD(s.v), fmtUSD(run)];
+    }); })());
+}
+
+/* ------------------------------------------------------------- heatmap UI */
+const HEAT_X = [0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40];
+const HEAT_Y = [0.95, 0.85, 0.75, 0.65, 0.55, 0.45, 0.35, 0.25];
+
+function renderHeat(r) {
+  const mk = document.getElementById('heatMetric').value || 'nvNPV';
+  const M = METRIC[mk];
+  const z = HEAT_Y.map(u => HEAT_X.map(d => {
+    const rr = withP({ priceDecay: d, util0: u });
+    const v = M.get(rr);
+    return v == null ? null : v;
+  }));
+  document.getElementById('heatDesc').textContent = M.desc;
+  heatmap(document.getElementById('heatSvg'), {
+    xs: HEAT_X, ys: HEAT_Y, z, mid: M.mid, better: M.better,
+    xFmt: v => (v * 100).toFixed(0) + '%', yFmt: v => (v * 100).toFixed(0) + '%',
+    xTitle: 'Annual rental price decay →', yTitle: '← Year-1 utilisation',
+    xLabel: 'Price decay', yLabel: 'Utilisation',
+    metricLabel: M.l,
+    cellFmt: v => v == null ? '—' : (mk === 'eqIRR' || mk === 'giveback') ? (v * 100).toFixed(0)
+      : mk === 'minDSCR' || mk === 'minDSCRNoBs' ? v.toFixed(2)
+      : (v / 1e6).toFixed(0),
+    fullFmt: v => M.fmt(v),
+    markX: P.priceDecay, markY: P.util0,
+  });
+  table(document.getElementById('heatTbl'),
+    ['Utilisation \\ decay'].concat(HEAT_X.map(v => (v * 100).toFixed(0) + '%')),
+    HEAT_Y.map((u, j) => [(u * 100).toFixed(0) + '%'].concat(z[j].map(v => M.fmt(v)))));
+}
+
+/* ------------------------------------------------------------- tornado UI */
+const TORN = [
+  { l: 'Rental price decay', k: 'priceDecay', lo: p => clamp(p.priceDecay - 0.10, -0.1, 0.8), hi: p => clamp(p.priceDecay + 0.10, -0.1, 0.8), f: v => fmtPct(v, 0) + ' /yr' },
+  { l: 'Year-1 utilisation', k: 'util0', lo: p => clamp(p.util0 - 0.15, 0.05, 1), hi: p => clamp(p.util0 + 0.15, 0.05, 1), f: v => fmtPct(v, 0) },
+  { l: 'Year-1 rental rate', k: 'price0', lo: p => p.price0 * 0.75, hi: p => p.price0 * 1.25, f: v => '$' + v.toFixed(2) + '/hr' },
+  { l: 'Fleet under contract', k: 'contractedPct', lo: p => clamp(p.contractedPct - 0.25, 0, 1), hi: p => clamp(p.contractedPct + 0.25, 0, 1), f: v => fmtPct(v, 0) },
+  { l: 'Fixed opex per GPU', k: 'fixedOpexPerGpu', lo: p => Math.max(0, p.fixedOpexPerGpu - 2000), hi: p => p.fixedOpexPerGpu + 2000, f: v => '$' + fmtInt(Math.round(v)) },
+  { l: 'Guaranteed floor', k: 'floorUtil', lo: p => clamp(p.floorUtil - 0.15, 0, 1), hi: p => clamp(p.floorUtil + 0.15, 0, 1), f: v => fmtPct(v, 0) },
+  { l: 'Interest rate', k: 'rate', lo: p => Math.max(0.005, p.rate - 0.025), hi: p => p.rate + 0.025, f: v => fmtPct(v, 2) },
+  { l: 'GPU cost', k: 'gpuCost', lo: p => p.gpuCost * 0.8, hi: p => p.gpuCost * 1.2, f: v => '$' + fmtInt(Math.round(v)) },
+  { l: 'Debt share of capex', k: 'debtPct', lo: p => clamp(p.debtPct - 0.15, 0, 0.9), hi: p => clamp(p.debtPct + 0.15, 0, 0.9), f: v => fmtPct(v, 0) },
+  { l: 'Utilisation drift', k: 'utilDrift', lo: p => p.utilDrift - 0.03, hi: p => p.utilDrift + 0.03, f: v => (v >= 0 ? '+' : MINUS) + (Math.abs(v) * 100).toFixed(1) + 'pp/yr' },
+];
+
+function renderTornado(r) {
+  const mk = document.getElementById('tornMetric').value || 'nvNPV';
+  const M = METRIC[mk];
+  const base = M.get(r);
+  document.getElementById('tornDesc').textContent =
+    'Each bar moves one assumption while everything else stays put. Output: ' + M.l.toLowerCase() + '.';
+  const rows = TORN.map(t => {
+    const lv = t.lo(P), hv = t.hi(P);
+    const a = M.get(withP({ [t.k]: lv })), b = M.get(withP({ [t.k]: hv }));
+    return { l: t.l, lo: a == null ? base : a, hi: b == null ? base : b,
+      loLabel: t.f(lv), hiLabel: t.f(hv), swing: Math.max(Math.abs((a == null ? base : a) - base), Math.abs((b == null ? base : b) - base)) };
+  }).sort((x, y) => y.swing - x.swing);
+
+  tornado(document.getElementById('tornSvg'), {
+    rows, base, fmt: M.fmt, better: M.better, metricLabel: M.l,
+  });
+  legend(document.getElementById('tornLegend'), [
+    { l: 'Moves the outcome up', c: cssv('--s1') },
+    { l: 'Moves the outcome down', c: cssv('--s8') },
+  ]);
+  table(document.getElementById('tornTbl'), ['Assumption', 'Low case', 'Result', 'High case', 'Result', 'Swing'],
+    rows.map(x => [x.l, x.loLabel, M.fmt(x.lo), x.hiLabel, M.fmt(x.hi), M.fmt(x.swing).replace(MINUS, '±')]));
+}
+
+/* ------------------------------------------------------------- break-even */
+function renderBreakeven(r) {
+  const priceDSCR = solve(v => { const rr = withP({ price0: v }); return rr.minDSCR == null ? -9 : rr.minDSCR; }, 0.1, 20, 1.0);
+  const priceIRR = solve(v => { const rr = withP({ price0: v }); return rr.eqIRR == null ? -0.95 : rr.eqIRR; }, 0.1, 20, 0);
+  const priceCall = solve(v => { const rr = withP({ price0: v }); return rr.cumBackstop > 1 ? 1 : -1; }, 0.1, 20, 0);
+  const decayZero = solve(v => withP({ priceDecay: v }).nvNPV, -0.1, 0.8, 0);
+  const utilCall = solve(v => (withP({ util0: v }).cumBackstop > 1 ? 1 : -1), 0.03, 1, 0);
+
+  // headroom reads as a distance below today's rate; a break-even ABOVE today's
+  // rate means the threshold is already breached, and must not be shown as room
+  const room = bp => {
+    if (bp == null) return '';
+    const d = 1 - bp / P.price0;
+    return d >= 0 ? fmtPct(d, 0) + ' of headroom below today'
+                  : fmtPct(-d, 0) + ' ABOVE today — already breached';
+  };
+  const roomSev = (bp, bands) => bp == null ? 'ok' : sevOf(1 - bp / P.price0, bands, 'high');
+
+  const rows = [
+    { l: 'Rental rate where DSCR hits 1.00×', v: priceDSCR == null ? 'never in range' : '$' + priceDSCR.toFixed(2) + '/hr',
+      d: room(priceDSCR), sev: roomSev(priceDSCR, [0.45, 0.25, 0.1]) },
+    { l: 'Rental rate where equity IRR hits 0%', v: priceIRR == null ? 'never in range' : '$' + priceIRR.toFixed(2) + '/hr',
+      d: room(priceIRR), sev: roomSev(priceIRR, [0.4, 0.22, 0.08]) },
+    { l: 'Rental rate that first triggers the backstop', v: priceCall == null ? 'already triggered / never' : '$' + priceCall.toFixed(2) + '/hr',
+      d: room(priceCall), sev: 'ok' },
+    { l: 'Utilisation that first triggers the backstop', v: utilCall == null ? 'already triggered / never' : fmtPct(utilCall, 0),
+      d: utilCall == null ? '' : (P.util0 - utilCall > 0 ? fmtPct(P.util0 - utilCall, 0) + ' of headroom' : ''), sev: 'ok' },
+    { l: 'Price decay where NVIDIA’s net PV hits zero', v: decayZero == null ? 'not in range' : fmtPct(decayZero, 0) + ' /yr',
+      d: decayZero == null ? 'profit survives the whole range' : 'currently ' + fmtPct(P.priceDecay, 0) + ' /yr',
+      sev: decayZero == null ? 'ok' : sevOf(decayZero - P.priceDecay, [0.15, 0.08, 0.02], 'high') },
+  ];
+  document.getElementById('beCard').innerHTML =
+    '<div class="card-head"><h3>Break-even points</h3><p>How far each driver has to move before something breaks, from where the sliders sit now.</p></div>' +
+    rows.map(x =>
+      '<div style="padding:9px 0;border-top:1px solid var(--rule)">' +
+      '<div style="display:flex;gap:8px;align-items:baseline"><span style="font-size:12px;color:var(--ink-2);flex:1">' + x.l + '</span>' +
+      pill(x.sev) + '</div>' +
+      '<div style="font-family:var(--mono);font-size:16px;font-weight:650;margin-top:2px;font-variant-numeric:tabular-nums">' + x.v + '</div>' +
+      (x.d ? '<div style="font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums">' + x.d + '</div>' : '') +
+      '</div>').join('');
+}
+
+/* ------------------------------------------------------------ Monte Carlo */
+function renderMC(r, mc) {
+  document.getElementById('mcNLabel').textContent = fmtInt(mc.n);
+  const S = k => cssv(k);
+
+  histogram(document.getElementById('mcNvSvg'), {
+    values: mc.nv, fmt: v => fmtM(v), threshold: 0, better: 'high',
+    xTitle: 'NVIDIA net present value',
+    marks: [
+      { v: mc.nvP5, l: 'P5', c: cssv('--ink-3') },
+      { v: mc.nvP50, l: 'median', c: cssv('--ink-2') },
+      { v: r.nvNPV, l: 'current settings', c: cssv('--s7'), dash: '4 3' },
+    ],
+  });
+  legend(document.getElementById('mcNvLegend'), [
+    { l: 'Paths where NVIDIA keeps money', c: S('--s1') },
+    { l: 'Paths where the sale profit is fully given back', c: S('--s8') },
+  ]);
+
+  histogram(document.getElementById('mcEqSvg'), {
+    values: mc.eq, fmt: v => fmtPct(v, 0), threshold: 0, better: 'high',
+    lo: -0.6, hi: Math.max(0.6, mc.eqP95 * 1.1),
+    xTitle: 'Equity IRR over the full horizon',
+    marks: [
+      { v: mc.eqP5, l: 'P5', c: cssv('--ink-3') },
+      { v: mc.eqP50, l: 'median', c: cssv('--ink-2') },
+    ],
+  });
+  legend(document.getElementById('mcEqLegend'), [
+    { l: 'Positive equity return', c: S('--s1') },
+    { l: 'Equity loses money', c: S('--s8') },
+  ]);
+
+  const stats = [
+    ['NVIDIA net PV — median', fmtUSD(mc.nvP50)],
+    ['NVIDIA net PV — 5th percentile', fmtUSD(mc.nvP5)],
+    ['Expected shortfall (worst 5%)', fmtUSD(mc.nvCVaR)],
+    ['Chance the sale profit is fully given back', fmtPct(mc.pNvNeg, 0)],
+    ['Chance the backstop is called at all', fmtPct(mc.pCalled, 0)],
+    ['Chance the backstop cap binds', fmtPct(mc.pCap, 0)],
+    ['Expected backstop cost', fmtUSD(mc.bsMean)],
+    ['Backstop cost in the worst demand decile', fmtUSD(mc.tailBsMean)],
+    ['Chance DSCR drops below 1.00×', fmtPct(mc.pBelow1, 0)],
+    ['Chance equity loses money', fmtPct(mc.pEqNeg, 0)],
+    ['Equity IRR — median', fmtPct(mc.eqP50, 1)],
+    ['Equity IRR — 5th percentile', fmtPct(mc.eqP5, 1)],
+  ];
+  document.getElementById('mcStats').innerHTML =
+    '<div class="card-head"><h3>Simulation summary</h3><p>Across ' + fmtInt(mc.n) +
+    ' correlated paths. Deterministic seed — the same settings always give the same numbers.</p></div>' +
+    '<div class="mc-grid">' +
+    stats.map(s => '<div style="background:var(--surface);padding:10px 12px">' +
+      '<div style="font-size:11.5px;color:var(--ink-3);line-height:1.3">' + s[0] + '</div>' +
+      '<div style="font-family:var(--mono);font-size:17px;font-weight:650;margin-top:2px;font-variant-numeric:tabular-nums">' + s[1] + '</div>' +
+      '</div>').join('') + '</div>';
+}
+
+/* --------------------------------------------------------- risk register */
+function renderRisk(r, mc) {
+  const out = [];
+  const y1 = r.years[0];
+
+  // 1 — who is actually carrying the credit
+  {
+    const d = r.minDSCRNoBs, sev = sevOf(d, [1.35, 1.15, 1.0], 'high');
+    out.push({ sev, t: 'The lenders are underwriting NVIDIA, not the business',
+      b: 'Minimum debt-service cover is <span class="num">' + fmtX(r.minDSCR) + '</span> with the backstop and <span class="num">' +
+        fmtX(d) + '</span> without it. ' + (d < 1
+          ? 'In <span class="num">' + r.yearsBelow1NoBs + '</span> year(s) the project cannot service its debt from operations at all — the loan is repaid out of NVIDIA’s guarantee. That is a corporate credit exposure to NVIDIA dressed as project finance.'
+          : 'Operations cover the debt on their own, so the guarantee is genuine credit enhancement rather than the sole source of repayment.') +
+        (Math.abs(r.minDSCR - d) < 0.005 && r.minDSCR < 1.25
+          ? ' Note the two figures are identical: the worst year falls outside the ' + Math.round(P.backstopYears) +
+            '-year backstop term, so the guarantee provides no support at the exact point cover is thinnest. A backstop shorter than the loan leaves the tail uncovered.'
+          : '') });
+  }
+
+  // 2 — the floor is denominated in the wrong unit
+  if (r.p.basis === 'spot') {
+    const alt = withP({ basis: 'fixed' });
+    const gap = alt.pvBackstop - r.pvBackstop;
+    const sev = P.priceDecay > 0.2 ? 'crit' : P.priceDecay > 0.05 ? 'sev' : 'warn';
+    out.push({ sev, t: 'The guarantee shrinks exactly when it is needed',
+      b: 'The workbook values the shortfall at the <em>current</em> rental rate (<code>Backstop!B5</code> multiplies by <code>Assumptions!B9</code>). ' +
+        'A utilisation floor paid at a collapsed price is not a revenue floor. At ' + fmtPct(P.priceDecay, 0) +
+        ' annual decay, the same 50% floor is worth <span class="num">' + fmtUSD(r.pvBackstop) + '</span> here versus <span class="num">' +
+        fmtUSD(alt.pvBackstop) + '</span> if it were struck at the year-1 price — a difference of <span class="num">' + fmtUSD(gap) +
+        '</span> that the borrower thinks it has and does not.' });
+  } else {
+    out.push({ sev: 'ok', t: 'Floor struck at the year-1 price',
+      b: 'The guarantee is denominated in fixed dollars rather than floating with the rental market, so a price collapse actually triggers support. This is the repaired version of the workbook’s formula — and it is materially more expensive for NVIDIA.' });
+  }
+
+  // 3 — price risk is uncovered entirely
+  {
+    const priceOnly = withP({ util0: P.util0, priceDecay: Math.max(P.priceDecay, 0.3) });
+    const sev = priceOnly.cumBackstop < 1 ? 'crit' : 'warn';
+    out.push({ sev, t: 'A pure price collapse triggers nothing',
+      b: 'The trigger is utilisation, not revenue. Hold the fleet full and cut the rate to a third and the floor is never breached — the SPV starves while the guarantee sits idle. Forcing 30% annual decay at the current utilisation produces <span class="num">' +
+        fmtUSD(priceOnly.cumBackstop) + '</span> of backstop payments' + (priceOnly.cumBackstop < 1 ? ' — none at all.' : '.') +
+        ' A revenue floor, rather than a utilisation floor, would close this.' });
+  }
+
+  // 4 — cost fixity
+  {
+    const fixShare = y1.opexFixed / (y1.opex || 1);
+    if (P.fixedOpexPerGpu < 500) {
+      const alt = withP({ fixedOpexPerGpu: 4500, varOpexPct: 0.08 });
+      out.push({ sev: 'sev', t: 'Operating costs are modelled as fully variable',
+        b: '<code>Operations!B6 =B5*Assumptions!B11</code> makes 100% of opex flex with revenue. Power, colocation, staff and maintenance do not. Charging a realistic $4,500/GPU/yr of fixed cost with 8% variable moves minimum DSCR from <span class="num">' +
+          fmtX(r.minDSCR) + '</span> to <span class="num">' + fmtX(alt.minDSCR) + '</span> and equity IRR from <span class="num">' +
+          fmtPct(r.eqIRR, 1) + '</span> to <span class="num">' + fmtPct(alt.eqIRR, 1) + '</span>. Every downside case in the workbook is flattered by this one assumption.' });
+    } else {
+      out.push({ sev: fixShare > 0.75 ? 'warn' : 'ok', t: 'Operating leverage',
+        b: '<span class="num">' + fmtPct(fixShare, 0) + '</span> of year-1 operating cost is fixed (<span class="num">' +
+          fmtUSD(y1.opexFixed) + '</span>). Fixed cost is what converts a revenue dip into a covenant breach — the higher this share, the faster utilisation loss becomes a default.' });
+    }
+  }
+
+  // 5 — caps
+  {
+    const exp = maxExposure(r);
+    const mult = exp / (r.grossProfitRaw || 1);
+    if (r.capBinds) {
+      out.push({ sev: 'crit', t: 'The cap binds — the guarantee stops working mid-stress',
+        b: '<span class="num">' + fmtUSD(r.cumUnpaid) + '</span> of shortfall goes unpaid because the aggregate cap of <span class="num">' +
+          fmtUSD(r.aggCap) + '</span> is exhausted. A capped backstop protects NVIDIA and simultaneously removes the credit support in exactly the scenario the lenders sized the debt against. Caps are not a detail; they are the whole instrument.' });
+    } else {
+      out.push({ sev: mult > 3 ? 'sev' : mult > 1.5 ? 'warn' : 'ok', t: 'Uncapped downside against a capped upside',
+        b: 'Maximum undiscounted exposure if revenue went to zero for the whole term is <span class="num">' + fmtUSD(exp) +
+          '</span>, or <span class="num">' + mult.toFixed(1) + '×</span> the <span class="num">' + fmtUSD(r.grossProfitRaw) +
+          '</span> of gross profit on the sale. NVIDIA is short a put and long a capped call: the profit on the hardware is fixed, the obligation is not.' });
+    }
+  }
+
+  // 6 — wrong-way risk
+  if (mc) {
+    const sev = P.rho > 0.6 ? 'sev' : P.rho > 0.3 ? 'warn' : 'ok';
+    out.push({ sev, t: 'Wrong-way risk: the guarantee is called in NVIDIA’s own bad state',
+      b: 'Price and utilisation are drawn with correlation <span class="num">' + P.rho.toFixed(2) +
+        '</span> from one demand factor. Expected backstop cost across all paths is <span class="num">' + fmtUSD(mc.bsMean) +
+        '</span>, but <span class="num">' + fmtUSD(mc.tailBsMean) + '</span> in the worst demand decile — <span class="num">' +
+        (mc.bsMean > 0 ? (mc.tailBsMean / mc.bsMean).toFixed(1) + '×' : 'far') +
+        '</span> the average. Those are the same states in which NVIDIA’s own order book, share price and other vendor commitments are under pressure. This exposure does not diversify.' });
+  }
+
+  // 7 — contract roll-off
+  {
+    const cy = Math.round(P.contractYears), tn = Math.round(P.tenor);
+    if (P.contractedPct <= 0.01) {
+      out.push({ sev: 'sev', t: 'No contracted revenue behind the debt',
+        b: 'The entire revenue line is spot. Lenders advancing <span class="num">' + fmtPct(P.debtPct, 0) +
+          '</span> of capex against an uncontracted, single-asset-class cash flow are relying on the backstop and the residual value of depreciating hardware. Take-or-pay cover is the credit support that actually survives a price war.' });
+    } else if (cy < tn) {
+      out.push({ sev: cy < tn - 2 ? 'sev' : 'warn', t: 'Contract cover rolls off before the debt does',
+        b: '<span class="num">' + fmtPct(P.contractedPct, 0) + '</span> of the fleet is contracted for <span class="num">' + cy +
+          '</span> years against a <span class="num">' + tn + '</span>-year loan. From year <span class="num">' + (cy + 1) +
+          '</span> the debt is serviced entirely from spot rentals at a price ' + fmtPct(1 - Math.pow(1 - P.priceDecay, cy), 0) +
+          ' below where it started.' });
+    } else {
+      out.push({ sev: 'ok', t: 'Contract cover matches the debt tenor',
+        b: '<span class="num">' + fmtPct(P.contractedPct, 0) + '</span> of the fleet is under take-or-pay for the life of the loan, which is the single most effective piece of credit support in the structure.' });
+    }
+  }
+
+  // 8 — refinancing / residual
+  {
+    const last = r.years[r.years.length - 1];
+    const resid = r.capexGpu * P.residualPct + r.capexOther * P.shellResidPct;
+    const revFall = 1 - (last.revenue / (r.years[0].revenue || 1));
+    const sev = last.terminal < 0 ? 'sev' : revFall > 0.5 ? 'warn' : 'ok';
+    out.push({ sev, t: 'The asset ages faster than the loan amortises',
+      b: 'Revenue in year <span class="num">' + last.t + '</span> is <span class="num">' + fmtPct(revFall, 0) +
+        '</span> below year 1, while the loan amortises on a straight <span class="num">' + Math.round(P.tenor) +
+        '</span>-year schedule. Exit leaves <span class="num">' + fmtUSD(resid) + '</span> of residual value against <span class="num">' +
+        fmtUSD(last.balance) + '</span> of remaining debt, a terminal flow of <span class="num">' +
+        fmtUSD(last.terminal) + '</span> to equity.' });
+  }
+
+  // 11 — the underlying return assumption is heroic before any of this matters
+  {
+    const revPerGpu = y1.revenue / P.gpus;
+    const costPerGpu = P.gpuCost + P.otherCapexPerGpu;
+    const yield1 = revPerGpu / costPerGpu;
+    const payback = y1.ebitda > 0 ? r.capex / y1.ebitda : null;
+    const sev = yield1 > 0.45 ? 'sev' : yield1 > 0.3 ? 'warn' : 'ok';
+    out.push({ sev, t: 'The base case assumes an extraordinary asset yield',
+      b: 'At <span class="num">$' + P.price0.toFixed(2) + '/hr</span> and <span class="num">' + fmtPct(P.util0, 0) +
+        '</span> utilisation each GPU earns <span class="num">' + fmtUSD(revPerGpu) + '</span> a year against <span class="num">' +
+        fmtUSD(costPerGpu) + '</span> of all-in installed cost — a gross yield of <span class="num">' + fmtPct(yield1, 0) +
+        '</span>' + (payback ? ' and an EBITDA payback of <span class="num">' + payback.toFixed(1) + ' years</span>' : '') +
+        '. Returns like that attract capacity, and capacity is what compresses the rental rate. The workbook holds the price constant while assuming a yield that guarantees it cannot stay constant.' });
+  }
+
+  // 9 — incrementality / circularity
+  {
+    const sev = P.incrementality < 0.5 ? 'sev' : P.incrementality < 0.9 ? 'warn' : 'ok';
+    out.push({ sev, t: 'Is this revenue real, or is it a loan to a customer?',
+      b: 'At <span class="num">' + fmtPct(P.incrementality, 0) + '</span> incrementality, <span class="num">' +
+        fmtUSD(r.grossProfitEcon) + '</span> of the <span class="num">' + fmtUSD(r.grossProfitRaw) +
+        '</span> gross profit is genuinely new business. The rest is demand NVIDIA would have had anyway, now carrying a free option written against it. ' +
+        (P.nvEquityPct > 0 ? 'NVIDIA also holds <span class="num">' + fmtPct(P.nvEquityPct, 0) +
+          '</span> of the SPV equity, funding <span class="num">' + fmtUSD(P.nvEquityPct * r.equity) +
+          '</span> of the purchase of its own product — the same dollar counted as revenue and as an investment.' : '') });
+  }
+
+  // 10 — the upside share is taken on gross
+  {
+    const gross = y1.upside, asEbitda = y1.ebitda > 0 ? gross / (y1.ebitda + gross) : null;
+    out.push({ sev: 'warn', t: 'The upside share is skimmed off gross revenue, not profit',
+      b: '<code>Backstop!B6</code> takes ' + fmtPct(P.sharePct, 0) +
+        ' of revenue above the floor before any cost. In year 1 that is <span class="num">' + fmtUSD(gross) + '</span>' +
+        (asEbitda ? ', equal to <span class="num">' + fmtPct(asEbitda, 1) + '</span> of pre-share EBITDA' : '') +
+        ' — an effective take roughly ' + (asEbitda ? (asEbitda / P.sharePct).toFixed(1) : '1.3') +
+        '× the headline rate. It is charged in good states and worth nothing in bad ones, which is the wrong shape for something meant to pay for a guarantee.' });
+  }
+
+  const order = { crit: 0, sev: 1, warn: 2, ok: 3 };
+  out.sort((a, b) => order[a.sev] - order[b.sev]);
+  document.getElementById('riskList').innerHTML = out.map(x =>
+    '<div class="risk ' + x.sev + '"><div class="risk-stripe"></div><div class="risk-body">' +
+    '<div class="risk-top"><h4>' + x.t + '</h4>' + pill(x.sev) + '</div><p>' + x.b + '</p></div></div>').join('');
+}
+
+/* ------------------------------------------------------------ audit block */
+const EXCEL = [
+  ['Operations!B1', 'GPU CapEx', '=Assumptions!B2*B3', 600000000, r => r.capexGpu],
+  ['Operations!B2', 'Total CapEx', '=B1+Assumptions!B4', 1000000000, r => r.capex],
+  ['Operations!B3', 'Debt', '=B2*Assumptions!B5', 750000000, r => r.debt],
+  ['Operations!B4', 'Equity', '=B2-B3', 250000000, r => r.equity],
+  ['Operations!B5', 'Annual Revenue', '=B2*B10*B8*B9', 525600000, r => r.years[0].revenue],
+  ['Operations!B6', 'Operating Expense', '=B5*Assumptions!B11', 131400000, r => r.years[0].opex],
+  ['Operations!B7', 'EBITDA', '=B5-B6', 394200000, r => r.years[0].revenue - r.years[0].opex],
+  ['Operations!B8', 'Interest Expense', '=B3*Assumptions!B6', 60000000, r => r.years[0].interest],
+  ['Operations!B9', 'Principal / Year', '=B3/Assumptions!B7', 125000000, r => r.years[0].principal],
+  ['Operations!B10', 'Cash After Debt Service', '=B7-B8-B9', 209200000,
+    r => r.years[0].revenue - r.years[0].opex - r.years[0].interest - r.years[0].principal],
+  ['Backstop!B4', 'Shortfall (utilisation)', '=MAX(0,B3-B2)', 0,
+    r => Math.max(0, r.p.floorUtil - r.p.util0)],
+  ['Backstop!B5', 'Backstop Revenue', '=B4*B2*B10*B9', 0, r => r.years[0].bsPaid],
+  ['Backstop!B6', 'Upside Share to Nvidia', '=MAX(0,B2-B3)*…*B13', 17520000, r => r.years[0].upside],
+  ['Credit!B4', 'DSCR', '=B2/B3', 2.130810811,
+    r => (r.years[0].revenue - r.years[0].opex) / (r.years[0].interest + r.years[0].principal)],
+  ['Equity Returns!B3', 'Year 1 Cash Flow', '=Ops!B10+Backstop!B5-B6', 191680000,
+    r => r.years[0].revenue - r.years[0].opex - r.years[0].interest - r.years[0].principal + r.years[0].bsPaid - r.years[0].upside],
+  ['Equity Returns!B4', 'Simple Cash Yield', '=B3/B2', 0.76672,
+    r => (r.years[0].revenue - r.years[0].opex - r.years[0].interest - r.years[0].principal + r.years[0].bsPaid - r.years[0].upside) / r.equity],
+];
+
+function renderTieout() {
+  const w = project(Object.assign({}, WORKBOOK));
+  const rows = EXCEL.map(([cell, name, formula, want, get]) => {
+    const got = get(w);
+    const diff = Math.abs(got - want);
+    const rel = want !== 0 ? diff / Math.abs(want) : diff;
+    const ok = rel < 1e-6 || diff < 0.5;
+    const f = v => Math.abs(v) > 1000 ? fmtUSD(v) : (Math.abs(v) < 10 ? v.toFixed(6) : v.toFixed(2));
+    return [cell, name, '<code>' + formula.replace(/</g, '&lt;') + '</code>', f(want), f(got),
+      ok ? '<span style="color:var(--good-ink);font-weight:700">match</span>'
+         : '<span style="color:var(--crit-ink);font-weight:700">' + f(got - want) + '</span>'];
+  });
+  const allOk = rows.every(r => r[5].indexOf('match') >= 0);
+  document.getElementById('tieout').innerHTML =
+    '<div style="margin-bottom:10px">' + pill(allOk ? 'ok' : 'crit',
+      allOk ? 'all ' + rows.length + ' cells reproduce exactly' : 'mismatch') + '</div>' +
+    '<div class="tbl-wrap"><table class="data"><thead><tr>' +
+    ['Cell', 'Line', 'Workbook formula', 'Excel', 'This tool', 'Difference'].map(c => '<th>' + c + '</th>').join('') +
+    '</tr></thead><tbody>' + rows.map(r => '<tr>' + r.map((c, i) =>
+      '<td' + (i <= 2 ? ' style="text-align:left"' : '') + '>' + c + '</td>').join('') + '</tr>').join('') +
+    '</tbody></table></div>';
+}
+
+const FLAWS = [
+  { n: '01', t: 'One year, held flat forever',
+    b: ['There is no time index anywhere in the workbook. <code>Operations!B5</code> is a single number and every downstream sheet consumes it once. A six-year loan is being sized against a single snapshot.',
+        '<span class="fix">Here:</span> a full schedule to the analysis horizon, with the debt balance rolling and the asset ageing.'] },
+  { n: '02', t: 'No rental price decay',
+    b: ['<code>Assumptions!B9</code> is a constant $4.00/hr. GPU rental rates fall as each generation lands and as capacity catches up with demand — this is the single largest driver of the outcome and the workbook has no cell for it.',
+        '<span class="fix">Here:</span> an annual decay rate, and a sensitivity surface that shows it dominating everything else.'] },
+  { n: '03', t: 'The floor is a utilisation floor, valued at spot',
+    b: ['<code>Backstop!B5 =B4*Assumptions!B2*B10*B9</code>. The shortfall is measured in utilisation and then priced at the <em>current</em> rate. If the rate halves, the guarantee halves with it, and a pure price collapse triggers nothing at all because utilisation never moves.',
+        '<span class="fix">Here:</span> a basis toggle. Struck at the year-1 price it behaves like a revenue floor; struck at spot it behaves like the workbook.'] },
+  { n: '04', t: 'Operating costs are 100% variable',
+    b: ['<code>Operations!B6 =B5*Assumptions!B11</code>. If revenue falls 60%, opex falls 60%. Power contracts, colocation leases, staff and maintenance do not work that way — most of the cost base is fixed against installed capacity, not against revenue.',
+        '<span class="fix">Here:</span> opex splits into fixed dollars per installed GPU plus a variable percentage, with inflation on the fixed leg.'] },
+  { n: '05', t: 'Interest never falls as the loan amortises',
+    b: ['<code>Operations!B8 =B3*Assumptions!B6</code> charges interest on the <em>original</em> debt, not the outstanding balance, while <code>B9</code> repays a sixth of principal every year. In year 1 they agree; by year 4 the workbook overstates interest by roughly half. The single-period framing conceals it.',
+        '<span class="fix">Here:</span> interest accrues on the closing balance, with straight-line or annuity amortisation and an optional interest-only period.'] },
+  { n: '06', t: 'The backstop never reaches the credit metrics',
+    b: ['<code>Operations!B10</code> ignores <code>Backstop!B5</code> entirely — the backstop is only picked up in <code>Equity Returns!B3</code>. So <code>Credit!B4</code>, the DSCR the lenders would look at, excludes the very guarantee the deal is built on.',
+        '<span class="fix">Here:</span> DSCR is shown both ways, and the gap between the two lines is the measured credit value of the guarantee.'] },
+  { n: '07', t: 'DSCR is defined so it can never fail',
+    b: ['<code>Credit!B2 =Operations!B10+B8+B9</code> adds interest and principal back to cash after debt service, which returns EBITDA by construction. <code>B4</code> is therefore EBITDA ÷ debt service — a restatement, not a test. It cannot reveal anything the EBITDA line has not already said.',
+        '<span class="fix">Here:</span> CFADS is built from the cash statement, after tax, with the backstop treated explicitly.'] },
+  { n: '08', t: 'No caps, no term, no counterparty',
+    b: ['<code>Backstop!B5</code> is unbounded and undated. In practice a vendor guarantee carries an annual cap, an aggregate cap and a term — and each one removes support precisely in the tail the lenders sized against.',
+        '<span class="fix">Here:</span> annual and aggregate caps plus a term, with the unpaid shortfall tracked separately so you can see the guarantee stop working.'] },
+  { n: '09', t: 'NVIDIA’s side of the trade is missing',
+    b: ['The workbook nets the backstop into the SPV’s equity return and never asks what the arrangement is worth to the guarantor. There is no gross margin, no exposure, no present value, no question of whether the order was incremental.',
+        '<span class="fix">Here:</span> a full NVIDIA position — gross profit on the sale, less the present value of calls, plus the upside share, plus any SPV equity, with a give-back ratio and a maximum exposure.'] },
+  { n: '10', t: 'No tax, depreciation, residual or exit',
+    b: ['Cash equals EBITDA less debt service. There is no tax, no depreciation shield, no working capital, and no terminal value — so a six-year loan against hardware with a five-year economic life simply ends.',
+        '<span class="fix">Here:</span> cash tax with loss carry-forward, depreciation on both asset classes, and a residual-value exit net of the remaining debt balance.'] },
+  { n: '11', t: 'Datacenter capex does not scale with the fleet',
+    b: ['<code>Assumptions!B4</code> is a hardcoded $400,000,000. Change <code>B2</code> from 20,000 GPUs to 40,000 and the model still builds one datacenter — halving the effective build cost per GPU and silently improving every return metric.',
+        '<span class="fix">Here:</span> non-GPU capex is expressed per installed GPU, defaulted to the $20,000 the workbook implies.'] },
+  { n: '12', t: 'Every risk is treated as independent',
+    b: ['Being a single deterministic case, the workbook cannot express that low utilisation and low prices are the same event. A guarantee against uncorrelated risks is cheap; this one is written against a single demand factor that also drives the guarantor’s own results.',
+        '<span class="fix">Here:</span> a correlated Monte Carlo, plus a tail statistic showing what the backstop costs in the worst demand decile.'] },
+];
+
+function renderFlaws() {
+  document.getElementById('flaws').innerHTML = FLAWS.map(f =>
+    '<div class="flaw"><h4><span class="n">' + f.n + '</span>' + f.t + '</h4>' +
+    f.b.map(p => '<p>' + p + '</p>').join('') + '</div>').join('');
+}
+
+/* ==================================================================== BOOT */
+function boot() {
+  // metric selectors
+  const opts = METRICS.map(m => '<option value="' + m.k + '">' + m.l + '</option>').join('');
+  const hm = document.getElementById('heatMetric'), tm = document.getElementById('tornMetric');
+  hm.innerHTML = opts; tm.innerHTML = opts;
+  hm.value = 'nvNPV'; tm.value = 'nvNPV';
+  hm.addEventListener('change', () => renderHeat(R));
+  tm.addEventListener('change', () => renderTornado(R));
+
+  // table toggles
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.tbl-toggle'); if (!b) return;
+    const t = document.getElementById(b.dataset.tbl);
+    const open = t.hasAttribute('hidden');
+    if (open) t.removeAttribute('hidden'); else t.setAttribute('hidden', '');
+    b.textContent = open ? 'Hide table' : 'Show as table';
+  });
+
+  // theme
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const next = cur ? (cur === 'dark' ? 'light' : 'dark') : (sysDark ? 'light' : 'dark');
+    document.documentElement.setAttribute('data-theme', next);
+    renderFast(); renderSlow();
+  });
+
+  buildPresets();
+  if (!deserialize(location.hash)) { P = Object.assign({}, REPAIRED); activePreset = 'repaired'; }
+  else activePreset = null;
+  buildRail();
+  syncRail();
+  renderTieout();
+  renderFlaws();
+  renderFast();
+  renderSlow();
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
+
+</script>
+
+</body>
+</html>

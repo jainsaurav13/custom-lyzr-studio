@@ -1,0 +1,653 @@
+<title>NVIDIA Backstop Lab</title>
+
+<style>
+/* ============================================================
+   TOKENS
+   Ground: cold-metal slate — the palette of a datacenter hall,
+   not a document. Accent: instrument blue (dataviz slot 1).
+   ============================================================ */
+:root {
+  color-scheme: light;
+
+  --page:        #e8edf0;
+  --surface:     #fbfcfd;
+  --surface-2:   #f1f5f7;
+  --surface-3:   #e6ecef;
+
+  --ink:         #0c1214;
+  --ink-2:       #46545b;
+  --ink-3:       #78888f;
+
+  --rule:        #dbe3e8;
+  --rule-2:      #c2cfd6;
+
+  --accent:      #2a78d6;
+  --accent-ink:  #1c5cab;
+  --accent-wash: rgba(42,120,214,.09);
+
+  /* dataviz categorical, light steps */
+  --s1: #2a78d6;  --s2: #eb6834;  --s3: #1baf7a;  --s4: #eda100;
+  --s5: #e87ba4;  --s6: #008300;  --s7: #4a3aa7;  --s8: #e34948;
+
+  /* status (fixed, never themed) */
+  --good: #0ca30c;  --warn: #fab219;  --serious: #ec835a;  --crit: #d03b3b;
+  --good-ink: #006300;  --crit-ink: #a82c2c;
+
+  --grid:  #e4e9ec;
+  --axis:  #c2cfd6;
+
+  --shadow: 0 1px 2px rgba(12,18,20,.05), 0 8px 24px -12px rgba(12,18,20,.14);
+
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  --rail: 348px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page:      #0a0f12;
+    --surface:   #161d21;
+    --surface-2: #1c252a;
+    --surface-3: #232e34;
+
+    --ink:       #f1f6f8;
+    --ink-2:     #a7b6bd;
+    --ink-3:     #74848b;
+
+    --rule:      #253138;
+    --rule-2:    #35474f;
+
+    --accent:      #3987e5;
+    --accent-ink:  #86b6ef;
+    --accent-wash: rgba(57,135,229,.14);
+
+    --s1: #3987e5;  --s2: #d95926;  --s3: #199e70;  --s4: #c98500;
+    --s5: #d55181;  --s6: #008300;  --s7: #9085e9;  --s8: #e66767;
+
+    --good-ink: #0ca30c;  --crit-ink: #e66767;
+
+    --grid: #222d33;
+    --axis: #35474f;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page:      #0a0f12;
+  --surface:   #161d21;
+  --surface-2: #1c252a;
+  --surface-3: #232e34;
+  --ink:       #f1f6f8;
+  --ink-2:     #a7b6bd;
+  --ink-3:     #74848b;
+  --rule:      #253138;
+  --rule-2:    #35474f;
+  --accent:      #3987e5;
+  --accent-ink:  #86b6ef;
+  --accent-wash: rgba(57,135,229,.14);
+  --s1: #3987e5;  --s2: #d95926;  --s3: #199e70;  --s4: #c98500;
+  --s5: #d55181;  --s6: #008300;  --s7: #9085e9;  --s8: #e66767;
+  --good-ink: #0ca30c;  --crit-ink: #e66767;
+  --grid: #222d33;
+  --axis: #35474f;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+}
+
+/* ============================================================ RESET-ish */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+h1,h2,h3,h4,p,figure { margin: 0; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+
+/* ============================================================ TYPE ROLES */
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  font-weight: 500;
+}
+.num { font-variant-numeric: tabular-nums; font-family: var(--mono); }
+
+/* ============================================================ HEADER */
+.topbar {
+  position: sticky; top: 0; z-index: 40;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rule);
+}
+.topbar-in {
+  max-width: 1680px; margin: 0 auto;
+  padding: 11px 22px;
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+}
+.brand { display: flex; align-items: baseline; gap: 10px; margin-right: auto; }
+.brand h1 {
+  font-size: 16px; font-weight: 640; letter-spacing: -.015em;
+}
+.brand .sub {
+  font-family: var(--mono); font-size: 11px; color: var(--ink-3);
+  letter-spacing: .02em;
+}
+.presets { display: flex; gap: 5px; flex-wrap: wrap; }
+.preset {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .03em;
+  padding: 5px 10px; border-radius: 5px;
+  border: 1px solid var(--rule-2); background: var(--surface);
+  color: var(--ink-2); cursor: pointer;
+  transition: background .12s, color .12s, border-color .12s;
+  white-space: nowrap;
+}
+.preset:hover { background: var(--surface-3); color: var(--ink); }
+.preset[aria-pressed="true"] {
+  background: var(--accent); border-color: var(--accent); color: #fff;
+}
+.icon-btn {
+  width: 30px; height: 30px; display: grid; place-items: center;
+  border-radius: 5px; border: 1px solid var(--rule-2);
+  background: var(--surface); cursor: pointer; color: var(--ink-2);
+}
+.icon-btn:hover { background: var(--surface-3); color: var(--ink); }
+
+/* ============================================================ SHELL */
+.shell {
+  max-width: 1680px; margin: 0 auto;
+  display: grid; grid-template-columns: var(--rail) minmax(0,1fr);
+  align-items: start;
+}
+@media (max-width: 1080px) { .shell { grid-template-columns: 1fr; } }
+
+/* ============================================================ RAIL */
+.rail {
+  position: sticky; top: 53px;
+  max-height: calc(100vh - 53px);
+  overflow-y: auto; overscroll-behavior: contain;
+  padding: 16px 14px 60px 18px;
+  border-right: 1px solid var(--rule);
+}
+@media (max-width: 1080px) {
+  .rail { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--rule); }
+}
+.rail::-webkit-scrollbar { width: 9px; }
+.rail::-webkit-scrollbar-thumb { background: var(--rule-2); border-radius: 9px; border: 3px solid var(--page); }
+
+.group { border-top: 1px solid var(--rule); }
+.group:first-of-type { border-top: 0; }
+.group > summary {
+  list-style: none; cursor: pointer;
+  padding: 11px 2px 9px; display: flex; align-items: center; gap: 8px;
+}
+.group > summary::-webkit-details-marker { display: none; }
+.group > summary::after {
+  content: ""; margin-left: auto;
+  width: 6px; height: 6px; border-right: 1.5px solid var(--ink-3); border-bottom: 1.5px solid var(--ink-3);
+  transform: rotate(45deg) translate(-2px,-2px); transition: transform .16s;
+}
+.group[open] > summary::after { transform: rotate(-135deg) translate(-2px,-2px); }
+.group > summary h3 { font-size: 12.5px; font-weight: 620; letter-spacing: -.005em; }
+.group-body { padding: 2px 0 15px; display: flex; flex-direction: column; gap: 13px; }
+
+/* control */
+.ctl-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 5px; }
+.ctl-head label { font-size: 12.5px; color: var(--ink-2); line-height: 1.3; }
+.ctl-val {
+  margin-left: auto; font-family: var(--mono); font-size: 12px;
+  font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600;
+  background: var(--surface-3); padding: 1px 6px; border-radius: 4px;
+  border: 1px solid var(--rule); white-space: nowrap;
+}
+.ctl-note { font-size: 11px; color: var(--ink-3); margin-top: 4px; line-height: 1.35; }
+
+input[type=range] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 18px; background: transparent; cursor: pointer; display: block;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  height: 3px; border-radius: 3px; background: var(--rule-2);
+}
+input[type=range]::-moz-range-track { height: 3px; border-radius: 3px; background: var(--rule-2); }
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--surface);
+  box-shadow: 0 0 0 1px var(--accent); margin-top: -5.5px;
+}
+input[type=range]::-moz-range-thumb {
+  width: 14px; height: 14px; border-radius: 50%; background: var(--accent);
+  border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--accent);
+}
+input[type=range].is-off::-webkit-slider-thumb { background: var(--ink-3); box-shadow: 0 0 0 1px var(--ink-3); }
+
+select, input[type=number] {
+  width: 100%; font: inherit; font-size: 12.5px;
+  padding: 6px 8px; border-radius: 5px;
+  border: 1px solid var(--rule-2); background: var(--surface); color: var(--ink);
+}
+.seg { display: flex; gap: 0; border: 1px solid var(--rule-2); border-radius: 5px; overflow: hidden; }
+.seg button {
+  flex: 1; padding: 6px 4px; border: 0; background: var(--surface);
+  font-family: var(--mono); font-size: 11px; cursor: pointer; color: var(--ink-2);
+  border-left: 1px solid var(--rule-2);
+}
+.seg button:first-child { border-left: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+
+.switch { display: flex; align-items: flex-start; gap: 9px; cursor: pointer; }
+.switch input { margin: 2px 0 0; accent-color: var(--accent); width: 15px; height: 15px; flex: none; }
+.switch span { font-size: 12.5px; color: var(--ink-2); line-height: 1.35; }
+
+.rail-actions { display: flex; gap: 6px; padding: 14px 0 0; border-top: 1px solid var(--rule); }
+.rail-actions button {
+  flex: 1; padding: 7px; border-radius: 5px; border: 1px solid var(--rule-2);
+  background: var(--surface); cursor: pointer; font-size: 12px; color: var(--ink-2);
+}
+.rail-actions button:hover { background: var(--surface-3); color: var(--ink); }
+
+/* ============================================================ MAIN */
+main { padding: 20px 22px 100px; min-width: 0; display: flex; flex-direction: column; gap: 26px; }
+
+section { scroll-margin-top: 64px; }
+@media (max-width: 1080px) { section { scroll-margin-top: 150px; } }
+.sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.sec-head h2 { font-size: 17px; font-weight: 640; letter-spacing: -.02em; }
+.sec-head p { font-size: 13px; color: var(--ink-2); max-width: 70ch; }
+.sec-rule { height: 1px; background: var(--rule); margin-bottom: 14px; }
+
+.card {
+  background: var(--surface); border: 1px solid var(--rule);
+  border-radius: 9px; padding: 16px 18px 14px; box-shadow: var(--shadow);
+  min-width: 0;
+}
+.card > figcaption, .card-head { margin-bottom: 12px; }
+.card-head h3 { font-size: 13.5px; font-weight: 620; letter-spacing: -.01em; }
+.card-head p { font-size: 12px; color: var(--ink-3); margin-top: 2px; max-width: 68ch; }
+
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+@media (max-width: 1400px) { .grid3 { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 900px)  { .grid2, .grid3 { grid-template-columns: 1fr; } }
+
+/* ============================================================ VERDICT */
+.verdict {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 11px;
+  box-shadow: var(--shadow); overflow: hidden;
+  display: grid; grid-template-columns: minmax(300px, 1.05fr) minmax(0, 1.6fr);
+}
+@media (max-width: 1000px) { .verdict { grid-template-columns: 1fr; } }
+.hero { padding: 20px 22px 22px; border-right: 1px solid var(--rule); }
+@media (max-width: 1000px) { .hero { border-right: 0; border-bottom: 1px solid var(--rule); } }
+.hero .eyebrow { display: block; margin-bottom: 9px; }
+.hero-fig {
+  font-size: 50px; line-height: 1; font-weight: 620; letter-spacing: -.035em;
+  display: flex; align-items: baseline; gap: 8px;
+}
+.hero-fig small { font-size: 19px; font-weight: 560; letter-spacing: -.01em; color: var(--ink-2); }
+.hero-sub { font-size: 12.5px; color: var(--ink-2); margin-top: 9px; max-width: 42ch; line-height: 1.45; }
+.hero-bar { margin-top: 15px; }
+
+.tiles { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); }
+@media (max-width: 1300px) { .tiles { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+.tile {
+  padding: 14px 16px 13px;
+  border-left: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+}
+.tile:nth-child(4n+1) { border-left: 0; }
+@media (max-width: 1300px) { .tile:nth-child(odd) { border-left: 0; } .tile:nth-child(4n+1) { border-left: 0; } }
+.tile-label { font-size: 11.5px; color: var(--ink-3); display: flex; align-items: center; gap: 5px; }
+.tile-val {
+  font-size: 25px; font-weight: 620; letter-spacing: -.025em; margin-top: 3px; line-height: 1.05;
+}
+.tile-val small { font-size: 14px; font-weight: 550; color: var(--ink-2); letter-spacing: 0; }
+.tile-note { font-size: 11px; color: var(--ink-3); margin-top: 3px; font-variant-numeric: tabular-nums; }
+
+/* status pill */
+.pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase;
+  padding: 3px 8px 3px 6px; border-radius: 20px; font-weight: 600;
+  border: 1px solid; white-space: nowrap;
+}
+.pill svg { flex: none; }
+.pill.ok    { color: var(--good-ink); border-color: color-mix(in srgb, var(--good) 40%, transparent);   background: color-mix(in srgb, var(--good) 11%, transparent); }
+.pill.warn  { color: #8a6100;         border-color: color-mix(in srgb, var(--warn) 55%, transparent);   background: color-mix(in srgb, var(--warn) 15%, transparent); }
+.pill.sev   { color: #a4522a;         border-color: color-mix(in srgb, var(--serious) 55%, transparent);background: color-mix(in srgb, var(--serious) 15%, transparent); }
+.pill.crit  { color: var(--crit-ink);  border-color: color-mix(in srgb, var(--crit) 45%, transparent);   background: color-mix(in srgb, var(--crit) 12%, transparent); }
+:root[data-theme="dark"] .pill.warn { color: var(--warn); }
+:root[data-theme="dark"] .pill.sev  { color: var(--serious); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .pill.warn { color: var(--warn); }
+  :root:not([data-theme="light"]) .pill.sev  { color: var(--serious); }
+}
+
+/* severity stripe on risk rows */
+.risk-list { display: flex; flex-direction: column; gap: 9px; }
+.risk {
+  display: grid; grid-template-columns: 3px 1fr; gap: 13px;
+  background: var(--surface-2); border: 1px solid var(--rule); border-radius: 7px; overflow: hidden;
+}
+.risk-stripe { background: var(--ink-3); }
+.risk.ok   .risk-stripe { background: var(--good); }
+.risk.warn .risk-stripe { background: var(--warn); }
+.risk.sev  .risk-stripe { background: var(--serious); }
+.risk.crit .risk-stripe { background: var(--crit); }
+.risk-body { padding: 11px 14px 12px 0; }
+.risk-top { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-bottom: 4px; }
+.risk-top h4 { font-size: 13px; font-weight: 620; }
+.risk-body p { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+.risk-body p .num { color: var(--ink); font-weight: 600; font-size: 12px; }
+
+/* ============================================================ CHART CHROME */
+.chart-wrap { overflow-x: auto; }
+svg.chart { display: block; width: 100%; height: auto; overflow: visible; }
+svg text { font-family: var(--sans); }
+svg .tick { font-family: var(--mono); font-size: 10px; fill: var(--ink-3); font-variant-numeric: tabular-nums; }
+svg .axlabel { font-size: 10.5px; fill: var(--ink-3); }
+svg .gridline { stroke: var(--grid); stroke-width: 1; }
+svg .baseline { stroke: var(--axis); stroke-width: 1; }
+svg .dlabel { font-family: var(--mono); font-size: 10px; fill: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 4px 15px; margin-top: 11px; }
+.legend .item { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--ink-2); }
+.legend .key { width: 10px; height: 10px; border-radius: 2.5px; flex: none; }
+.legend .key.line { height: 2.5px; border-radius: 2px; width: 14px; }
+.legend .key.dash { height: 0; border-top: 2px dashed currentColor; width: 14px; border-radius: 0; }
+
+.tt {
+  position: fixed; z-index: 90; pointer-events: none; opacity: 0;
+  transition: opacity .1s;
+  background: var(--surface); border: 1px solid var(--rule-2); border-radius: 7px;
+  box-shadow: var(--shadow); padding: 9px 11px; font-size: 12px; min-width: 150px;
+  color: var(--ink);
+}
+.tt.on { opacity: 1; }
+.tt h5 { font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase;
+         color: var(--ink-3); margin: 0 0 6px; font-weight: 600; }
+.tt-row { display: flex; align-items: center; gap: 7px; margin-top: 3px; }
+.tt-row .key { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+.tt-row .k { color: var(--ink-2); }
+.tt-row .v { margin-left: auto; font-family: var(--mono); font-variant-numeric: tabular-nums; font-weight: 600; }
+.tt-row.total { border-top: 1px solid var(--rule); margin-top: 6px; padding-top: 5px; }
+
+/* table view */
+.tbl-toggle {
+  margin-top: 10px; background: none; border: 0; padding: 0; cursor: pointer;
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ink-3); text-decoration: underline; text-underline-offset: 3px;
+}
+.tbl-toggle:hover { color: var(--accent); }
+.tbl-wrap { overflow-x: auto; margin-top: 10px; }
+table.data { border-collapse: collapse; width: 100%; font-size: 11.5px; }
+table.data th, table.data td {
+  text-align: right; padding: 5px 9px; border-bottom: 1px solid var(--rule);
+  font-variant-numeric: tabular-nums; font-family: var(--mono); white-space: nowrap;
+}
+table.data th {
+  font-size: 10px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3);
+  font-weight: 600; border-bottom: 1px solid var(--rule-2);
+}
+table.data th:first-child, table.data td:first-child { text-align: left; font-family: var(--sans); }
+table.data tr:hover td { background: var(--surface-2); }
+table.data td.neg { color: var(--crit-ink); }
+table.data tfoot td { border-top: 1px solid var(--rule-2); border-bottom: 0; font-weight: 650; }
+
+/* ============================================================ FLOW DIAGRAM */
+.flow-node rect { stroke-width: 1; }
+.flow-node .title { font-size: 12px; font-weight: 620; fill: var(--ink); }
+.flow-node .meta  { font-family: var(--mono); font-size: 10px; fill: var(--ink-2); font-variant-numeric: tabular-nums; }
+.flow-lbl { font-family: var(--mono); font-size: 10px; font-variant-numeric: tabular-nums; fill: var(--ink-2); }
+.flow-lbl.strong { fill: var(--ink); font-weight: 600; }
+
+/* ============================================================ AUDIT */
+.audit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px,1fr)); gap: 12px; }
+.flaw { background: var(--surface-2); border: 1px solid var(--rule); border-radius: 7px; padding: 13px 15px; }
+.flaw h4 { font-size: 12.5px; font-weight: 620; margin-bottom: 5px; display: flex; gap: 7px; align-items: center; }
+.flaw h4 .n {
+  font-family: var(--mono); font-size: 10px; color: var(--ink-3);
+  border: 1px solid var(--rule-2); border-radius: 3px; padding: 0 4px; flex: none;
+}
+.flaw p { font-size: 12px; color: var(--ink-2); line-height: 1.5; }
+.flaw p + p { margin-top: 6px; }
+.flaw code {
+  font-family: var(--mono); font-size: 11px; background: var(--surface-3);
+  padding: 1px 4px; border-radius: 3px; color: var(--ink);
+}
+.flaw .fix { color: var(--accent-ink); font-weight: 560; }
+
+.matrix { display: flex; gap: 10px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+
+.footnote { font-size: 11.5px; color: var(--ink-3); line-height: 1.5; max-width: 88ch; }
+.footnote code { font-family: var(--mono); font-size: 11px; }
+
+.mc-status { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+
+/* 12 summary tiles — column counts chosen to divide evenly so the divider
+   colour never shows through a half-empty trailing row */
+.mc-grid { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 1px; background: var(--rule); }
+@media (max-width: 1500px) { .mc-grid { grid-template-columns: repeat(4, minmax(0,1fr)); } }
+@media (max-width: 1000px) { .mc-grid { grid-template-columns: repeat(3, minmax(0,1fr)); } }
+@media (max-width: 700px)  { .mc-grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+
+@media print { .rail, .topbar { display: none; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <h1>NVIDIA Backstop Lab</h1>
+      <span class="sub" id="brandSub">20,000 GPU · $1.0B · 6yr</span>
+    </div>
+    <div class="presets" id="presets"></div>
+    <button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
+        <path d="M13.2 9.6A5.6 5.6 0 0 1 6.4 2.8 5.6 5.6 0 1 0 13.2 9.6Z" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<div class="shell">
+  <aside class="rail" id="rail"></aside>
+  <main>
+
+    <!-- ============ VERDICT ============ -->
+    <section id="verdict">
+      <div class="verdict">
+        <div class="hero">
+          <span class="eyebrow">NVIDIA net position · present value</span>
+          <div class="hero-fig" id="heroFig">—</div>
+          <p class="hero-sub" id="heroSub"></p>
+          <div class="hero-bar" id="heroBar"></div>
+        </div>
+        <div class="tiles" id="tiles"></div>
+      </div>
+    </section>
+
+    <!-- ============ FLOW ============ -->
+    <section id="flow">
+      <div class="sec-head">
+        <h2>Where the money goes</h2>
+        <p>Year-1 flows at the current settings. Arrow thickness is proportional to cash. The two green/amber arrows are the only places NVIDIA's balance sheet is engaged.</p>
+      </div>
+      <div class="sec-rule"></div>
+      <div class="card">
+        <div class="chart-wrap"><svg class="chart" id="flowSvg" viewBox="0 0 1000 430" role="img" aria-label="Flow of funds diagram"></svg></div>
+        <button class="tbl-toggle" data-tbl="flowTbl">Show as table</button>
+        <div id="flowTbl" hidden></div>
+      </div>
+    </section>
+
+    <!-- ============ PROJECTIONS ============ -->
+    <section id="proj">
+      <div class="sec-head">
+        <h2>The projection</h2>
+        <p>The workbook is a single year held flat forever. Almost every real risk in this structure lives in the shape of years 2 through 8 — rental price compression, contract roll-off, and the amortisation schedule.</p>
+      </div>
+      <div class="sec-rule"></div>
+      <div class="grid2">
+        <figure class="card">
+          <figcaption class="card-head">
+            <h3>Revenue by source</h3>
+            <p>Contracted take-or-pay holds regardless of utilisation. Spot is exposed to both price and utilisation. Backstop only appears when revenue falls under NVIDIA's floor.</p>
+          </figcaption>
+          <div class="chart-wrap"><svg class="chart" id="revSvg" viewBox="0 0 640 300" role="img" aria-label="Revenue by source, by year"></svg></div>
+          <div class="legend" id="revLegend"></div>
+          <button class="tbl-toggle" data-tbl="revTbl">Show as table</button>
+          <div id="revTbl" hidden></div>
+        </figure>
+        <figure class="card">
+          <figcaption class="card-head">
+            <h3>Where revenue goes</h3>
+            <p>Costs and debt service stacked against equity's residual. When the stack exceeds revenue, the residual is negative and equity funds the gap.</p>
+          </figcaption>
+          <div class="chart-wrap"><svg class="chart" id="costSvg" viewBox="0 0 640 300" role="img" aria-label="Cost and debt service by year"></svg></div>
+          <div class="legend" id="costLegend"></div>
+          <button class="tbl-toggle" data-tbl="costTbl">Show as table</button>
+          <div id="costTbl" hidden></div>
+        </figure>
+        <figure class="card">
+          <figcaption class="card-head">
+            <h3>Debt service cover, with and without the backstop</h3>
+            <p>The gap between the two lines <em>is</em> the credit value of NVIDIA's guarantee. Where the lower line sits under 1.00×, the lenders are being repaid by NVIDIA, not by the business.</p>
+          </figcaption>
+          <div class="chart-wrap"><svg class="chart" id="dscrSvg" viewBox="0 0 640 300" role="img" aria-label="DSCR by year"></svg></div>
+          <div class="legend" id="dscrLegend"></div>
+          <button class="tbl-toggle" data-tbl="dscrTbl">Show as table</button>
+          <div id="dscrTbl" hidden></div>
+        </figure>
+        <figure class="card">
+          <figcaption class="card-head">
+            <h3>NVIDIA's cumulative position</h3>
+            <p>Starts at the gross profit booked on the GPU sale, then erodes as backstop calls are paid. Crossing zero means the sale was, in hindsight, given away.</p>
+          </figcaption>
+          <div class="chart-wrap"><svg class="chart" id="nvSvg" viewBox="0 0 640 300" role="img" aria-label="NVIDIA cumulative position by year"></svg></div>
+          <div class="legend" id="nvLegend"></div>
+          <button class="tbl-toggle" data-tbl="nvTbl">Show as table</button>
+          <div id="nvTbl" hidden></div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ SENSITIVITY ============ -->
+    <section id="sens">
+      <div class="sec-head">
+        <h2>Sensitivity</h2>
+        <p>Two drivers dominate everything: what happens to the rental price, and how full the fleet stays. Pick an output and read the surface.</p>
+      </div>
+      <div class="sec-rule"></div>
+      <div class="grid2">
+        <figure class="card">
+          <figcaption class="card-head">
+            <h3>Price decay × utilisation</h3>
+            <p id="heatDesc"></p>
+          </figcaption>
+          <div class="matrix">
+            <select id="heatMetric" style="max-width:280px"></select>
+          </div>
+          <div class="chart-wrap"><svg class="chart" id="heatSvg" viewBox="0 0 640 380" role="img" aria-label="Sensitivity heatmap"></svg></div>
+          <button class="tbl-toggle" data-tbl="heatTbl">Show as table</button>
+          <div id="heatTbl" hidden></div>
+        </figure>
+        <figure class="card">
+          <figcaption class="card-head">
+            <h3>What actually moves the answer</h3>
+            <p id="tornDesc"></p>
+          </figcaption>
+          <div class="matrix">
+            <select id="tornMetric" style="max-width:280px"></select>
+          </div>
+          <div class="chart-wrap"><svg class="chart" id="tornSvg" viewBox="0 0 640 400" role="img" aria-label="Tornado sensitivity chart"></svg></div>
+          <div class="legend" id="tornLegend"></div>
+          <button class="tbl-toggle" data-tbl="tornTbl">Show as table</button>
+          <div id="tornTbl" hidden></div>
+        </figure>
+      </div>
+      <div class="grid3" style="margin-top:14px">
+        <div class="card" id="beCard"></div>
+        <figure class="card" style="grid-column: span 2">
+          <figcaption class="card-head">
+            <h3>Year-1 bridge</h3>
+            <p>Gross rentals down to what equity actually keeps, at the current settings.</p>
+          </figcaption>
+          <div class="chart-wrap"><svg class="chart" id="wfSvg" viewBox="0 0 780 300" role="img" aria-label="Year one cash waterfall"></svg></div>
+          <button class="tbl-toggle" data-tbl="wfTbl">Show as table</button>
+          <div id="wfTbl" hidden></div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ MONTE CARLO ============ -->
+    <section id="mc">
+      <div class="sec-head">
+        <h2>Monte Carlo</h2>
+        <p>Price decay and utilisation are drawn together from a common demand factor, so bad price outcomes arrive alongside bad utilisation — which is the whole point. A guarantee written against uncorrelated risks is cheap; this one is not.</p>
+      </div>
+      <div class="sec-rule"></div>
+      <div class="grid2">
+        <figure class="card">
+          <figcaption class="card-head">
+            <h3>NVIDIA net present value</h3>
+            <p>Distribution across <span class="num" id="mcNLabel">2,000</span> paths. The left tail is the deal risk: the sale's gross profit is capped, the backstop is not.</p>
+          </figcaption>
+          <div class="chart-wrap"><svg class="chart" id="mcNvSvg" viewBox="0 0 640 300" role="img" aria-label="Distribution of NVIDIA net present value"></svg></div>
+          <div class="legend" id="mcNvLegend"></div>
+        </figure>
+        <figure class="card">
+          <figcaption class="card-head">
+            <h3>Equity IRR</h3>
+            <p>The sponsor's outcome across the same paths. Note how much narrower this is than NVIDIA's — the backstop transfers left-tail risk from equity to NVIDIA.</p>
+          </figcaption>
+          <div class="chart-wrap"><svg class="chart" id="mcEqSvg" viewBox="0 0 640 300" role="img" aria-label="Distribution of equity IRR"></svg></div>
+          <div class="legend" id="mcEqLegend"></div>
+        </figure>
+      </div>
+      <div class="card" style="margin-top:14px" id="mcStats"></div>
+    </section>
+
+    <!-- ============ RISK ============ -->
+    <section id="risk">
+      <div class="sec-head">
+        <h2>Risk register</h2>
+        <p>Live against the current settings. Severities recompute as you move the controls.</p>
+      </div>
+      <div class="sec-rule"></div>
+      <div class="risk-list" id="riskList"></div>
+    </section>
+
+    <!-- ============ AUDIT ============ -->
+    <section id="audit">
+      <div class="sec-head">
+        <h2>What the workbook actually does — and what it misses</h2>
+        <p>The source file is five sheets and twenty-one formulas. Below is every formula it contains, a tie-out proving this tool reproduces it exactly, and the twelve places where the arithmetic is right but the model is wrong.</p>
+      </div>
+      <div class="sec-rule"></div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-head">
+          <h3>Tie-out to the source workbook</h3>
+          <p>With <strong>Reproduce workbook</strong> selected, this tool must equal the Excel cell for cell. Any non-zero difference is a bug in this tool.</p>
+        </div>
+        <div id="tieout"></div>
+      </div>
+      <div class="audit-grid" id="flaws"></div>
+    </section>
+
+    <p class="footnote" style="margin-top:8px">
+      Built from <code>AI_GPU_Project_Finance_Model_Template.xlsx</code> (5 sheets: Assumptions, Operations, Backstop, Credit, Equity Returns).
+      All figures are modelled illustrations from the assumptions you set, not forecasts, and not sourced from any NVIDIA disclosure.
+      Present values discount year-1 onward; the GPU sale and equity draw are treated as t&nbsp;=&nbsp;0.
+    </p>
+  </main>
+</div>
+
+<div class="tt" id="tt" role="tooltip" aria-hidden="true"></div>
