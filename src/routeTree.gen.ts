@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AgentblocksRouteImport } from './routes/agentblocks'
 import { Route as ApiBrandScanRouteImport } from './routes/api/brand-scan'
 import { Route as ApiBriefExtractRouteImport } from './routes/api/brief-extract'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentblocksRoute = AgentblocksRouteImport.update({
+  id: '/agentblocks',
+  path: '/agentblocks',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiBrandScanRoute = ApiBrandScanRouteImport.update({
@@ -31,30 +37,35 @@ const ApiBriefExtractRoute = ApiBriefExtractRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/agentblocks': typeof AgentblocksRoute
   '/api/brand-scan': typeof ApiBrandScanRoute
   '/api/brief-extract': typeof ApiBriefExtractRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/agentblocks': typeof AgentblocksRoute
   '/api/brand-scan': typeof ApiBrandScanRoute
   '/api/brief-extract': typeof ApiBriefExtractRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/agentblocks': typeof AgentblocksRoute
   '/api/brand-scan': typeof ApiBrandScanRoute
   '/api/brief-extract': typeof ApiBriefExtractRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/brand-scan' | '/api/brief-extract'
+  fullPaths: '/' | '/agentblocks' | '/api/brand-scan' | '/api/brief-extract'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/brand-scan' | '/api/brief-extract'
-  id: '__root__' | '/' | '/api/brand-scan' | '/api/brief-extract'
+  to: '/' | '/agentblocks' | '/api/brand-scan' | '/api/brief-extract'
+  id:
+    '__root__' | '/' | '/agentblocks' | '/api/brand-scan' | '/api/brief-extract'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AgentblocksRoute: typeof AgentblocksRoute
   ApiBrandScanRoute: typeof ApiBrandScanRoute
   ApiBriefExtractRoute: typeof ApiBriefExtractRoute
 }
@@ -66,6 +77,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agentblocks': {
+      id: '/agentblocks'
+      path: '/agentblocks'
+      fullPath: '/agentblocks'
+      preLoaderRoute: typeof AgentblocksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/brand-scan': {
@@ -87,6 +105,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AgentblocksRoute: AgentblocksRoute,
   ApiBrandScanRoute: ApiBrandScanRoute,
   ApiBriefExtractRoute: ApiBriefExtractRoute,
 }

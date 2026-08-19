@@ -70,11 +70,19 @@ function NotFound() {
   return (
     <Frame
       title="Page not found"
-      body="There is only one page here — the studio itself."
+      body="There are two pages here: the studio itself, and the AgentBlocks page."
       action={
-        <a href="/" className={buttonClass}>
-          Open the studio
-        </a>
+        <>
+          <a href="/" className={buttonClass}>
+            Open the studio
+          </a>
+          <a
+            href="/agentblocks"
+            className="inline-flex items-center rounded-lg border border-white/15 px-4 py-2 text-sm text-[#F4F4F7]"
+          >
+            AgentBlocks
+          </a>
+        </>
       }
     />
   );

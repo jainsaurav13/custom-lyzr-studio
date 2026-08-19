@@ -2,10 +2,10 @@
 
 A mock of the Lyzr agent studio that can be re-skinned for a prospect in about
 thirty seconds and handed over as a link. The prospect sees the platform wearing
-*their* logo, colours and typeface, filled with *their* company name, instead of
+_their_ logo, colours and typeface, filled with _their_ company name, instead of
 imagining it.
 
-The app is a single page: the studio itself, at `/`. Home is the Architect —
+The app has two pages. `/` is the studio itself; Home is the Architect —
 describe an agent in the composer and it drafts one, the same way the real
 studio does.
 
@@ -43,12 +43,27 @@ Other scripts: `npm run build`, `npm run preview`, `npm run typecheck`,
 5. **Share → Copy share link**, and send it. The recipient needs no account.
 
 Nothing is stored server-side: the entire brand kit is encoded into the URL, so
-the link *is* the demo. Only the small profile derived from a brief travels with
-it — never the brief text. *Saved demos* on the Share tab keeps recent kits in the
+the link _is_ the demo. Only the small profile derived from a brief travels with
+it — never the brief text. _Saved demos_ on the Share tab keeps recent kits in the
 rep's own browser (localStorage) for juggling several accounts.
 
 Every screen carries a small strip saying the workspace is illustrative and the
 data is sample data. Leave it in place.
+
+## The AgentBlocks page
+
+`/agentblocks` is the pitch itself, written for an executive who opens the link
+cold and reads it once: why the platform layer is up for grabs, what the seven
+OEM blocks are, how the lifecycle works, who has bought it, and what the next
+meeting looks like. It links back to the studio at `/` — the branded workbench
+is the product the page is selling, so the two share one palette.
+
+- Copy lives in `src/components/agentblocks/content.ts`. Change it there, not in
+  the components; the sections read it as data.
+- The page paints from the same `--st-*` properties the studio does, plus a few
+  `--ab-*` ones for the ink bands (`src/components/agentblocks/theme.ts`).
+- `BOOKING_URL` in `content.ts` is the one value wired to the outside world.
+  Point it at the real scheduling link before the page goes out.
 
 ## Deploying
 
