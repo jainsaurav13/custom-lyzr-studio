@@ -315,32 +315,6 @@ export const ENGAGEMENTS = [
   },
 ];
 
-/**
- * Who owns what once the launch team rolls off. `holder` is the possessive the
- * column is set in — the whole point of the panel is that the first column says
- * "Yours" and stays that way.
- */
-export const OWNERSHIP = [
-  {
-    holder: "Yours",
-    who: "You own",
-    what: "The business",
-    body: "Product, brand, the customer relationship, pricing and roadmap. Permanently, and without an asterisk.",
-  },
-  {
-    holder: "Temporary",
-    who: "The launch team delivers",
-    what: "The first workflow",
-    body: "Designed, built and shipped alongside your team, then handed over and off your payroll.",
-  },
-  {
-    holder: "Ours",
-    who: "Lyzr operates",
-    what: "The infrastructure",
-    body: "Runtime, governance, deployment and observability, run under support and SLA.",
-  },
-];
-
 /* ------------------------------------------------------------------ *
  * 7 — FAQ
  * ------------------------------------------------------------------ */

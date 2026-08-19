@@ -12,7 +12,6 @@ import {
   ENGAGEMENTS,
   FAQS,
   FOUNDATION,
-  OWNERSHIP,
   PARTNERS,
   PROBLEM,
   REASONS,
@@ -406,74 +405,6 @@ export function WhySection() {
  * 6 — How to get started
  * ------------------------------------------------------------------ */
 
-/**
- * The ownership split. Three columns divided by hairlines, each headed by the
- * possessive rather than a label — the argument of the whole panel is that the
- * first column says "Yours" and never changes hands.
- */
-function OwnershipSplit() {
-  return (
-    <div
-      className="mt-12 overflow-hidden rounded-[var(--st-radius-lg)] border"
-      style={{ background: "var(--st-surface-2)", borderColor: "var(--st-border)" }}
-    >
-      <div
-        className="flex flex-wrap items-baseline justify-between gap-2 border-b px-6 py-4"
-        style={{ borderColor: "var(--ab-rule)" }}
-      >
-        <Label>Who owns what, once the launch team rolls off</Label>
-        <span className="text-xs" style={{ color: "var(--st-text-muted)" }}>
-          Written into the agreement, not assumed
-        </span>
-      </div>
-
-      <dl className="grid sm:grid-cols-3">
-        {OWNERSHIP.map((row, index) => {
-          const yours = index === 0;
-          return (
-            <div
-              key={row.who}
-              className={cn("flex flex-col p-6", index > 0 && "border-t sm:border-l sm:border-t-0")}
-              style={{
-                borderColor: "var(--ab-rule)",
-                background: yours ? "var(--st-accent-soft)" : undefined,
-              }}
-            >
-              <span
-                className="text-[10px] font-semibold uppercase tracking-[0.18em]"
-                style={{ color: yours ? "var(--st-accent-ink)" : "var(--st-text-faint)" }}
-              >
-                {row.holder}
-              </span>
-              <dt
-                className="mt-2 text-2xl leading-none"
-                style={{
-                  fontFamily: "var(--ab-serif)",
-                  color: yours ? "var(--st-accent-ink)" : "var(--st-text)",
-                }}
-              >
-                {row.what}
-              </dt>
-              <dd
-                className="mt-3 flex-1 text-sm leading-relaxed"
-                style={{ color: "var(--st-text-muted)" }}
-              >
-                {row.body}
-              </dd>
-              <p
-                className="mt-4 border-t pt-3 text-xs font-medium"
-                style={{ borderColor: "var(--ab-rule)", color: "var(--st-text)" }}
-              >
-                {row.who}
-              </p>
-            </div>
-          );
-        })}
-      </dl>
-    </div>
-  );
-}
-
 export function StartSection() {
   return (
     <Section id="start" tone="paper">
@@ -517,10 +448,6 @@ export function StartSection() {
           </Reveal>
         ))}
       </div>
-
-      <Reveal delay={0.1}>
-        <OwnershipSplit />
-      </Reveal>
     </Section>
   );
 }
