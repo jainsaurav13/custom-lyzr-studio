@@ -34,14 +34,19 @@ export function agentBlocksVars(): Record<string, string> {
 
   return {
     ...vars,
+    // Marketing copy is read once, often on a laptop in a meeting: the studio's
+    // muted/faint pair is too quiet for that, so both are pulled back toward
+    // the ink on light ground and toward white on the dark bands.
+    "--st-text-muted": mix(text, bg, 0.26),
+    "--st-text-faint": mix(text, bg, 0.42),
     "--ab-paper": mix(bg, accent, 0.035),
     "--ab-ink": ink,
     "--ab-ink-raised": mix(ink, "#FFFFFF", 0.06),
     "--ab-ink-border": alpha("#FFFFFF", 0.12),
     "--ab-ink-border-strong": alpha("#FFFFFF", 0.24),
     "--ab-ink-text": inkText,
-    "--ab-ink-muted": alpha(inkText, 0.62),
-    "--ab-ink-faint": alpha(inkText, 0.42),
+    "--ab-ink-muted": alpha(inkText, 0.78),
+    "--ab-ink-faint": alpha(inkText, 0.6),
     "--ab-accent-on-ink": mix(accent, "#FFFFFF", 0.45),
     "--ab-rule": alpha(text, 0.1),
     "--ab-serif": '"Instrument Serif", "Playfair Display", Georgia, serif',

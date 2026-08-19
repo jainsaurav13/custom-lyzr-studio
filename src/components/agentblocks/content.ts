@@ -2,9 +2,42 @@
  * Everything the AgentBlocks page says, in one place.
  *
  * The page is a sales asset before it is code: the copy changes far more often
- * than the layout, so the deck's wording lives here as data and the section
- * components stay dumb. Figures carry their footnote with them — see FOOTNOTES.
+ * than the layout, so the wording lives here as data and the section components
+ * stay dumb.
+ *
+ * Spelling is British throughout, matching the rest of this repo's copy.
  */
+
+/* ------------------------------------------------------------------ *
+ * Hero
+ * ------------------------------------------------------------------ */
+
+export const HERO = {
+  eyebrow: "OEM agent infrastructure for ISVs",
+  headline: "Launch AI products",
+  headlineAccent: "under your brand.",
+  sub: "AgentBlocks provides the production infrastructure to build, govern and scale them — without replacing your existing platform.",
+  chips: [
+    "Start fresh or bring existing agents",
+    "Co-build, integrate, or self-operate",
+    "Full platform or modular blocks",
+  ],
+};
+
+/**
+ * The proof strip that sits directly under the hero. Deliberately three facts
+ * about what is in production — not company growth figures, which say nothing
+ * about whether the thing works for a customer.
+ */
+export const PROOF_STRIP = [
+  { label: "Deployed", fact: "1M+ agent instances running on the Lyzr platform" },
+  { label: "Anaplan", fact: "Embedded OEM across the full lifecycle" },
+  { label: "WTW", fact: "Governed advisory agents in production" },
+];
+
+/* ------------------------------------------------------------------ *
+ * Where you start
+ * ------------------------------------------------------------------ */
 
 export interface Path {
   key: string;
@@ -15,7 +48,6 @@ export interface Path {
   keeps: string;
 }
 
-/** "Where are you on your AI roadmap?" — the three entry points. */
 export const PATHS: Path[] = [
   {
     key: "launch",
@@ -43,6 +75,10 @@ export const PATHS: Path[] = [
   },
 ];
 
+/* ------------------------------------------------------------------ *
+ * What AgentBlocks adds — and what stays
+ * ------------------------------------------------------------------ */
+
 export interface Block {
   key: string;
   name: string;
@@ -54,7 +90,6 @@ export interface Block {
   bullets: string[];
 }
 
-/** The OEM modules — the middle layer of the stack, and the heart of the page. */
 export const BLOCKS: Block[] = [
   {
     key: "surfaces",
@@ -62,7 +97,7 @@ export const BLOCKS: Block[] = [
     tag: "OEM surfaces",
     summary:
       "The screens your customers actually use, shipped in your product's shell rather than ours.",
-    customerSees: "A workbench and an agent catalogue that look like the rest of your product.",
+    customerSees: "A workbench and an agent catalogue that feel native to your product.",
     bullets: [
       "Branded workbench where your customers configure and run agents",
       "A marketplace shelf for the agents your team publishes",
@@ -73,7 +108,7 @@ export const BLOCKS: Block[] = [
   {
     key: "builder",
     name: "Agent Builder",
-    tag: "White-labeled creation",
+    tag: "White-labelled creation",
     summary:
       "A visual builder your customers — or your own delivery team — use to create agents without writing a platform.",
     customerSees: "They describe the work; an agent is drafted, tested and published.",
@@ -153,10 +188,10 @@ export const BLOCKS: Block[] = [
   },
 ];
 
-/** The foundation strip that ships with every block, single module or full platform. */
+/** Ships with every block, whether you take one module or the whole lifecycle. */
 export const FOUNDATION = ["Identity", "Permissions", "Audit trail", "Export path"];
 
-/** Bottom of the stack: what stays yours. */
+/** Bottom of the stack: what stays yours, untouched. */
 export const YOUR_STACK = [
   "Frameworks",
   "Models",
@@ -170,133 +205,24 @@ export const YOUR_STACK = [
 /** Top of the stack: what the OEM arrangement never touches. */
 export const YOURS_ALONE = ["Your brand", "Your UX", "Your pricing", "Your customer relationship"];
 
-export const KEEP_CONNECT_ADD = [
-  {
-    key: "keep",
-    verb: "Keep",
-    line: "Existing components stay in place where supported.",
-    items: [
-      "Frameworks",
-      "Models",
-      "Cloud",
-      "Domain logic",
-      "Your product UX",
-      "Customer relationship",
-      "IAM & SSO",
-      "CI/CD",
-      "Telemetry",
-    ],
-  },
-  {
-    key: "connect",
-    verb: "Connect",
-    line: "Integrate with your systems through supported adapters.",
-    items: ["Data sources", "Existing tools", "Agents already in production", "Release pipeline"],
-  },
-  {
-    key: "add",
-    verb: "Add",
-    line: "Select only the AgentBlocks capabilities you need.",
-    items: [
-      "Registry",
-      "Evaluation",
-      "Governance",
-      "Deployment",
-      "Observability",
-      "Memory",
-      "OEM surfaces",
-    ],
-  },
+/** The middle ground — neither replaced nor rebuilt, just wired in. */
+export const CONNECTED = [
+  "Data sources",
+  "Existing tools",
+  "Agents already in production",
+  "Your release pipeline",
 ];
 
 export const LIFECYCLE = [
-  {
-    step: "01",
-    title: "Build or connect",
-    body: "Create a new agent in the builder, or bring in one you already run.",
-  },
-  {
-    step: "02",
-    title: "Govern & validate",
-    body: "Register it, evaluate it against your suites, and get a named sign-off.",
-  },
-  {
-    step: "03",
-    title: "Deploy & operate",
-    body: "Release it into your customers' environments, then watch it in production.",
-  },
-  {
-    step: "04",
-    title: "Improve safely",
-    body: "Ship the next version — or roll back instantly to the last one that passed.",
-  },
+  { step: "01", title: "Build or connect", body: "A new agent, or one you already run." },
+  { step: "02", title: "Govern & validate", body: "Registered, evaluated, signed off by name." },
+  { step: "03", title: "Deploy & operate", body: "Released to your customers, then watched." },
+  { step: "04", title: "Improve safely", body: "Ship the next version, or roll back in minutes." },
 ];
 
-export const OWNERSHIP = [
-  {
-    who: "You own",
-    what: "The business",
-    body: "Product, brand, customer relationship, pricing and roadmap.",
-  },
-  {
-    who: "The pod delivers",
-    what: "The launch",
-    body: "Design, build and ship the first workflow, then hand it to your team.",
-  },
-  {
-    who: "AgentBlocks operates",
-    what: "The infrastructure",
-    body: "Runtime, governance, deployment and observability, under support and SLA.",
-  },
-];
-
-export const ENGAGEMENTS = [
-  {
-    key: "self-serve",
-    support: "Self-serve",
-    title: "License and operate",
-    body: "Your team embeds the platform or selected blocks through APIs and SDKs, with support and SLA from Lyzr.",
-    fit: "For mature product and engineering organizations",
-  },
-  {
-    key: "integrate",
-    support: "Targeted support",
-    title: "Integrate with us",
-    body: "A targeted pod connects the blocks you select to your existing architecture and rolls out on your release process.",
-    fit: "For ISVs with prototypes or an existing platform",
-  },
-  {
-    key: "build",
-    support: "Most support",
-    title: "Build with us",
-    body: "A full Applied AI pod works with your team to launch your first agentic product — then hands it over.",
-    fit: "For ISVs launching their first agentic product",
-  },
-];
-
-export interface Metric {
-  value: string;
-  label: string;
-  note: string;
-}
-
-export const METRICS: Metric[] = [
-  {
-    value: "1M+",
-    label: "Deployed agent instances",
-    note: "Agent instances deployed on the Lyzr platform, cumulative.",
-  },
-  {
-    value: "300%",
-    label: "QoQ revenue growth",
-    note: "Revenue growth across two consecutive quarters, Q1–Q2 2026.",
-  },
-  {
-    value: "Zero",
-    label: "Enterprise churn",
-    note: "No enterprise account ($100K+) has churned since founding, 2023.",
-  },
-];
+/* ------------------------------------------------------------------ *
+ * Customers
+ * ------------------------------------------------------------------ */
 
 export interface CaseStudy {
   key: string;
@@ -310,15 +236,15 @@ export const CASES: CaseStudy[] = [
   {
     key: "anaplan",
     customer: "Anaplan",
-    meta: "ISV · $1.2B-ARR planning platform · embedded OEM, full lifecycle",
-    status: "Current program",
+    meta: "ISV · enterprise planning platform · embedded OEM, full lifecycle",
+    status: "Current programme",
     rows: [
-      { label: "Starting point", value: "Launch — first agentic product line, Office of the CFO" },
+      { label: "Started at", value: "Launch — first agentic product line, Office of the CFO" },
       { label: "Stays in place", value: "Anaplan's platform, data model and customer UX" },
       {
         label: "AgentBlocks adds",
         value:
-          "White-labeled full lifecycle powering the Anaplan Agentic Workbench and Marketplace",
+          "The white-labelled lifecycle powering the Anaplan Agentic Workbench and Marketplace",
       },
       { label: "Deployment", value: "Anaplan cloud, plus customer-managed AWS, Azure or GCP" },
       {
@@ -334,7 +260,7 @@ export const CASES: CaseStudy[] = [
     status: "In production",
     rows: [
       {
-        label: "Starting point",
+        label: "Started at",
         value: "Harden — advisory workflows needed governance before customer exposure",
       },
       { label: "Stays in place", value: "WTW's data, domain models and advisory methodology" },
@@ -351,6 +277,54 @@ export const CASES: CaseStudy[] = [
     ],
   },
 ];
+
+/* ------------------------------------------------------------------ *
+ * Ways to engage
+ * ------------------------------------------------------------------ */
+
+export const ENGAGEMENTS = [
+  {
+    key: "self-serve",
+    support: "Self-serve",
+    title: "License and operate",
+    body: "Your team embeds the platform or selected blocks through APIs and SDKs, with support and SLA from Lyzr.",
+    fit: "Mature product and engineering organisations",
+  },
+  {
+    key: "integrate",
+    support: "Targeted support",
+    title: "Integrate with us",
+    body: "A small launch team connects the blocks you select to your existing architecture and rolls out on your release process.",
+    fit: "ISVs with prototypes or an existing platform",
+  },
+  {
+    key: "build",
+    support: "Most support",
+    title: "Build with us",
+    body: "A full launch team — product and engineering, working alongside yours — ships your first agentic product, then hands it over.",
+    fit: "ISVs launching their first agentic product",
+  },
+];
+
+/** Who owns what once the launch team rolls off. */
+export const OWNERSHIP = [
+  {
+    who: "You own",
+    body: "The business: product, brand, customer relationship, pricing and roadmap.",
+  },
+  {
+    who: "The launch team delivers",
+    body: "The first workflow — designed, built and shipped, then transferred to your team.",
+  },
+  {
+    who: "Lyzr operates",
+    body: "The infrastructure: runtime, governance, deployment and observability, under SLA.",
+  },
+];
+
+/* ------------------------------------------------------------------ *
+ * Buyer's guide (collapsed — not part of the main scroll)
+ * ------------------------------------------------------------------ */
 
 export interface CompareRow {
   question: string;
@@ -391,6 +365,10 @@ export const COMPARE: CompareRow[] = [
   },
 ];
 
+/* ------------------------------------------------------------------ *
+ * Next step
+ * ------------------------------------------------------------------ */
+
 export const SESSION_AGENDA = [
   { step: "01", title: "Scope", body: "Full platform or selected AgentBlocks." },
   {
@@ -398,29 +376,27 @@ export const SESSION_AGENDA = [
     title: "Architecture",
     body: "What you keep, what we connect, what we add — and where it deploys.",
   },
-  {
-    step: "03",
-    title: "Commercials",
-    body: "OEM rights, pricing, ownership, support and SLA.",
-  },
+  { step: "03", title: "Commercials", body: "OEM rights, pricing, ownership, support and SLA." },
   { step: "04", title: "Launch plan", body: "Engagement model, owners and milestones." },
 ];
 
-export const FOOTNOTES = METRICS.map((metric, index) => `${index + 1}. ${metric.note}`);
-
 export const NAV_LINKS = [
-  { href: "#shift", label: "Why now" },
-  { href: "#oem", label: "What you OEM" },
-  { href: "#how", label: "How it works" },
-  { href: "#proof", label: "Proof" },
+  { href: "#shift", label: "Why it matters" },
+  { href: "#paths", label: "Where you start" },
+  { href: "#oem", label: "What you get" },
+  { href: "#cases", label: "Customers" },
   { href: "#engage", label: "Ways to engage" },
 ];
 
 /**
- * Where both "book a session" buttons point.
+ * Every CTA on the page points here.
  *
- * Replace this with the real scheduling link (Calendly, HubSpot meetings, or
- * whatever sales is using) before the page goes out — it is the one value on
- * the page that has to be wired to something outside the repo.
+ * NOT YET WIRED. This must become a dedicated scheduler or a short
+ * qualification form before the page goes out — a homepage link is not a
+ * conversion path. It is the only value on the page that lives outside the
+ * repo, so it is the only thing to change.
  */
 export const BOOKING_URL = "https://www.lyzr.ai/";
+
+/** Where "see an example workbench" goes — the live white-label demo. */
+export const WORKBENCH_DEMO_URL = "/";

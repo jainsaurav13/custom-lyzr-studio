@@ -1,29 +1,19 @@
 import { useMemo } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
-import { BOOKING_URL, NAV_LINKS } from "./content";
+import { BOOKING_URL, HERO, NAV_LINKS, PROOF_STRIP, WORKBENCH_DEMO_URL } from "./content";
 import { Chip, Container, Cta, Reveal } from "./primitives";
 import {
   CasesSection,
   CompareSection,
   EngageSection,
-  LifecycleSection,
-  NoRipSection,
   OemSection,
   PathsSection,
-  PodSection,
-  ProofSection,
   SessionSection,
   ShiftSection,
 } from "./sections";
 import { agentBlocksVars } from "./theme";
 import { WorkbenchPreview } from "./WorkbenchPreview";
-
-const HERO_CHIPS = [
-  "Start fresh or bring existing agents",
-  "Co-build, integrate, or self-operate",
-  "Full platform or modular blocks",
-];
 
 function Nav() {
   return (
@@ -42,7 +32,7 @@ function Nav() {
           >
             AgentBlocks
           </span>
-          <span className="text-xs" style={{ color: "var(--st-text-faint)" }}>
+          <span className="text-xs" style={{ color: "var(--st-text-muted)" }}>
             by Lyzr
           </span>
         </a>
@@ -60,8 +50,8 @@ function Nav() {
           ))}
         </nav>
 
-        <Cta href="#session" className="hidden px-4 py-2 sm:inline-flex">
-          Book a session
+        <Cta href={BOOKING_URL} className="hidden px-4 py-2 sm:inline-flex">
+          Plan your AI product
           <ArrowRight className="h-3.5 w-3.5" />
         </Cta>
       </Container>
@@ -73,11 +63,11 @@ function Hero() {
   return (
     <section
       id="top"
-      className="relative overflow-hidden pb-20 pt-16 sm:pb-28 sm:pt-24"
+      className="relative overflow-hidden pt-16 sm:pt-24"
       style={{ background: "var(--ab-hero-bg), var(--st-bg)" }}
     >
       <Container>
-        <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_1fr]">
+        <div className="grid items-center gap-14 pb-14 sm:pb-16 lg:grid-cols-[1.12fr_1fr]">
           <div>
             <Reveal>
               <span
@@ -88,14 +78,14 @@ function Hero() {
                   background: "var(--st-surface)",
                 }}
               >
-                For independent software vendors
+                {HERO.eyebrow}
               </span>
 
               <h1
-                className="mt-6 text-[2.4rem] font-semibold leading-[1.05] tracking-[-0.035em] sm:text-[3.4rem]"
+                className="mt-6 text-[2.5rem] font-semibold leading-[1.05] tracking-[-0.035em] sm:text-[3.2rem]"
                 style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
               >
-                OEM agent infrastructure,
+                {HERO.headline}
                 <br />
                 <span
                   className="italic"
@@ -105,7 +95,7 @@ function Hero() {
                     color: "var(--st-accent-ink)",
                   }}
                 >
-                  under your own brand.
+                  {HERO.headlineAccent}
                 </span>
               </h1>
 
@@ -113,26 +103,24 @@ function Hero() {
                 className="mt-6 max-w-xl text-base leading-relaxed sm:text-lg"
                 style={{ color: "var(--st-text-muted)" }}
               >
-                AgentBlocks gives ISVs the production building blocks to launch, govern and scale AI
-                products your customers experience as <em>yours</em> — without replacing what
-                already works.
+                {HERO.sub}
               </p>
             </Reveal>
 
             <Reveal delay={0.08}>
               <div className="mt-7 flex flex-wrap gap-2">
-                {HERO_CHIPS.map((chip) => (
+                {HERO.chips.map((chip) => (
                   <Chip key={chip}>{chip}</Chip>
                 ))}
               </div>
 
               <div className="mt-9 flex flex-wrap gap-3">
-                <Cta href="#session">
-                  Book an OEM architecture session
+                <Cta href={BOOKING_URL}>
+                  Plan your AI product
                   <ArrowUpRight className="h-4 w-4" />
                 </Cta>
-                <Cta href="/" variant="quiet">
-                  See a branded workbench
+                <Cta href="#oem" variant="quiet">
+                  See how AgentBlocks fits your stack
                   <ArrowRight className="h-4 w-4" />
                 </Cta>
               </div>
@@ -142,14 +130,42 @@ function Hero() {
           <Reveal delay={0.14}>
             <div>
               <WorkbenchPreview />
-              <p className="mt-4 text-xs" style={{ color: "var(--st-text-faint)" }}>
-                The same workbench, wearing a customer&apos;s logo, palette and typeface. Your brand
-                on the surface; AgentBlocks underneath.
+              <p className="mt-4 text-xs" style={{ color: "var(--st-text-muted)" }}>
+                Example: the workbench wearing one customer&apos;s logo, palette and typeface.{" "}
+                <a
+                  href={WORKBENCH_DEMO_URL}
+                  className="underline underline-offset-2"
+                  style={{ color: "var(--st-accent-ink)" }}
+                >
+                  Open a live one
+                </a>
+                .
               </p>
             </div>
           </Reveal>
         </div>
       </Container>
+
+      {/* Proof, before the reader has to scroll for it. */}
+      <div className="border-t" style={{ borderColor: "var(--ab-rule)" }}>
+        <Container>
+          <dl className="grid gap-x-10 gap-y-6 py-8 sm:grid-cols-3">
+            {PROOF_STRIP.map((item) => (
+              <div key={item.label}>
+                <dt
+                  className="text-[10px] font-semibold uppercase tracking-[0.16em]"
+                  style={{ color: "var(--st-accent-ink)" }}
+                >
+                  {item.label}
+                </dt>
+                <dd className="mt-1.5 text-sm leading-snug" style={{ color: "var(--st-text)" }}>
+                  {item.fact}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </Container>
+      </div>
     </section>
   );
 }
@@ -167,9 +183,9 @@ function Footer() {
               className="text-sm font-semibold"
               style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
             >
-              AgentBlocks <span style={{ color: "var(--st-text-faint)" }}>by Lyzr</span>
+              AgentBlocks <span style={{ color: "var(--st-text-muted)" }}>by Lyzr</span>
             </p>
-            <p className="mt-1 text-xs" style={{ color: "var(--st-text-faint)" }}>
+            <p className="mt-1 text-xs" style={{ color: "var(--st-text-muted)" }}>
               OEM agent infrastructure for independent software vendors.
             </p>
           </div>
@@ -185,7 +201,7 @@ function Footer() {
               </a>
             ))}
             <a href={BOOKING_URL} className="text-xs" style={{ color: "var(--st-accent-ink)" }}>
-              Book a session
+              Plan your AI product
             </a>
           </nav>
         </div>
@@ -195,9 +211,10 @@ function Footer() {
 }
 
 /**
- * The AgentBlocks page: one scroll that takes an executive from "why does this
- * matter to my platform" to "here is the session I should book", using the same
- * palette, type and component language as the product it is selling.
+ * The AgentBlocks page: outcome-led hero, proof, why ownership matters, where
+ * you start, what you get, who has bought it, how to engage, and the session to
+ * book. It wears the same palette, type and component language as the product
+ * it is selling.
  */
 export function AgentBlocksPage() {
   const vars = useMemo(() => agentBlocksVars(), []);
@@ -218,10 +235,6 @@ export function AgentBlocksPage() {
         <ShiftSection />
         <PathsSection />
         <OemSection />
-        <NoRipSection />
-        <LifecycleSection />
-        <PodSection />
-        <ProofSection />
         <CasesSection />
         <EngageSection />
         <CompareSection />
