@@ -67,47 +67,49 @@ function Hero() {
       style={{ background: "var(--ab-hero-bg), var(--st-bg)" }}
     >
       <Container>
-        <div className="grid items-center gap-14 pb-20 sm:pb-24 lg:grid-cols-[1.12fr_1fr]">
+        {/* The definition gets the full container width — it is the one thing a
+            stranger has to read, and it does not fit a narrow column. */}
+        <Reveal>
+          <span
+            className="inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em]"
+            style={{
+              borderColor: "var(--st-border-strong)",
+              color: "var(--st-accent-ink)",
+              background: "var(--st-surface)",
+            }}
+          >
+            {HERO.eyebrow}
+          </span>
+
+          <h1
+            className="mt-6 max-w-4xl text-[2rem] font-semibold leading-[1.12] tracking-[-0.03em] text-balance sm:text-[2.9rem]"
+            style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+          >
+            {HERO.definition.lead}{" "}
+            <span
+              className="italic"
+              style={{
+                fontFamily: "var(--ab-serif)",
+                fontWeight: 400,
+                color: "var(--st-accent-ink)",
+              }}
+            >
+              {HERO.definition.emphasis}
+            </span>{" "}
+            {HERO.definition.tail}
+          </h1>
+        </Reveal>
+
+        <div className="grid items-start gap-10 pb-16 sm:pb-20 lg:grid-cols-[1fr_1.05fr] lg:gap-14">
           <div>
-            <Reveal>
-              <span
-                className="inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em]"
-                style={{
-                  borderColor: "var(--st-border-strong)",
-                  color: "var(--st-accent-ink)",
-                  background: "var(--st-surface)",
-                }}
-              >
-                {HERO.eyebrow}
-              </span>
-
-              <h1
-                className="mt-6 text-[2.5rem] font-semibold leading-[1.05] tracking-[-0.035em] sm:text-[3.2rem]"
-                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
-              >
-                {HERO.headline}
-                <br />
-                <span
-                  className="italic"
-                  style={{
-                    fontFamily: "var(--ab-serif)",
-                    fontWeight: 400,
-                    color: "var(--st-accent-ink)",
-                  }}
-                >
-                  {HERO.headlineAccent}
-                </span>
-              </h1>
-
+            <Reveal delay={0.06}>
               <p
                 className="mt-6 max-w-xl text-base leading-relaxed sm:text-lg"
                 style={{ color: "var(--st-text-muted)" }}
               >
                 {HERO.sub}
               </p>
-            </Reveal>
 
-            <Reveal delay={0.08}>
               <div className="mt-7 flex flex-wrap gap-2">
                 {HERO.chips.map((chip) => (
                   <Chip key={chip}>{chip}</Chip>
@@ -128,7 +130,7 @@ function Hero() {
           </div>
 
           <Reveal delay={0.14}>
-            <div>
+            <div className="mt-4 lg:mt-0">
               <WorkbenchPreview />
               <p className="mt-4 text-xs" style={{ color: "var(--st-text-muted)" }}>
                 Example: the workbench wearing one customer&apos;s logo, palette and typeface.{" "}

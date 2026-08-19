@@ -16,16 +16,20 @@
  * 1 — What it is, who it is for
  * ------------------------------------------------------------------ */
 
+/**
+ * The definition, verbatim, as the cover line. It is split into three parts so
+ * the middle clause — the claim that actually differentiates the product — can
+ * carry the serif emphasis without breaking the sentence.
+ */
 export const HERO = {
   eyebrow: "For ISVs and software platforms",
-  headline: "Ship AI products,",
-  headlineAccent: "not infrastructure.",
-  sub: "AgentBlocks is the production layer between your platform and the AI products you sell — builder, governance, runtime, deployment and observability, all running under your brand.",
-  chips: [
-    "Start fresh or bring existing agents",
-    "Your cloud or your customer's",
-    "One block, or the whole lifecycle",
-  ],
+  definition: {
+    lead: "AgentBlocks enables software companies to launch a",
+    emphasis: "fully sovereign, white-labelled",
+    tail: "enterprise AI agent platform.",
+  },
+  sub: "Adopt the complete platform, or embed production-grade SDKs into your existing product — while maintaining your own brand.",
+  chips: ["Sovereign deployment", "Your brand, end to end", "Bring your existing agents"],
 };
 
 /* ------------------------------------------------------------------ *
