@@ -104,7 +104,7 @@ export const PROBLEM = {
   answer: {
     label: "The better roadmap",
     title: "Build what differentiates you. License what doesn’t.",
-    body: "AgentBlocks provides the production infrastructure your agent platform needs (governance, deployment, security, observability and runtime) so your engineers can focus on the AI products and experiences your customers actually pay for.",
+    body: "AgentBlocks provides the production infrastructure your agent platform needs, so your engineers can focus on the AI products and experiences your customers actually pay for.",
     cta: "See the AgentBlocks layer",
   },
 };
