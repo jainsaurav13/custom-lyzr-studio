@@ -162,7 +162,7 @@ export function ProblemSection() {
               className="mt-6 inline-flex items-center gap-2 text-sm font-medium"
               style={{ color: "var(--st-accent-ink)" }}
             >
-              See what is inside
+              See what’s inside
               <ArrowRight className="h-4 w-4" />
             </a>
           </Panel>
@@ -199,9 +199,9 @@ export function BlocksSection() {
       <Reveal>
         <SectionHead
           tone="invert"
-          eyebrow="What's inside"
+          eyebrow="What’s inside"
           title="What you can OEM"
-          lede="Take the complete lifecycle, or license only the blocks your stack is missing. Your existing architecture stays the foundation — nothing gets ripped out to make room."
+          lede="Take the complete lifecycle, or license only the blocks your stack is missing. Your existing architecture stays the foundation. Nothing gets ripped out to make room."
         />
       </Reveal>
 
@@ -216,7 +216,7 @@ export function BlocksSection() {
                 background: "var(--ab-ink-raised)",
               }}
             >
-              <Label tone="invert">Yours alone — the AI products you sell</Label>
+              <Label tone="invert">Yours alone: the AI products you sell</Label>
               <div className="mt-3 flex flex-wrap gap-2">
                 {YOURS_ALONE.map((item) => (
                   <Chip key={item} tone="invert">
@@ -307,7 +307,7 @@ export function BlocksSection() {
                 background: "var(--ab-ink-raised)",
               }}
             >
-              <Label tone="invert">Stays in place — your existing platform</Label>
+              <Label tone="invert">Stays in place: your existing platform</Label>
               <div className="mt-3 flex flex-wrap gap-2">
                 {YOUR_STACK.map((item) => (
                   <Chip key={item} tone="invert">
@@ -374,7 +374,7 @@ export function WhySection() {
         <SectionHead
           eyebrow="Why AgentBlocks"
           title="Built to fit, not lock you in"
-          lede="Every one of these is a decision you would otherwise have to make yourself, defend to a customer's procurement team, and then maintain."
+          lede="Each of these is a decision you would otherwise have to make yourself, defend to a customer’s procurement team, and then maintain."
         />
       </Reveal>
 
@@ -481,7 +481,7 @@ export function StartSection() {
         <SectionHead
           eyebrow="Get started"
           title="Start where you are. We’ll meet you there."
-          lede="Every one preserves the same principle — your brand, your customer, your economics."
+          lede="Every route preserves the same principle: your brand, your customer, your economics."
         />
       </Reveal>
 
@@ -681,7 +681,7 @@ export function SessionSection() {
             </h2>
             <p className="mt-4 max-w-xl text-base" style={{ color: "var(--ab-ink-muted)" }}>
               One working session: what you keep, what AgentBlocks adds, and how you launch under
-              your brand. Bring your architecture — leave with a plan.
+              your brand. Bring your architecture, leave with a plan.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Cta href={BOOKING_URL} variant="invert">

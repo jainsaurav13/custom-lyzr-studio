@@ -122,7 +122,7 @@ function Hero() {
                   <ArrowUpRight className="h-4 w-4" />
                 </Cta>
                 <Cta href="#blocks" variant="quiet">
-                  See what&apos;s inside
+                  See what’s inside
                   <ArrowRight className="h-4 w-4" />
                 </Cta>
               </div>
