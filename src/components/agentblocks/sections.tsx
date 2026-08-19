@@ -147,7 +147,7 @@ export function ProblemSection() {
             className="p-7"
             style={{ background: "var(--st-accent-soft)", borderColor: "var(--st-accent-ink)" }}
           >
-            <Label>The answer</Label>
+            <Label>{PROBLEM.answer.label}</Label>
             <h3
               className="mt-3 text-2xl font-semibold leading-tight tracking-[-0.02em]"
               style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
@@ -162,7 +162,7 @@ export function ProblemSection() {
               className="mt-6 inline-flex items-center gap-2 text-sm font-medium"
               style={{ color: "var(--st-accent-ink)" }}
             >
-              See what’s inside
+              {PROBLEM.answer.cta}
               <ArrowRight className="h-4 w-4" />
             </a>
           </Panel>

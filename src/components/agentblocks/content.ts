@@ -89,7 +89,7 @@ export const PARTNERS: Partner[] = [
 export const PROBLEM = {
   eyebrow: "The problem",
   title: "Two weeks to build. A year to ship.",
-  lede: "Every software company can build an agent. Almost none can put one in front of a paying customer quickly. The hard part was never the agent.",
+  lede: "Most software companies are already building or extending their agent platforms. The challenge isn’t whether they can build the production infrastructure around them, it’s whether they should.",
   /** What teams end up building instead of product. */
   burden: [
     "A registry, because nobody knows what is running or who owns it",
@@ -102,8 +102,10 @@ export const PROBLEM = {
   punchline:
     "That is nine to eighteen months of platform engineering that no customer will ever pay you for.",
   answer: {
-    title: "We built that layer so you do not have to.",
-    body: "AgentBlocks is the missing infrastructure between an agent that works and a product you can sell. Your engineers go back to the thing your customers actually buy.",
+    label: "The better roadmap",
+    title: "Build what differentiates you. License what doesn’t.",
+    body: "AgentBlocks provides the production infrastructure your agent platform needs (governance, deployment, security, observability and runtime) so your engineers can focus on the AI products and experiences your customers actually pay for.",
+    cta: "See the AgentBlocks layer",
   },
 };
 
