@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AgentBlocksPage } from "@/components/agentblocks/AgentBlocksPage";
 import { FONT_HREF } from "@/components/agentblocks/theme";
 
-const TITLE = "AgentBlocks — a sovereign, white-labelled enterprise AI agent platform";
+const TITLE = "AgentBlocks — launch a sovereign, white-labelled AI agent platform";
 const DESCRIPTION =
   "AgentBlocks enables software companies to launch a fully sovereign, white-labelled enterprise AI agent platform. Adopt the complete platform or embed production-grade SDKs into your existing product while maintaining your own brand.";
 

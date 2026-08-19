@@ -24,11 +24,11 @@
 export const HERO = {
   eyebrow: "For ISVs and software platforms",
   definition: {
-    lead: "AgentBlocks enables software companies to launch a",
+    lead: "Launch a",
     emphasis: "fully sovereign, white-labelled",
     tail: "enterprise AI agent platform.",
   },
-  sub: "Adopt the complete platform, or embed production-grade SDKs into your existing product — while maintaining your own brand.",
+  sub: "With AgentBlocks, adopt the complete platform or embed production-grade SDKs into your existing product — while maintaining your own brand.",
   chips: ["Sovereign deployment", "Your brand, end to end", "Bring your existing agents"],
 };
 

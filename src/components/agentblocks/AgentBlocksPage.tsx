@@ -82,7 +82,7 @@ function Hero() {
           </span>
 
           <h1
-            className="mt-6 max-w-4xl text-[2rem] font-semibold leading-[1.12] tracking-[-0.03em] text-balance sm:text-[2.9rem]"
+            className="mt-6 max-w-4xl text-balance text-[2.25rem] font-semibold leading-[1.08] tracking-[-0.035em] sm:text-[3.5rem]"
             style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
           >
             {HERO.definition.lead}{" "}
