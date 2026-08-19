@@ -1,206 +1,100 @@
 import { useState } from "react";
-import { ArrowDown, ArrowRight, ArrowUpRight, Check, ChevronDown, Minus } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, ChevronDown, Minus, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
 import {
   BLOCKS,
   BOOKING_URL,
-  CASES,
   COMPARE,
   CONNECTED,
+  CREDIBILITY,
   ENGAGEMENTS,
+  FAQS,
   FOUNDATION,
   LIFECYCLE,
   OWNERSHIP,
-  PATHS,
+  PARTNERS,
+  PROBLEM,
+  REASONS,
   SESSION_AGENDA,
   YOURS_ALONE,
   YOUR_STACK,
 } from "./content";
-import {
-  Accent,
-  Chip,
-  Cta,
-  Eyebrow,
-  Label,
-  Panel,
-  Reveal,
-  Section,
-  SectionHead,
-} from "./primitives";
+import { Chip, Cta, Eyebrow, Label, Panel, Reveal, Section, SectionHead } from "./primitives";
 
 /* ------------------------------------------------------------------ *
- * Why ownership matters
+ * 2 — Credibility
  * ------------------------------------------------------------------ */
 
-function Flow({ steps, tone }: { steps: string[]; tone: "own" | "lose" }) {
+export function PartnersSection() {
   return (
-    <ol className="mt-5 space-y-2">
-      {steps.map((step, index) => {
-        // The middle rung is the one under contention — the AI layer itself.
-        const highlight = index === 1;
-        return (
-          <li key={step}>
-            <div
-              className="rounded-[var(--st-radius-sm)] border px-3.5 py-2.5 text-sm"
-              style={{
-                background: highlight
-                  ? tone === "own"
-                    ? "var(--st-primary)"
-                    : "var(--st-raised)"
-                  : "var(--st-surface)",
-                borderColor: highlight && tone === "own" ? "transparent" : "var(--st-border)",
-                color: highlight && tone === "own" ? "var(--st-primary-on)" : "var(--st-text)",
-                borderStyle: highlight && tone === "lose" ? "dashed" : "solid",
-              }}
-            >
-              {step}
-            </div>
-            {index < steps.length - 1 ? (
-              <ArrowDown
-                className="mx-auto my-1 h-3.5 w-3.5"
-                style={{ color: "var(--st-text-faint)" }}
-              />
-            ) : null}
-          </li>
-        );
-      })}
-    </ol>
-  );
-}
-
-export function ShiftSection() {
-  return (
-    <Section id="shift" tone="plain">
+    <Section id="partners" tone="paper">
       <Reveal>
-        <SectionHead
-          eyebrow="Why it matters"
-          title={
-            <>
-              Applied AI creates a new platform layer. <Accent>Who owns it?</Accent>
-            </>
-          }
-          lede="As software moves from answering questions to completing work, the customer interaction will stay inside your platform — or move somewhere else. Whoever owns that interaction owns the usage context, the economics and, eventually, the relationship."
-        />
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <SectionHead
+            eyebrow={CREDIBILITY.eyebrow}
+            title={CREDIBILITY.title}
+            lede={CREDIBILITY.lede}
+            className="max-w-2xl"
+          />
+          <div className="shrink-0 lg:text-right">
+            <p
+              className="text-5xl font-semibold tracking-[-0.04em]"
+              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+            >
+              {CREDIBILITY.stat.value}
+            </p>
+            <p className="mt-1 max-w-[16rem] text-sm" style={{ color: "var(--st-text-muted)" }}>
+              {CREDIBILITY.stat.label}
+            </p>
+          </div>
+        </div>
       </Reveal>
 
       <div className="mt-12 grid gap-5 lg:grid-cols-2">
-        <Reveal>
-          <Panel className="h-full p-6">
-            <Label>Outcome A</Label>
-            <h3
-              className="mt-2 text-lg font-semibold"
-              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
-            >
-              You own the platform layer
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--st-text-muted)" }}>
-              You keep the experience, the usage context, the customer relationship and the
-              economics.
-            </p>
-            <Flow
-              steps={[
-                "Customer",
-                "Your branded AI layer",
-                "Your data and workflows",
-                "Work completed",
-              ]}
-              tone="own"
-            />
-          </Panel>
-        </Reveal>
-
-        <Reveal delay={0.08}>
-          <Panel className="h-full p-6">
-            <Label>Outcome B</Label>
-            <h3
-              className="mt-2 text-lg font-semibold"
-              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
-            >
-              Another layer owns it
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--st-text-muted)" }}>
-              A competitor, a horizontal platform or a layer your own customer builds controls the
-              interaction — and the monetisation.
-            </p>
-            <Flow
-              steps={["Customer", "External AI layer", "Your product as an API or data source"]}
-              tone="lose"
-            />
-          </Panel>
-        </Reveal>
-      </div>
-
-      <Reveal delay={0.12}>
-        <p
-          className="mx-auto mt-12 max-w-3xl text-center text-xl leading-snug sm:text-2xl"
-          style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
-        >
-          You do not lose the customer overnight. You lose the workflow,{" "}
-          <span className="italic" style={{ color: "var(--st-accent-ink)" }}>
-            one action at a time.
-          </span>
-        </p>
-      </Reveal>
-    </Section>
-  );
-}
-
-/* ------------------------------------------------------------------ *
- * Where you start
- * ------------------------------------------------------------------ */
-
-export function PathsSection() {
-  return (
-    <Section id="paths" tone="paper">
-      <Reveal>
-        <SectionHead
-          eyebrow="Where you start"
-          title="Launch, harden, or extend."
-          lede="Three entry points, one destination — AI products that complete work under your brand. You could be at any of them, or at all three, across different teams."
-        />
-      </Reveal>
-
-      <div className="mt-12 grid gap-5 md:grid-cols-3">
-        {PATHS.map((path, index) => (
-          <Reveal key={path.key} delay={index * 0.06}>
+        {PARTNERS.map((partner, index) => (
+          <Reveal key={partner.key} delay={index * 0.08}>
             <Panel className="flex h-full flex-col p-6">
-              <span
-                className="w-fit rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em]"
-                style={{ background: "var(--st-accent-soft)", color: "var(--st-accent-ink)" }}
-              >
-                {path.stage}
-              </span>
-              <p
-                className="mt-4 min-h-[4.75rem] text-sm leading-relaxed"
-                style={{ color: "var(--st-text)" }}
-              >
-                {path.goal}
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h3
+                  className="text-2xl font-semibold tracking-[-0.02em]"
+                  style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+                >
+                  {partner.name}
+                </h3>
+                <span
+                  className="rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em]"
+                  style={{ background: "var(--st-accent-soft)", color: "var(--st-accent-ink)" }}
+                >
+                  {partner.status}
+                </span>
+              </div>
+              <p className="mt-1 text-xs" style={{ color: "var(--st-text-muted)" }}>
+                {partner.meta}
               </p>
-              <div
-                className="mt-5 space-y-3 border-t pt-4 text-sm"
+              <p
+                className="mt-4 text-base leading-snug"
+                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+              >
+                {partner.headline}
+              </p>
+
+              <dl
+                className="mt-5 space-y-3 border-t pt-4"
                 style={{ borderColor: "var(--ab-rule)" }}
               >
-                <div>
-                  <Label>You start from</Label>
-                  <p className="mt-1" style={{ color: "var(--st-text-muted)" }}>
-                    {path.from}
-                  </p>
-                </div>
-                <div>
-                  <Label>AgentBlocks adds</Label>
-                  <p className="mt-1" style={{ color: "var(--st-text-muted)" }}>
-                    {path.adds}
-                  </p>
-                </div>
-                <div>
-                  <Label>You keep</Label>
-                  <p className="mt-1" style={{ color: "var(--st-text-muted)" }}>
-                    {path.keeps}
-                  </p>
-                </div>
-              </div>
+                {partner.facts.map((fact) => (
+                  <div key={fact.label}>
+                    <dt>
+                      <Label>{fact.label}</Label>
+                    </dt>
+                    <dd className="mt-1 text-sm" style={{ color: "var(--st-text-muted)" }}>
+                      {fact.value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </Panel>
           </Reveal>
         ))}
@@ -210,7 +104,77 @@ export function PathsSection() {
 }
 
 /* ------------------------------------------------------------------ *
- * What AgentBlocks adds — and what stays
+ * 3 — The problem
+ * ------------------------------------------------------------------ */
+
+export function ProblemSection() {
+  return (
+    <Section id="problem" tone="plain">
+      <Reveal>
+        <SectionHead eyebrow={PROBLEM.eyebrow} title={PROBLEM.title} lede={PROBLEM.lede} />
+      </Reveal>
+
+      <div className="mt-12 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+        <Reveal>
+          <div>
+            <Label>What your team ends up building instead of product</Label>
+            <ul className="mt-4 space-y-3">
+              {PROBLEM.burden.map((item) => (
+                <li key={item} className="flex gap-3 text-sm leading-relaxed">
+                  <X
+                    className="mt-0.5 h-4 w-4 shrink-0"
+                    style={{ color: "var(--st-danger)" }}
+                    aria-hidden="true"
+                  />
+                  <span style={{ color: "var(--st-text)" }}>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <p
+              className="mt-6 border-t pt-5 text-lg leading-snug sm:text-xl"
+              style={{
+                borderColor: "var(--ab-rule)",
+                fontFamily: "var(--ab-serif)",
+                color: "var(--st-text)",
+              }}
+            >
+              {PROBLEM.punchline}
+            </p>
+          </div>
+        </Reveal>
+
+        <Reveal delay={0.08}>
+          <Panel
+            className="p-7"
+            style={{ background: "var(--st-accent-soft)", borderColor: "var(--st-accent-ink)" }}
+          >
+            <Label>The answer</Label>
+            <h3
+              className="mt-3 text-2xl font-semibold leading-tight tracking-[-0.02em]"
+              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+            >
+              {PROBLEM.answer.title}
+            </h3>
+            <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--st-text)" }}>
+              {PROBLEM.answer.body}
+            </p>
+            <a
+              href="#blocks"
+              className="mt-6 inline-flex items-center gap-2 text-sm font-medium"
+              style={{ color: "var(--st-accent-ink)" }}
+            >
+              See what is inside
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </Panel>
+        </Reveal>
+      </div>
+    </Section>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * 4 — The infrastructure
  * ------------------------------------------------------------------ */
 
 /** The connector between two plates of the stack diagram. */
@@ -227,25 +191,25 @@ function Rung({ note }: { note?: string }) {
   );
 }
 
-export function OemSection() {
+export function BlocksSection() {
   const [active, setActive] = useState(BLOCKS[0].key);
   const block = BLOCKS.find((item) => item.key === active) ?? BLOCKS[0];
 
   return (
-    <Section id="oem" tone="invert">
+    <Section id="blocks" tone="invert">
       <Reveal>
         <SectionHead
           tone="invert"
-          eyebrow="What you get"
+          eyebrow="What's inside"
           title={
             <>
-              Your customers see your product.{" "}
+              Seven blocks between your platform{" "}
               <span className="italic" style={{ fontFamily: "var(--ab-serif)", fontWeight: 400 }}>
-                AgentBlocks operates underneath it.
+                and the products you sell.
               </span>
             </>
           }
-          lede="Your existing architecture stays the foundation. Take the complete lifecycle, or license only the blocks your stack is missing — nothing gets ripped out to make room."
+          lede="Take the complete lifecycle, or license only the blocks your stack is missing. Your existing architecture stays the foundation — nothing gets ripped out to make room."
         />
       </Reveal>
 
@@ -260,7 +224,7 @@ export function OemSection() {
                 background: "var(--ab-ink-raised)",
               }}
             >
-              <Label tone="invert">Yours alone — your customer-facing product</Label>
+              <Label tone="invert">Yours alone — the AI products you sell</Label>
               <div className="mt-3 flex flex-wrap gap-2">
                 {YOURS_ALONE.map((item) => (
                   <Chip key={item} tone="invert">
@@ -285,7 +249,7 @@ export function OemSection() {
                   className="text-sm font-semibold"
                   style={{ color: "var(--ab-ink-text)", fontFamily: "var(--st-font-head)" }}
                 >
-                  What AgentBlocks adds
+                  AgentBlocks
                 </span>
                 <span className="text-[11px]" style={{ color: "var(--ab-ink-muted)" }}>
                   Pick one. Pick several. Pick all seven.
@@ -351,7 +315,7 @@ export function OemSection() {
                 background: "var(--ab-ink-raised)",
               }}
             >
-              <Label tone="invert">Stays in place — your existing stack</Label>
+              <Label tone="invert">Stays in place — your existing platform</Label>
               <div className="mt-3 flex flex-wrap gap-2">
                 {YOUR_STACK.map((item) => (
                   <Chip key={item} tone="invert">
@@ -443,58 +407,37 @@ export function OemSection() {
 }
 
 /* ------------------------------------------------------------------ *
- * Customers
+ * 5 — Why AgentBlocks
  * ------------------------------------------------------------------ */
 
-export function CasesSection() {
+export function WhySection() {
   return (
-    <Section id="cases" tone="plain">
+    <Section id="why" tone="plain">
       <Reveal>
         <SectionHead
-          eyebrow="Customers"
-          title="Same building blocks. Different starting points."
-          lede="One ISV launching a new product line, one enterprise hardening advisory workflows that were already live. Both keep their own platform, data and domain expertise."
+          eyebrow="Why AgentBlocks"
+          title="Six reasons this is the layer to license rather than build."
+          lede="Every one of these is a decision you would otherwise have to make yourself, defend to a customer's procurement team, and then maintain."
         />
       </Reveal>
 
-      <div className="mt-12 grid gap-5 lg:grid-cols-2">
-        {CASES.map((study, index) => (
-          <Reveal key={study.key} delay={index * 0.08}>
-            <Panel className="flex h-full flex-col p-6">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h3
-                  className="text-2xl font-semibold tracking-[-0.02em]"
-                  style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
-                >
-                  {study.customer}
-                </h3>
-                <span
-                  className="rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em]"
-                  style={{ background: "var(--st-accent-soft)", color: "var(--st-accent-ink)" }}
-                >
-                  {study.status}
-                </span>
-              </div>
-              <p className="mt-1.5 text-xs" style={{ color: "var(--st-text-muted)" }}>
-                {study.meta}
+      <div className="mt-12 grid gap-x-14 md:grid-cols-2">
+        {REASONS.map((reason, index) => (
+          <Reveal key={reason.key} delay={(index % 2) * 0.06}>
+            <div
+              className="border-t py-7"
+              style={{ borderColor: index < 2 ? "var(--st-border-strong)" : "var(--ab-rule)" }}
+            >
+              <h3
+                className="text-lg font-semibold leading-snug"
+                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+              >
+                {reason.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--st-text-muted)" }}>
+                {reason.body}
               </p>
-
-              <dl className="mt-5 space-y-3.5">
-                {study.rows.map((row) => (
-                  <div key={row.label}>
-                    <dt>
-                      <Label>{row.label}</Label>
-                    </dt>
-                    <dd
-                      className="mt-1 text-sm leading-relaxed"
-                      style={{ color: "var(--st-text)" }}
-                    >
-                      {row.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </Panel>
+            </div>
           </Reveal>
         ))}
       </div>
@@ -503,28 +446,33 @@ export function CasesSection() {
 }
 
 /* ------------------------------------------------------------------ *
- * Ways to engage
+ * 6 — How to get started
  * ------------------------------------------------------------------ */
 
-export function EngageSection() {
+export function StartSection() {
   return (
-    <Section id="engage" tone="paper">
+    <Section id="start" tone="paper">
       <Reveal>
         <SectionHead
-          eyebrow="Ways to engage"
-          title="Reusable infrastructure, and as much launch help as you want."
-          lede="Every model preserves the same principle — your brand, your customer, your economics. What changes is how much of the first launch we do alongside you."
+          eyebrow="Get started"
+          title="Three ways in, depending on how much of the first launch you want to do yourself."
+          lede="Every one preserves the same principle — your brand, your customer, your economics."
         />
       </Reveal>
 
-      {/* A rule-separated list, not a third grid of cards. */}
       <div className="mt-12">
         {ENGAGEMENTS.map((option, index) => (
           <Reveal key={option.key} delay={index * 0.06}>
             <div
-              className="grid gap-x-8 gap-y-2 border-t py-7 md:grid-cols-[12rem_1fr_13rem]"
+              className="grid gap-x-8 gap-y-2 border-t py-7 md:grid-cols-[3rem_12rem_1fr_13rem]"
               style={{ borderColor: "var(--st-border-strong)" }}
             >
+              <span
+                className="text-xs font-semibold tracking-[0.14em]"
+                style={{ color: "var(--st-accent-ink)" }}
+              >
+                {option.step}
+              </span>
               <div>
                 <Label>{option.support}</Label>
                 <h3
@@ -573,7 +521,7 @@ export function EngageSection() {
 }
 
 /* ------------------------------------------------------------------ *
- * Buyer's guide — collapsed, off the main scroll
+ * 7 — FAQ
  * ------------------------------------------------------------------ */
 
 const COLUMNS = [
@@ -583,106 +531,135 @@ const COLUMNS = [
   { key: "agentblocks", label: "AgentBlocks" },
 ] as const;
 
-export function CompareSection() {
+function CompareTable() {
   return (
-    <Section id="compare" tone="plain" className="py-12 sm:py-14">
-      <Reveal>
-        <details className="group">
-          <summary
-            className="flex cursor-pointer list-none items-center gap-3 text-sm font-medium marker:content-none"
-            style={{ color: "var(--st-text)" }}
-          >
-            <ChevronDown
-              className="h-4 w-4 transition-transform group-open:rotate-180"
-              style={{ color: "var(--st-accent-ink)" }}
-            />
-            For the buyer&apos;s guide: how this compares to building it yourself, a hyperscaler, or
-            point tools
-          </summary>
-
-          <div className="-mx-6 mt-8 overflow-x-auto px-6 sm:mx-0 sm:px-0">
-            <table className="w-full min-w-[46rem] border-collapse text-left text-sm">
-              <thead>
-                <tr>
-                  <th className="w-56 py-3 pr-4 align-bottom">
-                    <Label>Route</Label>
-                  </th>
-                  {COLUMNS.map((column) => (
-                    <th
-                      key={column.key}
-                      className="px-4 py-3 align-bottom text-sm font-semibold"
-                      style={{
-                        color:
-                          column.key === "agentblocks" ? "var(--st-accent-ink)" : "var(--st-text)",
-                        background:
-                          column.key === "agentblocks" ? "var(--st-accent-soft)" : undefined,
-                        fontFamily: "var(--st-font-head)",
-                      }}
-                    >
-                      {column.label}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {COMPARE.map((row) => (
-                  <tr
-                    key={row.question}
-                    className="border-t align-top"
-                    style={{ borderColor: "var(--ab-rule)" }}
+    <div className="-mx-6 mt-6 overflow-x-auto px-6 sm:mx-0 sm:px-0">
+      <table className="w-full min-w-[46rem] border-collapse text-left text-sm">
+        <thead>
+          <tr>
+            <th className="w-52 py-3 pr-4 align-bottom">
+              <Label>Route</Label>
+            </th>
+            {COLUMNS.map((column) => (
+              <th
+                key={column.key}
+                className="px-4 py-3 align-bottom text-sm font-semibold"
+                style={{
+                  color: column.key === "agentblocks" ? "var(--st-accent-ink)" : "var(--st-text)",
+                  background: column.key === "agentblocks" ? "var(--st-accent-soft)" : undefined,
+                  fontFamily: "var(--st-font-head)",
+                }}
+              >
+                {column.label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {COMPARE.map((row) => (
+            <tr
+              key={row.question}
+              className="border-t align-top"
+              style={{ borderColor: "var(--ab-rule)" }}
+            >
+              <th
+                scope="row"
+                className="py-4 pr-4 text-sm font-medium"
+                style={{ color: "var(--st-text)" }}
+              >
+                {row.question}
+              </th>
+              {COLUMNS.map((column) => {
+                const own = column.key === "agentblocks";
+                return (
+                  <td
+                    key={column.key}
+                    className="px-4 py-4 text-sm"
+                    style={{
+                      color: own ? "var(--st-text)" : "var(--st-text-muted)",
+                      background: own ? "var(--st-accent-soft)" : undefined,
+                    }}
                   >
-                    <th
-                      scope="row"
-                      className="py-4 pr-4 text-sm font-medium"
-                      style={{ color: "var(--st-text)" }}
-                    >
-                      {row.question}
-                    </th>
-                    {COLUMNS.map((column) => {
-                      const own = column.key === "agentblocks";
-                      return (
-                        <td
-                          key={column.key}
-                          className="px-4 py-4 text-sm"
-                          style={{
-                            color: own ? "var(--st-text)" : "var(--st-text-muted)",
-                            background: own ? "var(--st-accent-soft)" : undefined,
-                          }}
-                        >
-                          <span className="flex gap-2">
-                            {own ? (
-                              <Check
-                                className="mt-0.5 h-4 w-4 shrink-0"
-                                style={{ color: "var(--st-accent-ink)" }}
-                              />
-                            ) : (
-                              <Minus
-                                className="mt-0.5 h-4 w-4 shrink-0"
-                                style={{ color: "var(--st-text-faint)" }}
-                              />
-                            )}
-                            {row[column.key]}
-                          </span>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <p className="mt-4 text-xs" style={{ color: "var(--st-text-muted)" }}>
-              Most customers keep their hyperscaler and point-tool investments and add AgentBlocks
-              for brand, cross-stack governance and customer-controlled deployment.
-            </p>
-          </div>
-        </details>
+                    <span className="flex gap-2">
+                      {own ? (
+                        <Check
+                          className="mt-0.5 h-4 w-4 shrink-0"
+                          style={{ color: "var(--st-accent-ink)" }}
+                        />
+                      ) : (
+                        <Minus
+                          className="mt-0.5 h-4 w-4 shrink-0"
+                          style={{ color: "var(--st-text-faint)" }}
+                        />
+                      )}
+                      {row[column.key]}
+                    </span>
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export function FaqSection() {
+  return (
+    <Section id="faq" tone="plain">
+      <Reveal>
+        <SectionHead
+          eyebrow="FAQ"
+          title="The questions that actually come up."
+          lede="Mostly from the engineering leader in the room, and from whoever owns procurement."
+        />
       </Reveal>
+
+      <div className="mt-12">
+        {FAQS.map((faq, index) => (
+          <Reveal key={faq.q} delay={Math.min(index, 3) * 0.04}>
+            <details
+              className="group border-t"
+              style={{ borderColor: index === 0 ? "var(--st-border-strong)" : "var(--ab-rule)" }}
+            >
+              <summary
+                className={cn(
+                  "flex cursor-pointer list-none items-start gap-4 py-5 marker:content-none",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--st-ring)]",
+                )}
+              >
+                <ChevronDown
+                  className="mt-0.5 h-4 w-4 shrink-0 transition-transform group-open:rotate-180"
+                  style={{ color: "var(--st-accent-ink)" }}
+                />
+                <span
+                  className="text-base font-medium leading-snug"
+                  style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+                >
+                  {faq.q}
+                </span>
+              </summary>
+              <div className="pb-6 pl-8">
+                <p
+                  className="max-w-3xl text-sm leading-relaxed"
+                  style={{ color: "var(--st-text-muted)" }}
+                >
+                  {faq.a}
+                </p>
+                {faq.table ? <CompareTable /> : null}
+              </div>
+            </details>
+          </Reveal>
+        ))}
+        <div className="border-t" style={{ borderColor: "var(--ab-rule)" }} />
+      </div>
     </Section>
   );
 }
 
 /* ------------------------------------------------------------------ *
- * Next step
+ * 8 — Call to action
  * ------------------------------------------------------------------ */
 
 export function SessionSection() {
@@ -696,14 +673,14 @@ export function SessionSection() {
               className="mt-3 text-[2rem] font-semibold leading-[1.1] tracking-[-0.03em] sm:text-[2.6rem]"
               style={{ fontFamily: "var(--st-font-head)", color: "var(--ab-ink-text)" }}
             >
-              Plan the AI product{" "}
+              Stop building infrastructure.{" "}
               <span className="italic" style={{ fontFamily: "var(--ab-serif)", fontWeight: 400 }}>
-                behind your brand.
+                Start shipping the product.
               </span>
             </h2>
             <p className="mt-4 max-w-xl text-base" style={{ color: "var(--ab-ink-muted)" }}>
-              One working session: what stays, what AgentBlocks adds, and how you launch. Bring your
-              architecture — leave with a plan.
+              One working session: what you keep, what AgentBlocks adds, and how you launch under
+              your brand. Bring your architecture — leave with a plan.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Cta href={BOOKING_URL} variant="invert">

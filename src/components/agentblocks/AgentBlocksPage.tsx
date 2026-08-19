@@ -1,16 +1,16 @@
 import { useMemo } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
-import { BOOKING_URL, HERO, NAV_LINKS, PROOF_STRIP, WORKBENCH_DEMO_URL } from "./content";
+import { BOOKING_URL, HERO, NAV_LINKS, WORKBENCH_DEMO_URL } from "./content";
 import { Chip, Container, Cta, Reveal } from "./primitives";
 import {
-  CasesSection,
-  CompareSection,
-  EngageSection,
-  OemSection,
-  PathsSection,
+  BlocksSection,
+  FaqSection,
+  PartnersSection,
+  ProblemSection,
   SessionSection,
-  ShiftSection,
+  StartSection,
+  WhySection,
 } from "./sections";
 import { agentBlocksVars } from "./theme";
 import { WorkbenchPreview } from "./WorkbenchPreview";
@@ -67,7 +67,7 @@ function Hero() {
       style={{ background: "var(--ab-hero-bg), var(--st-bg)" }}
     >
       <Container>
-        <div className="grid items-center gap-14 pb-14 sm:pb-16 lg:grid-cols-[1.12fr_1fr]">
+        <div className="grid items-center gap-14 pb-20 sm:pb-24 lg:grid-cols-[1.12fr_1fr]">
           <div>
             <Reveal>
               <span
@@ -119,8 +119,8 @@ function Hero() {
                   Plan your AI product
                   <ArrowUpRight className="h-4 w-4" />
                 </Cta>
-                <Cta href="#oem" variant="quiet">
-                  See how AgentBlocks fits your stack
+                <Cta href="#blocks" variant="quiet">
+                  See what&apos;s inside
                   <ArrowRight className="h-4 w-4" />
                 </Cta>
               </div>
@@ -145,27 +145,6 @@ function Hero() {
           </Reveal>
         </div>
       </Container>
-
-      {/* Proof, before the reader has to scroll for it. */}
-      <div className="border-t" style={{ borderColor: "var(--ab-rule)" }}>
-        <Container>
-          <dl className="grid gap-x-10 gap-y-6 py-8 sm:grid-cols-3">
-            {PROOF_STRIP.map((item) => (
-              <div key={item.label}>
-                <dt
-                  className="text-[10px] font-semibold uppercase tracking-[0.16em]"
-                  style={{ color: "var(--st-accent-ink)" }}
-                >
-                  {item.label}
-                </dt>
-                <dd className="mt-1.5 text-sm leading-snug" style={{ color: "var(--st-text)" }}>
-                  {item.fact}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </Container>
-      </div>
     </section>
   );
 }
@@ -211,10 +190,11 @@ function Footer() {
 }
 
 /**
- * The AgentBlocks page: outcome-led hero, proof, why ownership matters, where
- * you start, what you get, who has bought it, how to engage, and the session to
- * book. It wears the same palette, type and component language as the product
- * it is selling.
+ * The AgentBlocks page, in the order a stranger needs it: what it is and who it
+ * is for, who already runs it, the problem it exists for, the infrastructure
+ * that answers that problem, why this one, how to start, the questions that
+ * come up, and the session to book. It wears the same palette, type and
+ * component language as the product it is selling.
  */
 export function AgentBlocksPage() {
   const vars = useMemo(() => agentBlocksVars(), []);
@@ -232,12 +212,12 @@ export function AgentBlocksPage() {
       <Nav />
       <main>
         <Hero />
-        <ShiftSection />
-        <PathsSection />
-        <OemSection />
-        <CasesSection />
-        <EngageSection />
-        <CompareSection />
+        <PartnersSection />
+        <ProblemSection />
+        <BlocksSection />
+        <WhySection />
+        <StartSection />
+        <FaqSection />
         <SessionSection />
       </main>
       <Footer />

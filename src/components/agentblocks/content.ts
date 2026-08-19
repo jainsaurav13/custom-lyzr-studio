@@ -5,78 +5,106 @@
  * than the layout, so the wording lives here as data and the section components
  * stay dumb.
  *
+ * Order of the page: what it is and who it is for → who already runs it → the
+ * problem → the infrastructure that answers it → why this one → how to start →
+ * FAQ → call to action.
+ *
  * Spelling is British throughout, matching the rest of this repo's copy.
  */
 
 /* ------------------------------------------------------------------ *
- * Hero
+ * 1 — What it is, who it is for
  * ------------------------------------------------------------------ */
 
 export const HERO = {
-  eyebrow: "OEM agent infrastructure for ISVs",
-  headline: "Launch AI products",
-  headlineAccent: "under your brand.",
-  sub: "AgentBlocks provides the production infrastructure to build, govern and scale them — without replacing your existing platform.",
+  eyebrow: "For ISVs and software platforms",
+  headline: "Ship AI products,",
+  headlineAccent: "not infrastructure.",
+  sub: "AgentBlocks is the production layer between your platform and the AI products you sell — builder, governance, runtime, deployment and observability, all running under your brand.",
   chips: [
     "Start fresh or bring existing agents",
-    "Co-build, integrate, or self-operate",
-    "Full platform or modular blocks",
+    "Your cloud or your customer's",
+    "One block, or the whole lifecycle",
   ],
 };
 
-/**
- * The proof strip that sits directly under the hero. Deliberately three facts
- * about what is in production — not company growth figures, which say nothing
- * about whether the thing works for a customer.
- */
-export const PROOF_STRIP = [
-  { label: "Deployed", fact: "1M+ agent instances running on the Lyzr platform" },
-  { label: "Anaplan", fact: "Embedded OEM across the full lifecycle" },
-  { label: "WTW", fact: "Governed advisory agents in production" },
-];
-
 /* ------------------------------------------------------------------ *
- * Where you start
+ * 2 — Credibility
  * ------------------------------------------------------------------ */
 
-export interface Path {
+export const CREDIBILITY = {
+  eyebrow: "Already in production",
+  title: "Software companies are shipping on this today.",
+  lede: "Not a reference architecture. The same infrastructure runs behind enterprise products your customers' teams already use every day.",
+  stat: { value: "1M+", label: "agent instances deployed on the Lyzr platform" },
+};
+
+export interface Partner {
   key: string;
-  stage: string;
-  from: string;
-  goal: string;
-  adds: string;
-  keeps: string;
+  name: string;
+  meta: string;
+  status: string;
+  headline: string;
+  facts: Array<{ label: string; value: string }>;
 }
 
-export const PATHS: Path[] = [
+export const PARTNERS: Partner[] = [
   {
-    key: "launch",
-    stage: "Launch",
-    from: "Your first agent product",
-    goal: "Validate the workflow and the business case, then launch your first agent product.",
-    adds: "OEM platform + launch support",
-    keeps: "Nothing to migrate — you start on the platform.",
+    key: "anaplan",
+    name: "Anaplan",
+    meta: "ISV · enterprise planning platform",
+    status: "Embedded OEM",
+    headline: "The Anaplan Agentic Workbench and Marketplace run on AgentBlocks.",
+    facts: [
+      { label: "Stays theirs", value: "Platform, data model, customer UX and brand" },
+      { label: "AgentBlocks provides", value: "The white-labelled lifecycle behind both surfaces" },
+      { label: "Runs in", value: "Anaplan cloud, plus customer-managed AWS, Azure or GCP" },
+    ],
   },
   {
-    key: "harden",
-    stage: "Harden",
-    from: "Prototypes or existing agents",
-    goal: "Add evaluation, governance, security, deployment, rollback and observability.",
-    adds: "Connect your agents. Keep the core logic.",
-    keeps: "Your agents, your prompts, your orchestration.",
-  },
-  {
-    key: "extend",
-    stage: "Extend",
-    from: "Live agents + platform",
-    goal: "Unify policy, audit, quality and cost visibility across everything already running.",
-    adds: "Add selected blocks. Keep your stack.",
-    keeps: "Your platform and every agent already in production.",
+    key: "wtw",
+    name: "WTW",
+    meta: "Enterprise · global advisory & broking",
+    status: "In production",
+    headline: "Governed advisory agents, on a two-year agreement.",
+    facts: [
+      { label: "Stays theirs", value: "Data, domain models and advisory methodology" },
+      { label: "AgentBlocks provides", value: "Governance for retirement advisory and billing" },
+      {
+        label: "Result",
+        value: "Advisory usage moved off consumer ChatGPT and back into WTW's product",
+      },
+    ],
   },
 ];
 
 /* ------------------------------------------------------------------ *
- * What AgentBlocks adds — and what stays
+ * 3 — The problem
+ * ------------------------------------------------------------------ */
+
+export const PROBLEM = {
+  eyebrow: "The problem",
+  title: "The demo took a fortnight. Production has taken a year.",
+  lede: "Every software company can build an agent. Almost none can put one in front of a paying customer quickly — because the hard part was never the agent.",
+  /** What teams end up building instead of product. */
+  burden: [
+    "A registry, because nobody knows what is running or who owns it",
+    "An evaluation harness, because “it looked fine in the demo” is not a release gate",
+    "Guardrails, because the agent can reach real systems and real data",
+    "Versioning and rollback, because a bad prompt is now a production incident",
+    "Per-tenant isolation, because your customers will not share a data boundary",
+    "Traces and cost attribution, because someone has to answer for the bill",
+  ],
+  punchline:
+    "That is nine to eighteen months of platform engineering that no customer will ever pay you for.",
+  answer: {
+    title: "We built that layer so you do not have to.",
+    body: "AgentBlocks is the missing infrastructure between an agent that works and a product you can sell. Your engineers go back to the thing your customers actually buy.",
+  },
+};
+
+/* ------------------------------------------------------------------ *
+ * 4 — The infrastructure
  * ------------------------------------------------------------------ */
 
 export interface Block {
@@ -221,88 +249,70 @@ export const LIFECYCLE = [
 ];
 
 /* ------------------------------------------------------------------ *
- * Customers
+ * 5 — Why AgentBlocks
  * ------------------------------------------------------------------ */
 
-export interface CaseStudy {
-  key: string;
-  customer: string;
-  meta: string;
-  status: string;
-  rows: Array<{ label: string; value: string }>;
-}
-
-export const CASES: CaseStudy[] = [
+export const REASONS = [
   {
-    key: "anaplan",
-    customer: "Anaplan",
-    meta: "ISV · enterprise planning platform · embedded OEM, full lifecycle",
-    status: "Current programme",
-    rows: [
-      { label: "Started at", value: "Launch — first agentic product line, Office of the CFO" },
-      { label: "Stays in place", value: "Anaplan's platform, data model and customer UX" },
-      {
-        label: "AgentBlocks adds",
-        value:
-          "The white-labelled lifecycle powering the Anaplan Agentic Workbench and Marketplace",
-      },
-      { label: "Deployment", value: "Anaplan cloud, plus customer-managed AWS, Azure or GCP" },
-      {
-        label: "Measured on",
-        value: "Daily active users on the Workbench — 40 agents targeted in six months",
-      },
-    ],
+    key: "brand",
+    title: "It ships as your product, not ours",
+    body: "OEM is the design, not a rebrand toggle. Your customers see your brand, your UX and your pricing. They never learn our name — and the relationship stays yours.",
   },
   {
-    key: "wtw",
-    customer: "WTW",
-    meta: "Enterprise · global advisory & broking · two-year agreement",
-    status: "In production",
-    rows: [
-      {
-        label: "Started at",
-        value: "Harden — advisory workflows needed governance before customer exposure",
-      },
-      { label: "Stays in place", value: "WTW's data, domain models and advisory methodology" },
-      {
-        label: "AgentBlocks adds",
-        value: "Governed agents for retirement advisory and billing automation",
-      },
-      {
-        label: "Outcome",
-        value:
-          "End-customer advisory usage moved from consumer ChatGPT back into WTW's governed product",
-      },
-      { label: "Selected over", value: "Replicant" },
-    ],
+    key: "keep",
+    title: "It works with what you already run",
+    body: "Model-, framework- and cloud-agnostic. It governs agents your team built elsewhere just as readily as ones created in the builder. Nothing is ripped out to make room.",
+  },
+  {
+    key: "where",
+    title: "It runs where your customer requires",
+    body: "Your cloud, or inside the customer's own AWS, Azure or GCP. A data boundary you can put in front of a procurement team without a caveat.",
+  },
+  {
+    key: "modular",
+    title: "You take only what you are missing",
+    body: "Already have a runtime but no evaluation? Take evaluation. Starting from nothing? Take the lot. The blocks are priced and adopted independently.",
+  },
+  {
+    key: "governed",
+    title: "Governance is the default, not a roadmap item",
+    body: "Every agent is registered, evaluated, versioned and audited before it reaches a customer. The evidence exists because the platform produced it, not because someone wrote a document.",
+  },
+  {
+    key: "exit",
+    title: "There is a way out",
+    body: "An export path ships with every block. The commercial argument for staying should be that it works — never that leaving is impossible.",
   },
 ];
 
 /* ------------------------------------------------------------------ *
- * Ways to engage
+ * 6 — How to get started
  * ------------------------------------------------------------------ */
 
 export const ENGAGEMENTS = [
   {
     key: "self-serve",
+    step: "01",
     support: "Self-serve",
     title: "License and operate",
-    body: "Your team embeds the platform or selected blocks through APIs and SDKs, with support and SLA from Lyzr.",
+    body: "Your team embeds the platform, or selected blocks, through APIs and SDKs. Support and SLA from Lyzr; everything else is yours.",
     fit: "Mature product and engineering organisations",
   },
   {
     key: "integrate",
+    step: "02",
     support: "Targeted support",
     title: "Integrate with us",
-    body: "A small launch team connects the blocks you select to your existing architecture and rolls out on your release process.",
-    fit: "ISVs with prototypes or an existing platform",
+    body: "A small launch team connects the blocks you select to your existing architecture and rolls out on your release process, then steps back.",
+    fit: "Teams with prototypes, or an existing platform to extend",
   },
   {
     key: "build",
+    step: "03",
     support: "Most support",
     title: "Build with us",
-    body: "A full launch team — product and engineering, working alongside yours — ships your first agentic product, then hands it over.",
-    fit: "ISVs launching their first agentic product",
+    body: "A full launch team — product and engineering, working alongside yours — ships your first agentic product end to end, then hands it over.",
+    fit: "Teams launching their first agentic product",
   },
 ];
 
@@ -310,21 +320,58 @@ export const ENGAGEMENTS = [
 export const OWNERSHIP = [
   {
     who: "You own",
-    body: "The business: product, brand, customer relationship, pricing and roadmap.",
+    body: "The business: product, brand, customer relationship, pricing, roadmap.",
   },
-  {
-    who: "The launch team delivers",
-    body: "The first workflow — designed, built and shipped, then transferred to your team.",
-  },
-  {
-    who: "Lyzr operates",
-    body: "The infrastructure: runtime, governance, deployment and observability, under SLA.",
-  },
+  { who: "The launch team delivers", body: "The first workflow, then transfers it to your team." },
+  { who: "Lyzr operates", body: "Runtime, governance, deployment and observability, under SLA." },
 ];
 
 /* ------------------------------------------------------------------ *
- * Buyer's guide (collapsed — not part of the main scroll)
+ * 7 — FAQ
  * ------------------------------------------------------------------ */
+
+export interface Faq {
+  q: string;
+  a: string;
+  /** Set on the one answer that also renders the comparison table. */
+  table?: boolean;
+}
+
+export const FAQS: Faq[] = [
+  {
+    q: "Do we have to replace our current stack?",
+    a: "No. Your frameworks, models, cloud, IAM, CI/CD and telemetry stay exactly as they are. AgentBlocks connects to them through supported adapters and supplies only the modules you select. Most customers keep everything and add two or three blocks.",
+  },
+  {
+    q: "Can we bring agents we have already built?",
+    a: "Yes — that is the common case. Agents built on other frameworks are connected and then governed like any other: registered, evaluated, versioned and observable. You keep your prompts, your orchestration and your domain logic.",
+  },
+  {
+    q: "Where does it run, and where does customer data live?",
+    a: "In your cloud, or inside your customer's own AWS, Azure or GCP. Conversation history, traces and logs stay inside whichever boundary you deploy into. This is usually the first question an enterprise procurement team asks, and it is why deployment is configurable rather than fixed.",
+  },
+  {
+    q: "Will our customers know they are using Lyzr?",
+    a: "No. The workbench, the marketplace and the builder render in your shell — your palette, typography, component language, domain. Lyzr appears in your contract, not in your product.",
+  },
+  {
+    q: "How is this different from building it ourselves, using a hyperscaler, or buying point tools?",
+    a: "Those are real options, and most customers keep some of them. The difference is what happens at the seams — brand, cross-stack governance and where it deploys.",
+    table: true,
+  },
+  {
+    q: "What happens if we want to leave?",
+    a: "Every block ships with an export path, and it is part of the agreement rather than a favour. Agents, configuration and audit history come with you. We would rather win the renewal on the product than on switching costs.",
+  },
+  {
+    q: "Who runs it in production?",
+    a: "Lyzr operates the infrastructure under support and SLA — runtime, governance, deployment and observability. You own the product, the roadmap and the customer relationship. If you would rather run it yourself, the self-serve model exists for exactly that.",
+  },
+  {
+    q: "What does the commercial arrangement look like?",
+    a: "OEM licensing, priced by the blocks you take and the scale you run them at, with the ownership split written into the agreement. The specifics depend on scope, so they are set in the architecture session rather than guessed at here.",
+  },
+];
 
 export interface CompareRow {
   question: string;
@@ -347,7 +394,7 @@ export const COMPARE: CompareRow[] = [
     build: "Yes, plus everything else",
     hyperscaler: "Strongest on their own stack",
     point: "One tool per problem",
-    agentblocks: "Governs heterogeneous stacks; supported agents have an export path",
+    agentblocks: "Governs heterogeneous stacks; every agent has an export path",
   },
   {
     question: "Runs in your customer's environment",
@@ -357,20 +404,20 @@ export const COMPARE: CompareRow[] = [
     agentblocks: "Your cloud, or the customer's AWS / Azure / GCP",
   },
   {
-    question: "Adoption model",
-    build: "All or nothing — you own the roadmap",
-    hyperscaler: "Deep adoption of their stack",
-    point: "Assemble and integrate yourself",
-    agentblocks: "Modular — individual blocks or the full lifecycle",
+    question: "Time before the first customer sees it",
+    build: "Nine to eighteen months of platform work first",
+    hyperscaler: "Fast to prototype, slow to white-label",
+    point: "Fast per tool, slow to assemble",
+    agentblocks: "The infrastructure already exists — you build the product",
   },
 ];
 
 /* ------------------------------------------------------------------ *
- * Next step
+ * 8 — Call to action
  * ------------------------------------------------------------------ */
 
 export const SESSION_AGENDA = [
-  { step: "01", title: "Scope", body: "Full platform or selected AgentBlocks." },
+  { step: "01", title: "Scope", body: "Full platform, or the specific blocks you are missing." },
   {
     step: "02",
     title: "Architecture",
@@ -381,11 +428,12 @@ export const SESSION_AGENDA = [
 ];
 
 export const NAV_LINKS = [
-  { href: "#shift", label: "Why it matters" },
-  { href: "#paths", label: "Where you start" },
-  { href: "#oem", label: "What you get" },
-  { href: "#cases", label: "Customers" },
-  { href: "#engage", label: "Ways to engage" },
+  { href: "#partners", label: "Customers" },
+  { href: "#problem", label: "The problem" },
+  { href: "#blocks", label: "What's inside" },
+  { href: "#why", label: "Why AgentBlocks" },
+  { href: "#start", label: "Get started" },
+  { href: "#faq", label: "FAQ" },
 ];
 
 /**
