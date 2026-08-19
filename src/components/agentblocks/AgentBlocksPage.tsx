@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
-import { BOOKING_URL, HERO, NAV_LINKS, WORKBENCH_DEMO_URL } from "./content";
+import { BOOKING_URL, HERO, NAV_LINKS } from "./content";
 import { Chip, Container, Cta, Reveal } from "./primitives";
 import {
   BlocksSection,
@@ -130,20 +130,7 @@ function Hero() {
           </div>
 
           <Reveal delay={0.14}>
-            <div>
-              <WorkbenchPreview />
-              <p className="mt-4 text-xs" style={{ color: "var(--st-text-muted)" }}>
-                Example: the workbench wearing one customer&apos;s logo, palette and typeface.{" "}
-                <a
-                  href={WORKBENCH_DEMO_URL}
-                  className="underline underline-offset-2"
-                  style={{ color: "var(--st-accent-ink)" }}
-                >
-                  Open a live one
-                </a>
-                .
-              </p>
-            </div>
+            <WorkbenchPreview />
           </Reveal>
         </div>
       </Container>

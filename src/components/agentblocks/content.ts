@@ -245,13 +245,6 @@ export const CONNECTED = [
   "Your release pipeline",
 ];
 
-export const LIFECYCLE = [
-  { step: "01", title: "Build or connect", body: "A new agent, or one you already run." },
-  { step: "02", title: "Govern & validate", body: "Registered, evaluated, signed off by name." },
-  { step: "03", title: "Deploy & operate", body: "Released to your customers, then watched." },
-  { step: "04", title: "Improve safely", body: "Ship the next version, or roll back in minutes." },
-];
-
 /* ------------------------------------------------------------------ *
  * 5 — Why AgentBlocks
  * ------------------------------------------------------------------ */
@@ -320,14 +313,30 @@ export const ENGAGEMENTS = [
   },
 ];
 
-/** Who owns what once the launch team rolls off. */
+/**
+ * Who owns what once the launch team rolls off. `holder` is the possessive the
+ * column is set in — the whole point of the panel is that the first column says
+ * "Yours" and stays that way.
+ */
 export const OWNERSHIP = [
   {
+    holder: "Yours",
     who: "You own",
-    body: "The business: product, brand, customer relationship, pricing, roadmap.",
+    what: "The business",
+    body: "Product, brand, the customer relationship, pricing and roadmap. Permanently, and without an asterisk.",
   },
-  { who: "The launch team delivers", body: "The first workflow, then transfers it to your team." },
-  { who: "Lyzr operates", body: "Runtime, governance, deployment and observability, under SLA." },
+  {
+    holder: "Temporary",
+    who: "The launch team delivers",
+    what: "The first workflow",
+    body: "Designed, built and shipped alongside your team — then handed over and off your payroll.",
+  },
+  {
+    holder: "Ours",
+    who: "Lyzr operates",
+    what: "The infrastructure",
+    body: "Runtime, governance, deployment and observability, run under support and SLA.",
+  },
 ];
 
 /* ------------------------------------------------------------------ *
@@ -449,6 +458,3 @@ export const NAV_LINKS = [
  * repo, so it is the only thing to change.
  */
 export const BOOKING_URL = "https://www.lyzr.ai/";
-
-/** Where "see an example workbench" goes — the live white-label demo. */
-export const WORKBENCH_DEMO_URL = "/";
