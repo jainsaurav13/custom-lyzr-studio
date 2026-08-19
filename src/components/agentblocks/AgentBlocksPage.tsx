@@ -67,56 +67,56 @@ function Hero() {
       style={{ background: "var(--ab-hero-bg), var(--st-bg)" }}
     >
       <Container>
-        {/* The definition gets the full container width — it is the one thing a
-            stranger has to read, and it does not fit a narrow column. */}
-        <Reveal>
-          <span
-            className="inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em]"
-            style={{
-              borderColor: "var(--st-border-strong)",
-              color: "var(--st-accent-ink)",
-              background: "var(--st-surface)",
-            }}
-          >
-            {HERO.eyebrow}
-          </span>
-
-          <h1
-            className="mt-6 max-w-4xl text-balance text-[2.25rem] font-semibold leading-[1.08] tracking-[-0.035em] sm:text-[3.5rem]"
-            style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
-          >
-            {HERO.definition.lead}{" "}
-            <span
-              className="italic"
-              style={{
-                fontFamily: "var(--ab-serif)",
-                fontWeight: 400,
-                color: "var(--st-accent-ink)",
-              }}
-            >
-              {HERO.definition.emphasis}
-            </span>{" "}
-            {HERO.definition.tail}
-          </h1>
-        </Reveal>
-
-        <div className="grid items-start gap-10 pb-16 sm:pb-20 lg:grid-cols-[1fr_1.05fr] lg:gap-14">
+        {/* Headline and screenshot share one row: the h1 is sized to the column
+            it sits in, so the preview stays beside it rather than below. */}
+        <div className="grid items-center gap-10 pb-16 sm:pb-20 lg:grid-cols-[1.08fr_1fr] lg:gap-12">
           <div>
-            <Reveal delay={0.06}>
+            <Reveal>
+              <span
+                className="inline-flex items-center rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em]"
+                style={{
+                  borderColor: "var(--st-border-strong)",
+                  color: "var(--st-accent-ink)",
+                  background: "var(--st-surface)",
+                }}
+              >
+                {HERO.eyebrow}
+              </span>
+
+              <h1
+                className="mt-5 text-balance text-[2.1rem] font-semibold leading-[1.1] tracking-[-0.035em] sm:text-[2.7rem]"
+                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+              >
+                {HERO.definition.lead}{" "}
+                <span
+                  className="italic"
+                  style={{
+                    fontFamily: "var(--ab-serif)",
+                    fontWeight: 400,
+                    color: "var(--st-accent-ink)",
+                  }}
+                >
+                  {HERO.definition.emphasis}
+                </span>{" "}
+                {HERO.definition.tail}
+              </h1>
+
               <p
-                className="mt-6 max-w-xl text-base leading-relaxed sm:text-lg"
+                className="mt-5 max-w-xl text-base leading-relaxed"
                 style={{ color: "var(--st-text-muted)" }}
               >
                 {HERO.sub}
               </p>
+            </Reveal>
 
-              <div className="mt-7 flex flex-wrap gap-2">
+            <Reveal delay={0.08}>
+              <div className="mt-6 flex flex-wrap gap-2">
                 {HERO.chips.map((chip) => (
                   <Chip key={chip}>{chip}</Chip>
                 ))}
               </div>
 
-              <div className="mt-9 flex flex-wrap gap-3">
+              <div className="mt-8 flex flex-wrap gap-3">
                 <Cta href={BOOKING_URL}>
                   Plan your AI product
                   <ArrowUpRight className="h-4 w-4" />
@@ -130,7 +130,7 @@ function Hero() {
           </div>
 
           <Reveal delay={0.14}>
-            <div className="mt-4 lg:mt-0">
+            <div>
               <WorkbenchPreview />
               <p className="mt-4 text-xs" style={{ color: "var(--st-text-muted)" }}>
                 Example: the workbench wearing one customer&apos;s logo, palette and typeface.{" "}
