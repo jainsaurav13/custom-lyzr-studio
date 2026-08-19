@@ -88,7 +88,7 @@ export const PARTNERS: Partner[] = [
 
 export const PROBLEM = {
   eyebrow: "The problem",
-  title: "Two weeks to build an agent. A year to put it in customers’ hands.",
+  title: "Two weeks to build. A year to ship.",
   lede: "Every software company can build an agent. Almost none can put one in front of a paying customer quickly. The hard part was never the agent.",
   /** What teams end up building instead of product. */
   burden: [
