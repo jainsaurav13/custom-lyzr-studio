@@ -201,14 +201,7 @@ export function BlocksSection() {
         <SectionHead
           tone="invert"
           eyebrow="What's inside"
-          title={
-            <>
-              Seven blocks between your platform{" "}
-              <span className="italic" style={{ fontFamily: "var(--ab-serif)", fontWeight: 400 }}>
-                and the products you sell.
-              </span>
-            </>
-          }
+          title="What you can OEM"
           lede="Take the complete lifecycle, or license only the blocks your stack is missing. Your existing architecture stays the foundation — nothing gets ripped out to make room."
         />
       </Reveal>
@@ -416,7 +409,7 @@ export function WhySection() {
       <Reveal>
         <SectionHead
           eyebrow="Why AgentBlocks"
-          title="Six reasons this is the layer to license rather than build."
+          title="Built to fit, not lock you in"
           lede="Every one of these is a decision you would otherwise have to make yourself, defend to a customer's procurement team, and then maintain."
         />
       </Reveal>
@@ -455,7 +448,7 @@ export function StartSection() {
       <Reveal>
         <SectionHead
           eyebrow="Get started"
-          title="Three ways in, depending on how much of the first launch you want to do yourself."
+          title="Start where you are. We’ll meet you there."
           lede="Every one preserves the same principle — your brand, your customer, your economics."
         />
       </Reveal>
