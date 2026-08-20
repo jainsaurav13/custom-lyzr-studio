@@ -374,7 +374,7 @@ export function WhySection() {
         <SectionHead
           eyebrow="Why AgentBlocks"
           title="Built to fit, not lock you in"
-          lede="Each of these is a decision you would otherwise have to make yourself, defend to a customer’s procurement team, and then maintain."
+          lede="Use the infrastructure you need, without giving up control of your product, stack, deployment, or customer."
         />
       </Reveal>
 
