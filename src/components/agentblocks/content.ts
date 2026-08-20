@@ -9,7 +9,8 @@
  * problem → the infrastructure that answers it → why this one → how to start →
  * FAQ → call to action.
  *
- * Spelling is British throughout, matching the rest of this repo's copy.
+ * Spelling is British throughout, matching the rest of this repo's copy, with
+ * one exception: "white-labeled" is the spelling the market searches for.
  */
 
 /* ------------------------------------------------------------------ *
@@ -25,7 +26,7 @@ export const HERO = {
   eyebrow: "For ISVs and software platforms",
   definition: {
     lead: "Launch a",
-    emphasis: "fully sovereign, white-labelled",
+    emphasis: "fully sovereign, white-labeled",
     tail: "enterprise AI agent platform.",
   },
   sub: "With AgentBlocks, adopt the complete platform or embed production-grade SDKs into your existing product, while maintaining your own brand.",
@@ -43,7 +44,7 @@ export const HERO = {
  */
 export const CREDIBILITY = {
   eyebrow: "Agents in production",
-  title: "Already running, under other companies’ brands.",
+  title: "Already in production under Fortune 500s.",
 };
 
 /**
@@ -68,7 +69,7 @@ export const FLAGSHIP = {
     },
     {
       label: "What Lyzr provides",
-      value: "The white-labelled build, governance and runtime layer underneath",
+      value: "The white-labeled build, governance and runtime layer underneath",
     },
     {
       label: "Where it runs",
@@ -77,7 +78,6 @@ export const FLAGSHIP = {
   ],
   punchline:
     "They had the engineers to build this layer themselves. They licensed it and shipped the product instead.",
-  note: "Named reference available under NDA.",
 };
 
 /** The logo strip: enterprises whose products already run on Lyzr. */
@@ -163,7 +163,7 @@ export const BLOCKS: Block[] = [
   {
     key: "builder",
     name: "Agent Builder",
-    tag: "White-labelled creation",
+    tag: "White-labeled creation",
     summary:
       "A visual builder your customers, or your own delivery team, use to create agents without writing a platform.",
     customerSees: "They describe the work; an agent is drafted, tested and published.",

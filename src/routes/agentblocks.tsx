@@ -3,9 +3,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AgentBlocksPage } from "@/components/agentblocks/AgentBlocksPage";
 import { FONT_HREF } from "@/components/agentblocks/theme";
 
-const TITLE = "AgentBlocks: launch a sovereign, white-labelled AI agent platform";
+const TITLE = "AgentBlocks: launch a sovereign, white-labeled AI agent platform";
 const DESCRIPTION =
-  "AgentBlocks enables software companies to launch a fully sovereign, white-labelled enterprise AI agent platform. Adopt the complete platform or embed production-grade SDKs into your existing product while maintaining your own brand.";
+  "AgentBlocks enables software companies to launch a fully sovereign, white-labeled enterprise AI agent platform. Adopt the complete platform or embed production-grade SDKs into your existing product while maintaining your own brand.";
 
 /**
  * The AgentBlocks pitch, as a page an executive can be sent cold. The studio at

@@ -126,20 +126,14 @@ export function ProductionSection() {
 
           {/* The line an ISV is meant to leave with, set apart from the facts. */}
           <div
-            className="flex flex-col gap-3 border-t px-6 py-7 sm:flex-row sm:items-baseline sm:justify-between sm:px-9"
+            className="border-t px-6 py-7 sm:px-9"
             style={{ borderColor: "var(--st-text)", background: "var(--st-surface-2)" }}
           >
             <p
-              className="max-w-2xl text-lg leading-snug text-balance italic sm:text-[1.375rem]"
+              className="max-w-3xl text-lg leading-snug text-balance italic sm:text-[1.375rem]"
               style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
             >
               {FLAGSHIP.punchline}
-            </p>
-            <p
-              className="shrink-0 text-xs whitespace-nowrap"
-              style={{ color: "var(--st-text-faint)" }}
-            >
-              {FLAGSHIP.note}
             </p>
           </div>
         </Panel>
