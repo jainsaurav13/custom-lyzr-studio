@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, ArrowUpRight, Check, ChevronDown, Minus, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, ChevronDown, Minus } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -106,6 +106,27 @@ export function PartnersSection() {
  * 3 — The problem
  * ------------------------------------------------------------------ */
 
+/** Both roadmaps close on the same word, which is where the argument lands. */
+function Total({ children, tone = "ink" }: { children: string; tone?: "ink" | "accent" }) {
+  return (
+    <div
+      className="mt-6 border-t pt-5"
+      style={{ borderColor: tone === "accent" ? "var(--st-accent-ink)" : "var(--st-text)" }}
+    >
+      <Label>Total</Label>
+      <p
+        className="mt-1.5 text-lg leading-snug sm:text-xl"
+        style={{
+          fontFamily: "var(--ab-serif)",
+          color: tone === "accent" ? "var(--st-accent-ink)" : "var(--st-text)",
+        }}
+      >
+        {children}
+      </p>
+    </div>
+  );
+}
+
 export function ProblemSection() {
   return (
     <Section id="problem" tone="plain">
@@ -124,50 +145,58 @@ export function ProblemSection() {
         />
       </Reveal>
 
-      <div className="mt-12 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+      {/* Two roadmaps, side by side. The left is a bill of materials rather than
+          a list of complaints; the right is the same decision, made the other
+          way. Each closes on a "Total", and the two totals are the argument. */}
+      <div className="mt-12 grid gap-x-14 gap-y-10 lg:grid-cols-[1.25fr_1fr]">
         <Reveal>
           <div>
-            <Label>What your team ends up building instead of product</Label>
-            <ul className="mt-4 space-y-3">
-              {PROBLEM.burden.map((item) => (
-                <li key={item} className="flex gap-3 text-sm leading-relaxed">
-                  <X
-                    className="mt-0.5 h-4 w-4 shrink-0"
-                    style={{ color: "var(--st-danger)" }}
-                    aria-hidden="true"
-                  />
-                  <span style={{ color: "var(--st-text)" }}>{item}</span>
-                </li>
-              ))}
-            </ul>
-            <p
-              className="mt-6 border-t pt-5 text-lg leading-snug sm:text-xl"
-              style={{
-                borderColor: "var(--ab-rule)",
-                fontFamily: "var(--ab-serif)",
-                color: "var(--st-text)",
-              }}
-            >
-              {PROBLEM.punchline}
+            <Label>{PROBLEM.build.label}</Label>
+            <p className="mt-2 text-sm" style={{ color: "var(--st-text-muted)" }}>
+              {PROBLEM.build.lede}
             </p>
+
+            <dl className="mt-6">
+              {PROBLEM.build.items.map((row, index) => (
+                <div
+                  key={row.item}
+                  className="grid gap-x-6 gap-y-0.5 border-t py-3.5 sm:grid-cols-[12.5rem_1fr]"
+                  style={{
+                    borderColor: index === 0 ? "var(--st-border-strong)" : "var(--ab-rule)",
+                  }}
+                >
+                  <dt className="text-sm font-medium" style={{ color: "var(--st-text)" }}>
+                    {row.item}
+                  </dt>
+                  <dd className="text-sm leading-relaxed" style={{ color: "var(--st-text-muted)" }}>
+                    {row.need}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+
+            <Total>{PROBLEM.build.total}</Total>
           </div>
         </Reveal>
 
-        <Reveal delay={0.08}>
+        <Reveal delay={0.08} className="h-full">
           <Panel
-            className="p-7"
+            className="flex h-full flex-col p-7"
             style={{ background: "var(--st-accent-soft)", borderColor: "var(--st-accent-ink)" }}
           >
             <Label>{PROBLEM.answer.label}</Label>
             <h3
-              className="mt-3 text-2xl font-semibold leading-tight tracking-[-0.02em]"
+              className="mt-2 text-2xl font-semibold leading-tight tracking-[-0.02em]"
               style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
             >
               {PROBLEM.answer.title}
             </h3>
-            <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--st-text)" }}>
+            <p className="mt-4 flex-1 text-sm leading-relaxed" style={{ color: "var(--st-text)" }}>
               {PROBLEM.answer.body}
             </p>
+
+            <Total tone="accent">{PROBLEM.answer.total}</Total>
+
             <a
               href="#blocks"
               className="mt-6 inline-flex items-center gap-2 text-sm font-medium"

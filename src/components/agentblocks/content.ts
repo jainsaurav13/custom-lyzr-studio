@@ -86,27 +86,40 @@ export const PARTNERS: Partner[] = [
  * 3 — The problem
  * ------------------------------------------------------------------ */
 
+/**
+ * The section is a fork in the road, so the data is shaped like one: a ledger
+ * of what building it yourself costs, and the alternative, each closing on a
+ * "total" line. The six items are the same six as before; they are inventory
+ * now rather than six red crosses in a row.
+ */
 export const PROBLEM = {
   eyebrow: "The problem",
-  title: "Two weeks to build. A year to ship.",
+  title: "The agent is the easy part.",
   lede: "Most software companies are already building or extending their agent platforms. The challenge isn’t whether they can build the production infrastructure around them.",
-  /** The pivot of the whole section, so it is set apart and given full weight. */
   ledeKicker: "It’s whether they should.",
-  /** What teams end up building instead of product. */
-  burden: [
-    "A registry, because nobody knows what is running or who owns it",
-    "An evaluation harness, because “it looked fine in the demo” is not a release gate",
-    "Guardrails, because the agent can reach real systems and real data",
-    "Versioning and rollback, because a bad prompt is now a production incident",
-    "Per-tenant isolation, because your customers will not share a data boundary",
-    "Traces and cost attribution, because someone has to answer for the bill",
-  ],
-  punchline:
-    "That is nine to eighteen months of platform engineering that no customer will ever pay you for.",
+
+  build: {
+    label: "Roadmap A: build it yourself",
+    lede: "Six pieces of platform engineering, before a single customer sees anything.",
+    items: [
+      { item: "Registry", need: "Nobody knows what is running, or who owns it" },
+      {
+        item: "Evaluation harness",
+        need: "“It looked fine in the demo” is not a release gate",
+      },
+      { item: "Guardrails", need: "The agent can reach real systems and real data" },
+      { item: "Versioning and rollback", need: "A bad prompt is now a production incident" },
+      { item: "Per-tenant isolation", need: "Your customers will not share a data boundary" },
+      { item: "Traces and cost attribution", need: "Someone has to answer for the bill" },
+    ],
+    total: "Nine to eighteen months, and no customer will ever pay you for it.",
+  },
+
   answer: {
-    label: "The better roadmap",
+    label: "Roadmap B: license it",
     title: "Build what differentiates you. License what doesn’t.",
     body: "AgentBlocks provides the production infrastructure your agent platform needs, so your engineers can focus on the AI products and experiences your customers actually pay for.",
+    total: "All six, from day one. You build the product.",
     cta: "See the AgentBlocks layer",
   },
 };
