@@ -99,7 +99,7 @@ export const PROBLEM = {
   ledeKicker: "It’s whether they should.",
 
   build: {
-    label: "Roadmap A: build it yourself",
+    label: "If you build it yourself",
     lede: "Six pieces of platform engineering, before a single customer sees anything.",
     items: [
       { item: "Registry", need: "Nobody knows what is running, or who owns it" },
@@ -115,11 +115,13 @@ export const PROBLEM = {
     total: "Nine to eighteen months, and no customer will ever pay you for it.",
   },
 
+  withLabel: "With AgentBlocks",
+
   answer: {
-    label: "Roadmap B: license it",
-    title: "Build what differentiates you. License what doesn’t.",
+    label: "The better roadmap",
+    title: { lead: "Build what differentiates you.", accent: "License what doesn’t." },
     body: "AgentBlocks provides the production infrastructure your agent platform needs, so your engineers can focus on the AI products and experiences your customers actually pay for.",
-    total: "All six, from day one. You build the product.",
+    total: "All six, from day one.",
     cta: "See the AgentBlocks layer",
   },
 };

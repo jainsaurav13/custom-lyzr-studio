@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import { ArrowRight, ArrowUpRight, Check, ChevronDown, Minus } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -106,57 +106,6 @@ export function PartnersSection() {
  * 3 — The problem
  * ------------------------------------------------------------------ */
 
-/** The coloured kicker each roadmap ends on. Same shape, opposite verdict. */
-function Total({ children, tone }: { children: string; tone: "cost" | "gain" }) {
-  const ink = tone === "cost" ? "var(--ab-cost)" : "var(--ab-gain)";
-  const line = tone === "cost" ? "var(--ab-cost-line)" : "var(--ab-gain-line)";
-  return (
-    <div className="mt-6 border-t pt-5" style={{ borderColor: line }}>
-      <span
-        className="text-[10px] font-semibold uppercase tracking-[0.18em]"
-        style={{ color: ink }}
-      >
-        Total
-      </span>
-      <p
-        className="mt-1.5 text-lg leading-snug text-balance"
-        style={{ fontFamily: "var(--ab-serif)", color: ink }}
-      >
-        {children}
-      </p>
-    </div>
-  );
-}
-
-/** One of the two roadmap cards. Both are the same object, differently tinted. */
-function RoadmapCard({
-  tone,
-  label,
-  children,
-}: {
-  tone: "cost" | "gain";
-  label: string;
-  children: ReactNode;
-}) {
-  return (
-    <div
-      className="flex h-full flex-col rounded-[var(--st-radius-lg)] border p-6 sm:p-7"
-      style={{
-        background: tone === "cost" ? "var(--ab-cost-soft)" : "var(--ab-gain-soft)",
-        borderColor: tone === "cost" ? "var(--ab-cost-line)" : "var(--ab-gain-line)",
-      }}
-    >
-      <span
-        className="text-[10px] font-semibold uppercase tracking-[0.18em]"
-        style={{ color: tone === "cost" ? "var(--ab-cost)" : "var(--ab-gain)" }}
-      >
-        {label}
-      </span>
-      {children}
-    </div>
-  );
-}
-
 export function ProblemSection() {
   return (
     <Section id="problem" tone="plain">
@@ -175,93 +124,122 @@ export function ProblemSection() {
         />
       </Reveal>
 
-      {/* Two cards of equal weight: the same six pieces of work, costed one way
-          and included the other. Each closes on a "Total", and the two totals
-          side by side are the argument. */}
-      <div className="mt-12 grid items-stretch gap-5 lg:grid-cols-2">
-        <Reveal className="h-full">
-          <RoadmapCard tone="cost" label={PROBLEM.build.label}>
-            <p className="mt-3 text-sm" style={{ color: "var(--st-text-muted)" }}>
-              {PROBLEM.build.lede}
-            </p>
-
-            <dl className="mt-5 flex-1">
-              {PROBLEM.build.items.map((row) => (
-                <div
-                  key={row.item}
-                  className="border-t py-3"
-                  style={{ borderColor: "var(--ab-cost-line)" }}
-                >
-                  <dt className="text-sm font-medium" style={{ color: "var(--st-text)" }}>
-                    {row.item}
-                  </dt>
-                  <dd
-                    className="mt-0.5 text-sm leading-relaxed"
-                    style={{ color: "var(--st-text-muted)" }}
-                  >
-                    {row.need}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-
-            <Total tone="cost">{PROBLEM.build.total}</Total>
-          </RoadmapCard>
-        </Reveal>
-
-        <Reveal delay={0.08} className="h-full">
-          <RoadmapCard tone="gain" label={PROBLEM.answer.label}>
-            <h3
-              className="mt-3 text-2xl font-semibold leading-tight tracking-[-0.02em]"
-              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+      {/* One ledger in the page's own idiom: hairline rows, small-caps column
+          heads, the copper accent carrying the answer column. The totals row is
+          where the two roadmaps meet. */}
+      <Reveal delay={0.06}>
+        <div className="mt-12">
+          <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 pb-4">
+            <div>
+              <Label>{PROBLEM.build.label}</Label>
+              <p className="mt-1 text-sm" style={{ color: "var(--st-text-muted)" }}>
+                {PROBLEM.build.lede}
+              </p>
+            </div>
+            <span
+              className="text-[10px] font-semibold uppercase tracking-[0.16em]"
+              style={{ color: "var(--st-accent-ink)" }}
             >
-              {PROBLEM.answer.title}
-            </h3>
-            <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--st-text)" }}>
-              {PROBLEM.answer.body}
-            </p>
+              {PROBLEM.withLabel}
+            </span>
+          </div>
 
-            {/* The same six line items, answered. Mirroring the left ledger row
-                for row is the comparison, and it is what keeps the two cards
-                the same height without dead space. */}
-            <ul className="mt-5 flex-1">
-              {PROBLEM.build.items.map((row) => (
-                <li
-                  key={row.item}
-                  className="flex items-center gap-2.5 border-t py-[0.83rem] text-sm"
-                  style={{ borderColor: "var(--ab-gain-line)" }}
-                >
+          <dl>
+            {PROBLEM.build.items.map((row, index) => (
+              <div
+                key={row.item}
+                className="grid items-baseline gap-x-6 gap-y-1 border-t py-4 sm:grid-cols-[13rem_1fr_auto]"
+                style={{
+                  borderColor: index === 0 ? "var(--st-border-strong)" : "var(--ab-rule)",
+                }}
+              >
+                <dt className="text-sm font-medium" style={{ color: "var(--st-text)" }}>
+                  {row.item}
+                </dt>
+                <dd className="text-sm leading-relaxed" style={{ color: "var(--st-text-muted)" }}>
+                  {row.need}
+                </dd>
+                <dd className="flex items-center gap-1.5 sm:justify-end">
                   <Check
-                    className="h-4 w-4 shrink-0"
-                    style={{ color: "var(--ab-gain)" }}
+                    className="h-3.5 w-3.5 shrink-0"
+                    style={{ color: "var(--st-accent-ink)" }}
                     aria-hidden="true"
                   />
-                  <span className="font-medium" style={{ color: "var(--st-text)" }}>
-                    {row.item}
-                  </span>
                   <span
-                    className="ml-auto text-[10px] font-semibold uppercase tracking-[0.14em]"
-                    style={{ color: "var(--ab-gain)" }}
+                    className="text-[10px] font-semibold uppercase tracking-[0.14em]"
+                    style={{ color: "var(--st-accent-ink)" }}
                   >
                     Included
                   </span>
-                </li>
-              ))}
-            </ul>
+                </dd>
+              </div>
+            ))}
+          </dl>
 
-            <Total tone="gain">{PROBLEM.answer.total}</Total>
+          <div
+            className="grid items-baseline gap-x-6 gap-y-1 border-t py-5 sm:grid-cols-[13rem_1fr_auto]"
+            style={{ borderColor: "var(--st-text)" }}
+          >
+            <span>
+              <Label>Total</Label>
+            </span>
+            <p
+              className="text-lg leading-snug"
+              style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
+            >
+              {PROBLEM.build.total}
+            </p>
+            <p
+              className="text-lg leading-snug sm:text-right"
+              style={{ fontFamily: "var(--ab-serif)", color: "var(--st-accent-ink)" }}
+            >
+              {PROBLEM.answer.total}
+            </p>
+          </div>
+        </div>
+      </Reveal>
 
+      {/* The conclusion as a typographic band, matching the closing section's
+          heading-left, detail-right layout rather than sitting in a box. */}
+      <Reveal delay={0.1}>
+        <div
+          className="mt-14 grid gap-x-14 gap-y-6 border-t pt-8 lg:grid-cols-2"
+          style={{ borderColor: "var(--st-border-strong)" }}
+        >
+          <div>
+            <Label>{PROBLEM.answer.label}</Label>
+            <h3
+              className="mt-3 text-2xl font-semibold leading-snug tracking-[-0.02em] sm:text-3xl"
+              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+            >
+              {PROBLEM.answer.title.lead}{" "}
+              <span
+                className="italic"
+                style={{
+                  fontFamily: "var(--ab-serif)",
+                  fontWeight: 400,
+                  color: "var(--st-accent-ink)",
+                }}
+              >
+                {PROBLEM.answer.title.accent}
+              </span>
+            </h3>
+          </div>
+          <div className="lg:pt-1">
+            <p className="text-sm leading-relaxed" style={{ color: "var(--st-text-muted)" }}>
+              {PROBLEM.answer.body}
+            </p>
             <a
               href="#blocks"
               className="mt-5 inline-flex items-center gap-2 text-sm font-medium"
-              style={{ color: "var(--ab-gain)" }}
+              style={{ color: "var(--st-accent-ink)" }}
             >
               {PROBLEM.answer.cta}
               <ArrowRight className="h-4 w-4" />
             </a>
-          </RoadmapCard>
-        </Reveal>
-      </div>
+          </div>
+        </div>
+      </Reveal>
     </Section>
   );
 }
