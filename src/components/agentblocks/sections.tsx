@@ -602,9 +602,9 @@ export function SessionSection() {
               className="mt-3 text-[2rem] font-semibold leading-[1.1] tracking-[-0.03em] sm:text-[2.6rem]"
               style={{ fontFamily: "var(--st-font-head)", color: "var(--ab-ink-text)" }}
             >
-              Stop building infrastructure.{" "}
+              Own the product.{" "}
               <span className="italic" style={{ fontFamily: "var(--ab-serif)", fontWeight: 400 }}>
-                Start shipping the product.
+                Skip the infrastructure build.
               </span>
             </h2>
             <p className="mt-4 max-w-xl text-base" style={{ color: "var(--ab-ink-muted)" }}>
