@@ -55,7 +55,7 @@ export const CREDIBILITY = {
 export const FLAGSHIP = {
   label: "The reference that matters for ISVs",
   headline: {
-    lead: "A billion-dollar enterprise planning platform is using Lyzr’s infrastructure",
+    lead: "A billion-dollar enterprise planning SaaS is using Lyzr’s infrastructure",
     accent: "to power their agent platform.",
   },
   facts: [

@@ -45,7 +45,8 @@ export function ProductionSection() {
         <SectionHead
           eyebrow={CREDIBILITY.eyebrow}
           title={CREDIBILITY.title}
-          className="max-w-2xl"
+          // Wide enough that the heading holds one line on a laptop.
+          className="max-w-none"
         />
       </Reveal>
 
