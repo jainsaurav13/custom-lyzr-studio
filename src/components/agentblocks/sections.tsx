@@ -10,95 +10,171 @@ import {
   COMPARE,
   CONNECTED,
   CREDIBILITY,
+  FLAGSHIP,
   ENGAGEMENTS,
   FAQS,
   FOUNDATION,
-  PARTNERS,
   PROBLEM,
   REASONS,
   SESSION_AGENDA,
   YOURS_ALONE,
+  TRUSTED_BY,
   YOUR_STACK,
 } from "./content";
-import { Chip, Cta, Eyebrow, Label, Panel, Reveal, Section, SectionHead } from "./primitives";
+import {
+  Accent,
+  Chip,
+  Cta,
+  Eyebrow,
+  Label,
+  Panel,
+  Reveal,
+  Section,
+  SectionHead,
+} from "./primitives";
 import { StatusDot } from "@/components/studio/ui";
 
 /* ------------------------------------------------------------------ *
  * 2 — Credibility
  * ------------------------------------------------------------------ */
 
-export function PartnersSection() {
+export function ProductionSection() {
   return (
-    <Section id="partners" tone="paper">
+    <Section id="production" tone="paper">
       <Reveal>
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <SectionHead
-            eyebrow={CREDIBILITY.eyebrow}
-            title={CREDIBILITY.title}
-            lede={CREDIBILITY.lede}
-            className="max-w-2xl"
-          />
-          <div className="shrink-0 lg:text-right">
-            <p
-              className="text-5xl font-semibold tracking-[-0.04em]"
-              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
-            >
-              {CREDIBILITY.stat.value}
-            </p>
-            <p className="mt-1 max-w-[16rem] text-sm" style={{ color: "var(--st-text-muted)" }}>
-              {CREDIBILITY.stat.label}
-            </p>
-          </div>
-        </div>
+        <SectionHead
+          eyebrow={CREDIBILITY.eyebrow}
+          title={CREDIBILITY.title}
+          lede={CREDIBILITY.lede}
+          className="max-w-2xl"
+        />
       </Reveal>
 
-      <div className="mt-12 grid gap-5 lg:grid-cols-2">
-        {PARTNERS.map((partner, index) => (
-          <Reveal key={partner.key} delay={index * 0.08}>
-            <Panel className="flex h-full flex-col p-6">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h3
-                  className="text-2xl font-semibold tracking-[-0.02em]"
-                  style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
-                >
-                  {partner.name}
-                </h3>
-                <span
-                  className="rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em]"
-                  style={{ background: "var(--st-accent-soft)", color: "var(--st-accent-ink)" }}
-                >
-                  {partner.status}
-                </span>
-              </div>
-              <p className="mt-1 text-xs" style={{ color: "var(--st-text-muted)" }}>
-                {partner.meta}
-              </p>
-              <p
-                className="mt-4 text-base leading-snug"
+      {/* The scale, read as one line of three. Hairlines rather than cards, so
+          the numbers carry the weight instead of the containers. */}
+      <Reveal delay={0.06}>
+        <dl
+          className="mt-12 grid gap-px border-t sm:grid-cols-3"
+          style={{ borderColor: "var(--st-text)" }}
+        >
+          {CREDIBILITY.stats.map((stat) => (
+            <div
+              key={stat.value}
+              className="border-b py-6 sm:border-b-0 sm:border-l sm:pl-6 sm:first:border-l-0 sm:first:pl-0"
+              style={{ borderColor: "var(--ab-rule)" }}
+            >
+              <dt
+                className="text-[2.5rem] font-semibold leading-none tracking-[-0.04em]"
                 style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
               >
-                {partner.headline}
-              </p>
+                {stat.value}
+              </dt>
+              <dd
+                className="mt-2 max-w-[15rem] text-sm leading-snug"
+                style={{ color: "var(--st-text-muted)" }}
+              >
+                {stat.label}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </Reveal>
 
-              <dl
-                className="mt-5 space-y-3 border-t pt-4"
+      {/* The flagship. One box, and it is the loudest thing in the section: the
+          account cannot be named yet, so the shape of the deal has to do the
+          work the logo would have done. */}
+      <Reveal delay={0.12}>
+        <Panel
+          className="mt-14 overflow-hidden"
+          style={{ background: "var(--st-surface)", borderColor: "var(--st-border-strong)" }}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3 px-6 pt-6 sm:px-9 sm:pt-8">
+            <Label>{FLAGSHIP.label}</Label>
+            <span className="inline-flex items-center gap-2">
+              <StatusDot tone="success" />
+              <span
+                className="text-[10px] font-semibold uppercase tracking-[0.14em]"
+                style={{ color: "var(--st-success)" }}
+              >
+                Live, embedded OEM
+              </span>
+            </span>
+          </div>
+
+          <h3
+            className="mt-5 px-6 text-balance text-[1.5rem] leading-[1.2] font-semibold tracking-[-0.03em] sm:px-9 sm:text-[2.05rem]"
+            style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+          >
+            {FLAGSHIP.headline.lead} <Accent>{FLAGSHIP.headline.accent}</Accent>
+          </h3>
+
+          <dl
+            className="mt-8 grid border-t sm:grid-cols-2"
+            style={{ borderColor: "var(--ab-rule)" }}
+          >
+            {FLAGSHIP.facts.map((fact, index) => (
+              <div
+                key={fact.label}
+                className={cn(
+                  "border-b px-6 py-5 sm:px-9",
+                  index % 2 === 1 && "sm:border-l",
+                  index >= FLAGSHIP.facts.length - 2 && "sm:border-b-0",
+                  index === FLAGSHIP.facts.length - 1 && "border-b-0",
+                )}
                 style={{ borderColor: "var(--ab-rule)" }}
               >
-                {partner.facts.map((fact) => (
-                  <div key={fact.label}>
-                    <dt>
-                      <Label>{fact.label}</Label>
-                    </dt>
-                    <dd className="mt-1 text-sm" style={{ color: "var(--st-text-muted)" }}>
-                      {fact.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </Panel>
-          </Reveal>
-        ))}
-      </div>
+                <dt>
+                  <Label>{fact.label}</Label>
+                </dt>
+                <dd
+                  className="mt-1.5 text-[0.9375rem] leading-snug"
+                  style={{ color: "var(--st-text)" }}
+                >
+                  {fact.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+
+          {/* The line an ISV is meant to leave with, set apart from the facts. */}
+          <div
+            className="flex flex-col gap-3 border-t px-6 py-7 sm:flex-row sm:items-baseline sm:justify-between sm:px-9"
+            style={{ borderColor: "var(--st-text)", background: "var(--st-surface-2)" }}
+          >
+            <p
+              className="max-w-2xl text-balance text-lg italic leading-snug sm:text-[1.375rem]"
+              style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
+            >
+              {FLAGSHIP.punchline}
+            </p>
+            <p
+              className="shrink-0 text-xs whitespace-nowrap"
+              style={{ color: "var(--st-text-faint)" }}
+            >
+              {FLAGSHIP.note}
+            </p>
+          </div>
+        </Panel>
+      </Reveal>
+
+      {/* Names, not logos: nothing here pretends to a brand asset we would have
+          to chase approval for, and the wordmarks read as one quiet line. */}
+      <Reveal delay={0.18}>
+        <div className="mt-14 border-t pt-6" style={{ borderColor: "var(--ab-rule)" }}>
+          <Label>{TRUSTED_BY.label}</Label>
+          <ul className="mt-4 flex flex-wrap items-center gap-x-10 gap-y-4">
+            {TRUSTED_BY.names.map((name) => (
+              <li
+                key={name}
+                className="text-lg font-semibold tracking-[-0.02em] sm:text-xl"
+                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text-muted)" }}
+              >
+                {name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Reveal>
     </Section>
   );
 }

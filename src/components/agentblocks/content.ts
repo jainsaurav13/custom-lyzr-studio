@@ -36,51 +36,62 @@ export const HERO = {
  * 2 — Credibility
  * ------------------------------------------------------------------ */
 
+/**
+ * The credibility block is the one an executive scans before deciding whether
+ * to keep reading, so it carries three kinds of proof in one section: the scale
+ * already deployed, one flagship OEM an ISV can see themselves in, and the
+ * enterprises whose products run on Lyzr underneath.
+ */
 export const CREDIBILITY = {
-  eyebrow: "Already in production",
-  title: "Software companies are shipping on this today.",
-  lede: "Not a reference architecture. The same infrastructure runs behind enterprise products your customers’ teams already use every day.",
-  stat: { value: "1M+", label: "agent instances deployed on the Lyzr platform" },
+  eyebrow: "Agents in production",
+  title: "Already running, under other companies’ brands.",
+  lede: "Nothing on this page is a pilot programme. The same infrastructure is deployed, governed and billed today inside products your customers’ teams already use.",
+  stats: [
+    { value: "1M+", label: "Agent instances deployed on the Lyzr platform" },
+    { value: "Fortune 500", label: "Live deployments inside regulated enterprises" },
+    { value: "Multi-year", label: "Enterprise agreements, not proofs of concept" },
+  ],
 };
 
-export interface Partner {
-  key: string;
-  name: string;
-  meta: string;
-  status: string;
-  headline: string;
-  facts: Array<{ label: string; value: string }>;
-}
+/**
+ * The flagship OEM reference, described rather than named: the account is not
+ * cleared for public use yet, so the page carries the shape of the deal and
+ * offers the name under NDA.
+ */
+export const FLAGSHIP = {
+  label: "The reference that matters for ISVs",
+  headline: {
+    lead: "A billion-dollar enterprise planning platform ships Lyzr’s white-labelled agent builder",
+    accent: "inside its own product.",
+  },
+  facts: [
+    {
+      label: "What their customers see",
+      value: "Their brand, their product, their agent workbench and marketplace",
+    },
+    {
+      label: "What stays theirs",
+      value: "The platform, the data model, the customer relationship and the roadmap",
+    },
+    {
+      label: "What Lyzr provides",
+      value: "The white-labelled build, governance and runtime layer underneath",
+    },
+    {
+      label: "Where it runs",
+      value: "Their own cloud, and their customers’ managed AWS, Azure or GCP",
+    },
+  ],
+  punchline:
+    "They had the engineers to build this layer themselves. They licensed it and shipped the product instead.",
+  note: "Named reference available under NDA.",
+};
 
-export const PARTNERS: Partner[] = [
-  {
-    key: "anaplan",
-    name: "Anaplan",
-    meta: "ISV · enterprise planning platform",
-    status: "Embedded OEM",
-    headline: "The Anaplan Agentic Workbench and Marketplace run on AgentBlocks.",
-    facts: [
-      { label: "Stays theirs", value: "Platform, data model, customer UX and brand" },
-      { label: "AgentBlocks provides", value: "The white-labelled lifecycle behind both surfaces" },
-      { label: "Runs in", value: "Anaplan cloud, plus customer-managed AWS, Azure or GCP" },
-    ],
-  },
-  {
-    key: "wtw",
-    name: "WTW",
-    meta: "Enterprise · global advisory & broking",
-    status: "In production",
-    headline: "Governed advisory agents, on a two-year agreement.",
-    facts: [
-      { label: "Stays theirs", value: "Data, domain models and advisory methodology" },
-      { label: "AgentBlocks provides", value: "Governance for retirement advisory and billing" },
-      {
-        label: "Result",
-        value: "Advisory usage moved off consumer ChatGPT and back into WTW’s product",
-      },
-    ],
-  },
-];
+/** The logo strip: enterprises whose products already run on Lyzr. */
+export const TRUSTED_BY = {
+  label: "Running on Lyzr underneath",
+  names: ["JPMorganChase", "WTW", "USA.gov", "Verifone", "KPMG"],
+};
 
 /* ------------------------------------------------------------------ *
  * 3 — The problem
@@ -434,7 +445,7 @@ export const SESSION_AGENDA = [
 ];
 
 export const NAV_LINKS = [
-  { href: "#partners", label: "Customers" },
+  { href: "#production", label: "In production" },
   { href: "#problem", label: "The problem" },
   { href: "#blocks", label: "What’s inside" },
   { href: "#why", label: "Why AgentBlocks" },
