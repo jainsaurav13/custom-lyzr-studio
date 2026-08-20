@@ -425,6 +425,9 @@ export const NAV_LINKS = [
   { href: "#faq", label: "FAQ" },
 ];
 
+/** The words on every call to action. Kept here so all four stay in step. */
+export const CTA_LABEL = "Accelerate your agent roadmap";
+
 /**
  * Every CTA on the page points here.
  *

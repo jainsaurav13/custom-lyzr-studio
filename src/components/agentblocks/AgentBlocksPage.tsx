@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
-import { BOOKING_URL, HERO, NAV_LINKS } from "./content";
+import { BOOKING_URL, CTA_LABEL, HERO, NAV_LINKS } from "./content";
 import { Chip, Container, Cta, Reveal } from "./primitives";
 import {
   BlocksSection,
@@ -25,7 +25,7 @@ function Nav() {
       }}
     >
       <Container className="flex h-16 items-center justify-between gap-6">
-        <a href="#top" className="flex items-baseline gap-2">
+        <a href="#top" className="flex shrink-0 items-baseline gap-2">
           <span
             className="text-[15px] font-semibold tracking-[-0.02em]"
             style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
@@ -37,12 +37,12 @@ function Nav() {
           </span>
         </a>
 
-        <nav className="hidden items-center gap-7 lg:flex">
+        <nav className="hidden items-center gap-7 xl:flex">
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="text-sm transition-colors"
+              className="whitespace-nowrap text-sm transition-colors"
               style={{ color: "var(--st-text-muted)" }}
             >
               {link.label}
@@ -50,8 +50,11 @@ function Nav() {
           ))}
         </nav>
 
-        <Cta href={BOOKING_URL} className="hidden px-4 py-2 sm:inline-flex">
-          Plan your AI product
+        <Cta
+          href={BOOKING_URL}
+          className="hidden shrink-0 whitespace-nowrap px-4 py-2 sm:inline-flex"
+        >
+          {CTA_LABEL}
           <ArrowRight className="h-3.5 w-3.5" />
         </Cta>
       </Container>
@@ -118,7 +121,7 @@ function Hero() {
 
               <div className="mt-8 flex flex-wrap gap-3">
                 <Cta href={BOOKING_URL}>
-                  Plan your AI product
+                  {CTA_LABEL}
                   <ArrowUpRight className="h-4 w-4" />
                 </Cta>
                 <Cta href="#blocks" variant="quiet">
@@ -169,7 +172,7 @@ function Footer() {
               </a>
             ))}
             <a href={BOOKING_URL} className="text-xs" style={{ color: "var(--st-accent-ink)" }}>
-              Plan your AI product
+              {CTA_LABEL}
             </a>
           </nav>
         </div>

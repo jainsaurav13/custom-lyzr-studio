@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import {
   BLOCKS,
   BOOKING_URL,
+  CTA_LABEL,
   COMPARE,
   CONNECTED,
   CREDIBILITY,
@@ -612,7 +613,7 @@ export function SessionSection() {
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Cta href={BOOKING_URL} variant="invert">
-                Plan your AI product
+                {CTA_LABEL}
                 <ArrowUpRight className="h-4 w-4" />
               </Cta>
             </div>
