@@ -37,20 +37,13 @@ export const HERO = {
  * ------------------------------------------------------------------ */
 
 /**
- * The credibility block is the one an executive scans before deciding whether
- * to keep reading, so it carries three kinds of proof in one section: the scale
- * already deployed, one flagship OEM an ISV can see themselves in, and the
- * enterprises whose products run on Lyzr underneath.
+ * The credibility block carries two kinds of proof and nothing else: the
+ * enterprises whose products already run on Lyzr, and one flagship OEM an ISV
+ * can see themselves in.
  */
 export const CREDIBILITY = {
   eyebrow: "Agents in production",
   title: "Already running, under other companies’ brands.",
-  lede: "Nothing on this page is a pilot programme. The same infrastructure is deployed, governed and billed today inside products your customers’ teams already use.",
-  stats: [
-    { value: "1M+", label: "Agent instances deployed on the Lyzr platform" },
-    { value: "Fortune 500", label: "Live deployments inside regulated enterprises" },
-    { value: "Multi-year", label: "Enterprise agreements, not proofs of concept" },
-  ],
 };
 
 /**
@@ -61,8 +54,8 @@ export const CREDIBILITY = {
 export const FLAGSHIP = {
   label: "The reference that matters for ISVs",
   headline: {
-    lead: "A billion-dollar enterprise planning platform ships Lyzr’s white-labelled agent builder",
-    accent: "inside its own product.",
+    lead: "A billion-dollar enterprise planning platform is using Lyzr’s infrastructure",
+    accent: "to power their agent platform.",
   },
   facts: [
     {

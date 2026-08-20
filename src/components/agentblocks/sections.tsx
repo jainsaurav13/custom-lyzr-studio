@@ -45,47 +45,35 @@ export function ProductionSection() {
         <SectionHead
           eyebrow={CREDIBILITY.eyebrow}
           title={CREDIBILITY.title}
-          lede={CREDIBILITY.lede}
           className="max-w-2xl"
         />
       </Reveal>
 
-      {/* The scale, read as one line of three. Hairlines rather than cards, so
-          the numbers carry the weight instead of the containers. */}
+      {/* Names, not logos: nothing here pretends to a brand asset we would have
+          to chase approval for, and the wordmarks read as one quiet line. */}
       <Reveal delay={0.06}>
-        <dl
-          className="mt-12 grid gap-px border-t sm:grid-cols-3"
-          style={{ borderColor: "var(--st-text)" }}
-        >
-          {CREDIBILITY.stats.map((stat) => (
-            <div
-              key={stat.value}
-              className="border-b py-6 sm:border-b-0 sm:border-l sm:pl-6 sm:first:border-l-0 sm:first:pl-0"
-              style={{ borderColor: "var(--ab-rule)" }}
-            >
-              <dt
-                className="text-[2.5rem] font-semibold leading-none tracking-[-0.04em]"
-                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+        <div className="mt-10 border-t pt-6" style={{ borderColor: "var(--st-text)" }}>
+          <Label>{TRUSTED_BY.label}</Label>
+          <ul className="mt-4 flex flex-wrap items-center gap-x-10 gap-y-4">
+            {TRUSTED_BY.names.map((name) => (
+              <li
+                key={name}
+                className="text-lg font-semibold tracking-[-0.02em] sm:text-xl"
+                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text-muted)" }}
               >
-                {stat.value}
-              </dt>
-              <dd
-                className="mt-2 max-w-[15rem] text-sm leading-snug"
-                style={{ color: "var(--st-text-muted)" }}
-              >
-                {stat.label}
-              </dd>
-            </div>
-          ))}
-        </dl>
+                {name}
+              </li>
+            ))}
+          </ul>
+        </div>
       </Reveal>
 
-      {/* The flagship. One box, and it is the loudest thing in the section: the
-          account cannot be named yet, so the shape of the deal has to do the
-          work the logo would have done. */}
+      {/* The flagship, and the loudest thing in the section: the account cannot
+          be named yet, so the shape of the deal has to do the work the logo
+          would have done. */}
       <Reveal delay={0.12}>
         <Panel
-          className="mt-14 overflow-hidden"
+          className="mt-12 overflow-hidden"
           style={{ background: "var(--st-surface)", borderColor: "var(--st-border-strong)" }}
         >
           <div className="flex flex-wrap items-center justify-between gap-3 px-6 pt-6 sm:px-9 sm:pt-8">
@@ -93,7 +81,7 @@ export function ProductionSection() {
             <span className="inline-flex items-center gap-2">
               <StatusDot tone="success" />
               <span
-                className="text-[10px] font-semibold uppercase tracking-[0.14em]"
+                className="text-[10px] font-semibold tracking-[0.14em] uppercase"
                 style={{ color: "var(--st-success)" }}
               >
                 Live, embedded OEM
@@ -102,7 +90,7 @@ export function ProductionSection() {
           </div>
 
           <h3
-            className="mt-5 px-6 text-balance text-[1.5rem] leading-[1.2] font-semibold tracking-[-0.03em] sm:px-9 sm:text-[2.05rem]"
+            className="mt-5 px-6 text-[1.5rem] leading-[1.2] font-semibold tracking-[-0.03em] text-balance sm:px-9 sm:text-[2.05rem]"
             style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
           >
             {FLAGSHIP.headline.lead} <Accent>{FLAGSHIP.headline.accent}</Accent>
@@ -142,7 +130,7 @@ export function ProductionSection() {
             style={{ borderColor: "var(--st-text)", background: "var(--st-surface-2)" }}
           >
             <p
-              className="max-w-2xl text-balance text-lg italic leading-snug sm:text-[1.375rem]"
+              className="max-w-2xl text-lg leading-snug text-balance italic sm:text-[1.375rem]"
               style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
             >
               {FLAGSHIP.punchline}
@@ -155,25 +143,6 @@ export function ProductionSection() {
             </p>
           </div>
         </Panel>
-      </Reveal>
-
-      {/* Names, not logos: nothing here pretends to a brand asset we would have
-          to chase approval for, and the wordmarks read as one quiet line. */}
-      <Reveal delay={0.18}>
-        <div className="mt-14 border-t pt-6" style={{ borderColor: "var(--ab-rule)" }}>
-          <Label>{TRUSTED_BY.label}</Label>
-          <ul className="mt-4 flex flex-wrap items-center gap-x-10 gap-y-4">
-            {TRUSTED_BY.names.map((name) => (
-              <li
-                key={name}
-                className="text-lg font-semibold tracking-[-0.02em] sm:text-xl"
-                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text-muted)" }}
-              >
-                {name}
-              </li>
-            ))}
-          </ul>
-        </div>
       </Reveal>
     </Section>
   );
