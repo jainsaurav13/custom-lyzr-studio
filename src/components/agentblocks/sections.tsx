@@ -110,7 +110,18 @@ export function ProblemSection() {
   return (
     <Section id="problem" tone="plain">
       <Reveal>
-        <SectionHead eyebrow={PROBLEM.eyebrow} title={PROBLEM.title} lede={PROBLEM.lede} />
+        <SectionHead
+          eyebrow={PROBLEM.eyebrow}
+          title={PROBLEM.title}
+          lede={
+            <>
+              {PROBLEM.lede}
+              <span className="mt-3 block font-medium" style={{ color: "var(--st-text)" }}>
+                {PROBLEM.ledeKicker}
+              </span>
+            </>
+          }
+        />
       </Reveal>
 
       <div className="mt-12 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
@@ -602,7 +613,8 @@ export function SessionSection() {
               className="mt-3 text-[2rem] font-semibold leading-[1.1] tracking-[-0.03em] sm:text-[2.6rem]"
               style={{ fontFamily: "var(--st-font-head)", color: "var(--ab-ink-text)" }}
             >
-              Own the product.{" "}
+              Own the product.
+              <br />
               <span className="italic" style={{ fontFamily: "var(--ab-serif)", fontWeight: 400 }}>
                 Skip the infrastructure build.
               </span>

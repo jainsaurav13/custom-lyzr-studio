@@ -89,7 +89,9 @@ export const PARTNERS: Partner[] = [
 export const PROBLEM = {
   eyebrow: "The problem",
   title: "Two weeks to build. A year to ship.",
-  lede: "Most software companies are already building or extending their agent platforms. The challenge isn’t whether they can build the production infrastructure around them, it’s whether they should.",
+  lede: "Most software companies are already building or extending their agent platforms. The challenge isn’t whether they can build the production infrastructure around them.",
+  /** The pivot of the whole section, so it is set apart and given full weight. */
+  ledeKicker: "It’s whether they should.",
   /** What teams end up building instead of product. */
   burden: [
     "A registry, because nobody knows what is running or who owns it",
