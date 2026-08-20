@@ -6,7 +6,7 @@ import { Chip, Container, Cta, Reveal } from "./primitives";
 import {
   BlocksSection,
   FaqSection,
-  ProofSection,
+  PartnersSection,
   ProblemSection,
   SessionSection,
   StartSection,
@@ -204,7 +204,7 @@ export function AgentBlocksPage() {
       <Nav />
       <main>
         <Hero />
-        <ProofSection />
+        <PartnersSection />
         <ProblemSection />
         <BlocksSection />
         <WhySection />
