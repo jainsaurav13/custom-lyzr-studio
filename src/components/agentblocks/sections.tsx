@@ -616,7 +616,7 @@ export function SessionSection() {
               Own the product.
               <br />
               <span className="italic" style={{ fontFamily: "var(--ab-serif)", fontWeight: 400 }}>
-                Skip the infrastructure build.
+                Skip the agent infrastructure build.
               </span>
             </h2>
             <p className="mt-4 max-w-xl text-base" style={{ color: "var(--ab-ink-muted)" }}>
