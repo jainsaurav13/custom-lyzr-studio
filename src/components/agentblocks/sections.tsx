@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { ArrowRight, ArrowUpRight, Check, ChevronDown, Minus } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -106,23 +106,53 @@ export function PartnersSection() {
  * 3 — The problem
  * ------------------------------------------------------------------ */
 
-/** Both roadmaps close on the same word, which is where the argument lands. */
-function Total({ children, tone = "ink" }: { children: string; tone?: "ink" | "accent" }) {
+/** The coloured kicker each roadmap ends on. Same shape, opposite verdict. */
+function Total({ children, tone }: { children: string; tone: "cost" | "gain" }) {
+  const ink = tone === "cost" ? "var(--ab-cost)" : "var(--ab-gain)";
+  const line = tone === "cost" ? "var(--ab-cost-line)" : "var(--ab-gain-line)";
   return (
-    <div
-      className="mt-6 border-t pt-5"
-      style={{ borderColor: tone === "accent" ? "var(--st-accent-ink)" : "var(--st-text)" }}
-    >
-      <Label>Total</Label>
+    <div className="mt-6 border-t pt-5" style={{ borderColor: line }}>
+      <span
+        className="text-[10px] font-semibold uppercase tracking-[0.18em]"
+        style={{ color: ink }}
+      >
+        Total
+      </span>
       <p
         className="mt-1.5 text-lg leading-snug sm:text-xl"
-        style={{
-          fontFamily: "var(--ab-serif)",
-          color: tone === "accent" ? "var(--st-accent-ink)" : "var(--st-text)",
-        }}
+        style={{ fontFamily: "var(--ab-serif)", color: ink }}
       >
         {children}
       </p>
+    </div>
+  );
+}
+
+/** One of the two roadmap cards. Both are the same object, differently tinted. */
+function RoadmapCard({
+  tone,
+  label,
+  children,
+}: {
+  tone: "cost" | "gain";
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className="flex h-full flex-col rounded-[var(--st-radius-lg)] border p-6 sm:p-7"
+      style={{
+        background: tone === "cost" ? "var(--ab-cost-soft)" : "var(--ab-gain-soft)",
+        borderColor: tone === "cost" ? "var(--ab-cost-line)" : "var(--ab-gain-line)",
+      }}
+    >
+      <span
+        className="text-[10px] font-semibold uppercase tracking-[0.18em]"
+        style={{ color: tone === "cost" ? "var(--ab-cost)" : "var(--ab-gain)" }}
+      >
+        {label}
+      </span>
+      {children}
     </div>
   );
 }
@@ -145,67 +175,77 @@ export function ProblemSection() {
         />
       </Reveal>
 
-      {/* Two roadmaps, side by side. The left is a bill of materials rather than
-          a list of complaints; the right is the same decision, made the other
-          way. Each closes on a "Total", and the two totals are the argument. */}
-      <div className="mt-12 grid gap-x-14 gap-y-10 lg:grid-cols-[1.25fr_1fr]">
-        <Reveal>
-          <div>
-            <Label>{PROBLEM.build.label}</Label>
-            <p className="mt-2 text-sm" style={{ color: "var(--st-text-muted)" }}>
+      {/* Two cards of equal weight: the same six pieces of work, costed one way
+          and included the other. Each closes on a "Total", and the two totals
+          side by side are the argument. */}
+      <div className="mt-12 grid items-stretch gap-5 lg:grid-cols-2">
+        <Reveal className="h-full">
+          <RoadmapCard tone="cost" label={PROBLEM.build.label}>
+            <p className="mt-3 text-sm" style={{ color: "var(--st-text-muted)" }}>
               {PROBLEM.build.lede}
             </p>
 
-            <dl className="mt-6">
-              {PROBLEM.build.items.map((row, index) => (
+            <dl className="mt-5 flex-1">
+              {PROBLEM.build.items.map((row) => (
                 <div
                   key={row.item}
-                  className="grid gap-x-6 gap-y-0.5 border-t py-3.5 sm:grid-cols-[12.5rem_1fr]"
-                  style={{
-                    borderColor: index === 0 ? "var(--st-border-strong)" : "var(--ab-rule)",
-                  }}
+                  className="border-t py-3"
+                  style={{ borderColor: "var(--ab-cost-line)" }}
                 >
                   <dt className="text-sm font-medium" style={{ color: "var(--st-text)" }}>
                     {row.item}
                   </dt>
-                  <dd className="text-sm leading-relaxed" style={{ color: "var(--st-text-muted)" }}>
+                  <dd
+                    className="mt-0.5 text-sm leading-relaxed"
+                    style={{ color: "var(--st-text-muted)" }}
+                  >
                     {row.need}
                   </dd>
                 </div>
               ))}
             </dl>
 
-            <Total>{PROBLEM.build.total}</Total>
-          </div>
+            <Total tone="cost">{PROBLEM.build.total}</Total>
+          </RoadmapCard>
         </Reveal>
 
         <Reveal delay={0.08} className="h-full">
-          <Panel
-            className="flex h-full flex-col p-7"
-            style={{ background: "var(--st-accent-soft)", borderColor: "var(--st-accent-ink)" }}
-          >
-            <Label>{PROBLEM.answer.label}</Label>
+          <RoadmapCard tone="gain" label={PROBLEM.answer.label}>
             <h3
-              className="mt-2 text-2xl font-semibold leading-tight tracking-[-0.02em]"
+              className="mt-3 text-2xl font-semibold leading-tight tracking-[-0.02em]"
               style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
             >
               {PROBLEM.answer.title}
             </h3>
-            <p className="mt-4 flex-1 text-sm leading-relaxed" style={{ color: "var(--st-text)" }}>
+            <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--st-text)" }}>
               {PROBLEM.answer.body}
             </p>
 
-            <Total tone="accent">{PROBLEM.answer.total}</Total>
+            {/* The same six names, ticked. The repetition is the comparison. */}
+            <ul className="mt-6 grid flex-1 content-start gap-x-5 gap-y-2.5 sm:grid-cols-2">
+              {PROBLEM.build.items.map((row) => (
+                <li key={row.item} className="flex items-start gap-2 text-sm">
+                  <Check
+                    className="mt-0.5 h-4 w-4 shrink-0"
+                    style={{ color: "var(--ab-gain)" }}
+                    aria-hidden="true"
+                  />
+                  <span style={{ color: "var(--st-text)" }}>{row.item}</span>
+                </li>
+              ))}
+            </ul>
+
+            <Total tone="gain">{PROBLEM.answer.total}</Total>
 
             <a
               href="#blocks"
-              className="mt-6 inline-flex items-center gap-2 text-sm font-medium"
-              style={{ color: "var(--st-accent-ink)" }}
+              className="mt-5 inline-flex items-center gap-2 text-sm font-medium"
+              style={{ color: "var(--ab-gain)" }}
             >
               {PROBLEM.answer.cta}
               <ArrowRight className="h-4 w-4" />
             </a>
-          </Panel>
+          </RoadmapCard>
         </Reveal>
       </div>
     </Section>

@@ -1,5 +1,5 @@
 import { deriveTheme, LYZR_KIT } from "@/components/studio/brand/kit";
-import { alpha, mix } from "@/components/studio/brand/color";
+import { alpha, ensureContrast, mix } from "@/components/studio/brand/color";
 import type { BrandKit } from "@/components/studio/brand/types";
 
 /**
@@ -49,6 +49,15 @@ export function agentBlocksVars(): Record<string, string> {
     "--ab-ink-faint": alpha(inkText, 0.6),
     "--ab-accent-on-ink": mix(accent, "#FFFFFF", 0.45),
     "--ab-rule": alpha(text, 0.1),
+    // Cost and gain, for the build-versus-licence fork. Semantic colour, kept
+    // well clear of the copper accent and desaturated toward the paper so two
+    // full-height tinted cards do not shout at each other.
+    "--ab-cost": ensureContrast("#B3261E", bg, 4.5),
+    "--ab-cost-soft": mix(bg, "#B3261E", 0.055),
+    "--ab-cost-line": alpha("#B3261E", 0.28),
+    "--ab-gain": ensureContrast("#1B6B3A", bg, 4.5),
+    "--ab-gain-soft": mix(bg, "#1B6B3A", 0.055),
+    "--ab-gain-line": alpha("#1B6B3A", 0.28),
     "--ab-serif": '"Instrument Serif", "Playfair Display", Georgia, serif',
     // Ambience behind the hero — the same radial wash the studio uses on glow.
     "--ab-hero-bg": [
