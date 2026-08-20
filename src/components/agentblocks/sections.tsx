@@ -10,13 +10,14 @@ import {
   COMPARE,
   CONNECTED,
   CREDIBILITY,
+  FLAGSHIP,
   ENGAGEMENTS,
   FAQS,
   FOUNDATION,
-  PARTNERS,
   PROBLEM,
   REASONS,
   SESSION_AGENDA,
+  TRUSTED_BY,
   YOURS_ALONE,
   YOUR_STACK,
 } from "./content";
@@ -26,78 +27,92 @@ import { Chip, Cta, Eyebrow, Label, Panel, Reveal, Section, SectionHead } from "
  * 2 — Credibility
  * ------------------------------------------------------------------ */
 
-export function PartnersSection() {
+export function ProofSection() {
   return (
-    <Section id="partners" tone="paper">
+    <Section id="proof" tone="paper">
       <Reveal>
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <SectionHead
-            eyebrow={CREDIBILITY.eyebrow}
-            title={CREDIBILITY.title}
-            lede={CREDIBILITY.lede}
-            className="max-w-2xl"
-          />
-          <div className="shrink-0 lg:text-right">
-            <p
-              className="text-5xl font-semibold tracking-[-0.04em]"
-              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+        <SectionHead eyebrow={CREDIBILITY.eyebrow} title={CREDIBILITY.title} />
+      </Reveal>
+
+      {/* Three facts on one rule-divided bar, before any prose. */}
+      <Reveal delay={0.06}>
+        <ul
+          className="mt-10 grid border-y sm:grid-cols-3"
+          style={{ borderColor: "var(--st-border-strong)" }}
+        >
+          {CREDIBILITY.proof.map((fact, index) => (
+            <li
+              key={fact}
+              className={cn(
+                "py-5 text-base font-medium sm:px-6",
+                index === 0 && "sm:pl-0",
+                index > 0 && "border-t sm:border-l sm:border-t-0",
+              )}
+              style={{ borderColor: "var(--ab-rule)", color: "var(--st-text)" }}
             >
-              {CREDIBILITY.stat.value}
-            </p>
-            <p className="mt-1 max-w-[16rem] text-sm" style={{ color: "var(--st-text-muted)" }}>
-              {CREDIBILITY.stat.label}
-            </p>
-          </div>
+              {fact}
+            </li>
+          ))}
+        </ul>
+      </Reveal>
+
+      {/* The OEM reference gets its own band: it is the one proof that speaks
+          to the thesis, and it should not sit level with the logo strip. */}
+      <Reveal delay={0.1}>
+        <div
+          className="mt-10 rounded-[var(--st-radius-lg)] border p-7 sm:p-9"
+          style={{ background: "var(--st-accent-soft)", borderColor: "var(--st-accent-ink)" }}
+        >
+          <Label>{FLAGSHIP.label}</Label>
+          <p
+            className="mt-3 max-w-3xl text-xl font-semibold leading-snug tracking-[-0.02em] sm:text-2xl"
+            style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+          >
+            {FLAGSHIP.headline}
+          </p>
+
+          <ul className="mt-6 grid gap-3 sm:grid-cols-3 sm:gap-6">
+            {FLAGSHIP.facts.map((fact) => (
+              <li key={fact} className="flex gap-2.5 text-sm leading-relaxed">
+                <Check
+                  className="mt-0.5 h-4 w-4 shrink-0"
+                  style={{ color: "var(--st-accent-ink)" }}
+                />
+                <span style={{ color: "var(--st-text)" }}>{fact}</span>
+              </li>
+            ))}
+          </ul>
+
+          <p
+            className="mt-7 border-t pt-5 text-base leading-snug sm:text-lg"
+            style={{
+              borderColor: "var(--st-accent-ink)",
+              fontFamily: "var(--ab-serif)",
+              color: "var(--st-text)",
+            }}
+          >
+            {FLAGSHIP.punchline}
+          </p>
+          <p className="mt-2 text-xs" style={{ color: "var(--st-text-muted)" }}>
+            {FLAGSHIP.note}
+          </p>
         </div>
       </Reveal>
 
-      <div className="mt-12 grid gap-5 lg:grid-cols-2">
-        {PARTNERS.map((partner, index) => (
-          <Reveal key={partner.key} delay={index * 0.08}>
-            <Panel className="flex h-full flex-col p-6">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h3
-                  className="text-2xl font-semibold tracking-[-0.02em]"
-                  style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
-                >
-                  {partner.name}
-                </h3>
-                <span
-                  className="rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em]"
-                  style={{ background: "var(--st-accent-soft)", color: "var(--st-accent-ink)" }}
-                >
-                  {partner.status}
-                </span>
-              </div>
-              <p className="mt-1 text-xs" style={{ color: "var(--st-text-muted)" }}>
-                {partner.meta}
-              </p>
-              <p
-                className="mt-4 text-base leading-snug"
-                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
-              >
-                {partner.headline}
-              </p>
-
-              <dl
-                className="mt-5 space-y-3 border-t pt-4"
-                style={{ borderColor: "var(--ab-rule)" }}
-              >
-                {partner.facts.map((fact) => (
-                  <div key={fact.label}>
-                    <dt>
-                      <Label>{fact.label}</Label>
-                    </dt>
-                    <dd className="mt-1 text-sm" style={{ color: "var(--st-text-muted)" }}>
-                      {fact.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </Panel>
-          </Reveal>
-        ))}
-      </div>
+      <Reveal delay={0.14}>
+        <div className="mt-10 flex flex-wrap items-baseline gap-x-8 gap-y-3">
+          <Label>Trusted by</Label>
+          {TRUSTED_BY.map((name) => (
+            <span
+              key={name}
+              className="text-base font-medium tracking-[-0.01em]"
+              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text-muted)" }}
+            >
+              {name}
+            </span>
+          ))}
+        </div>
+      </Reveal>
     </Section>
   );
 }

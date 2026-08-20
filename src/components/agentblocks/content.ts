@@ -37,50 +37,41 @@ export const HERO = {
  * ------------------------------------------------------------------ */
 
 export const CREDIBILITY = {
-  eyebrow: "Already in production",
-  title: "Software companies are shipping on this today.",
-  lede: "Not a reference architecture. The same infrastructure runs behind enterprise products your customers’ teams already use every day.",
-  stat: { value: "1M+", label: "agent instances deployed on the Lyzr platform" },
+  eyebrow: "In production",
+  title: "This is already in production.",
+  /** One horizontal bar, three facts, no prose. */
+  proof: [
+    "1M+ agent instances deployed",
+    "Fortune 500 deployments",
+    "Multi-year enterprise agreements",
+  ],
 };
 
-export interface Partner {
-  key: string;
-  name: string;
-  meta: string;
-  status: string;
-  headline: string;
-  facts: Array<{ label: string; value: string }>;
-}
+/**
+ * The flagship OEM reference, described by category rather than named because
+ * the account is not cleared for public use. What persuades here is the shape
+ * of the deal, and that survives the anonymity intact.
+ */
+export const FLAGSHIP = {
+  label: "Embedded OEM",
+  headline:
+    "A global enterprise planning platform chose to embed AgentBlocks rather than build the production layer itself.",
+  facts: [
+    "Its agentic workbench and marketplace run on AgentBlocks",
+    "It keeps the brand, the UX, the customer and the data model",
+    "Deploys across its own cloud and customer-managed environments",
+  ],
+  punchline:
+    "The build-versus-buy decision this page is asking you to make has already been made by a major enterprise software company.",
+  note: "Named reference available under NDA.",
+};
 
-export const PARTNERS: Partner[] = [
-  {
-    key: "anaplan",
-    name: "Anaplan",
-    meta: "ISV · enterprise planning platform",
-    status: "Embedded OEM",
-    headline: "The Anaplan Agentic Workbench and Marketplace run on AgentBlocks.",
-    facts: [
-      { label: "Stays theirs", value: "Platform, data model, customer UX and brand" },
-      { label: "AgentBlocks provides", value: "The white-labelled lifecycle behind both surfaces" },
-      { label: "Runs in", value: "Anaplan cloud, plus customer-managed AWS, Azure or GCP" },
-    ],
-  },
-  {
-    key: "wtw",
-    name: "WTW",
-    meta: "Enterprise · global advisory & broking",
-    status: "In production",
-    headline: "Governed advisory agents, on a two-year agreement.",
-    facts: [
-      { label: "Stays theirs", value: "Data, domain models and advisory methodology" },
-      { label: "AgentBlocks provides", value: "Governance for retirement advisory and billing" },
-      {
-        label: "Result",
-        value: "Advisory usage moved off consumer ChatGPT and back into WTW’s product",
-      },
-    ],
-  },
-];
+/**
+ * Enterprises running on the Lyzr platform. Deliberately a quiet strip rather
+ * than cards: these prove enterprise trust, not the OEM thesis, and the layout
+ * should not imply the two are the same kind of relationship.
+ */
+export const TRUSTED_BY = ["JPMorganChase", "WTW", "USA.gov", "Verifone", "KPMG"];
 
 /* ------------------------------------------------------------------ *
  * 3 — The problem
@@ -277,7 +268,7 @@ export const REASONS = [
   {
     key: "governed",
     title: "Governance is the default, not a roadmap item",
-    body: "Every agent is registered, evaluated, versioned and audited before it reaches a customer. The evidence exists because the platform produced it, not because someone wrote a document.",
+    body: "Every agent is registered, evaluated, versioned and audited before it reaches a customer. The evidence exists because the platform produced it, not because someone wrote a document. WTW runs governed retirement advisory and billing agents on exactly this, under a two-year agreement.",
   },
   {
     key: "exit",
@@ -419,7 +410,7 @@ export const SESSION_AGENDA = [
 ];
 
 export const NAV_LINKS = [
-  { href: "#partners", label: "Customers" },
+  { href: "#proof", label: "In production" },
   { href: "#problem", label: "The problem" },
   { href: "#blocks", label: "What’s inside" },
   { href: "#why", label: "Why AgentBlocks" },
