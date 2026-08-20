@@ -119,7 +119,7 @@ function Total({ children, tone }: { children: string; tone: "cost" | "gain" }) 
         Total
       </span>
       <p
-        className="mt-1.5 text-lg leading-snug sm:text-xl"
+        className="mt-1.5 text-lg leading-snug text-balance"
         style={{ fontFamily: "var(--ab-serif)", color: ink }}
       >
         {children}
@@ -221,16 +221,30 @@ export function ProblemSection() {
               {PROBLEM.answer.body}
             </p>
 
-            {/* The same six names, ticked. The repetition is the comparison. */}
-            <ul className="mt-6 grid flex-1 content-start gap-x-5 gap-y-2.5 sm:grid-cols-2">
+            {/* The same six line items, answered. Mirroring the left ledger row
+                for row is the comparison, and it is what keeps the two cards
+                the same height without dead space. */}
+            <ul className="mt-5 flex-1">
               {PROBLEM.build.items.map((row) => (
-                <li key={row.item} className="flex items-start gap-2 text-sm">
+                <li
+                  key={row.item}
+                  className="flex items-center gap-2.5 border-t py-[0.83rem] text-sm"
+                  style={{ borderColor: "var(--ab-gain-line)" }}
+                >
                   <Check
-                    className="mt-0.5 h-4 w-4 shrink-0"
+                    className="h-4 w-4 shrink-0"
                     style={{ color: "var(--ab-gain)" }}
                     aria-hidden="true"
                   />
-                  <span style={{ color: "var(--st-text)" }}>{row.item}</span>
+                  <span className="font-medium" style={{ color: "var(--st-text)" }}>
+                    {row.item}
+                  </span>
+                  <span
+                    className="ml-auto text-[10px] font-semibold uppercase tracking-[0.14em]"
+                    style={{ color: "var(--ab-gain)" }}
+                  >
+                    Included
+                  </span>
                 </li>
               ))}
             </ul>
