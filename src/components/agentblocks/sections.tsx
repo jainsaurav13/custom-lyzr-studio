@@ -238,7 +238,8 @@ export function ProblemSection() {
               className="mt-3 text-2xl font-semibold leading-snug tracking-[-0.02em] sm:text-3xl"
               style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
             >
-              {PROBLEM.answer.title.lead}{" "}
+              {PROBLEM.answer.title.lead}
+              <br />
               <span
                 className="italic"
                 style={{
