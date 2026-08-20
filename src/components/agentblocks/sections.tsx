@@ -21,6 +21,7 @@ import {
   YOUR_STACK,
 } from "./content";
 import { Chip, Cta, Eyebrow, Label, Panel, Reveal, Section, SectionHead } from "./primitives";
+import { StatusDot } from "@/components/studio/ui";
 
 /* ------------------------------------------------------------------ *
  * 2 — Credibility
@@ -106,6 +107,24 @@ export function PartnersSection() {
  * 3 — The problem
  * ------------------------------------------------------------------ */
 
+/** The green "solved" mark that answers every red-dotted row. */
+function IncludedPill() {
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 rounded-full py-1 pr-3 pl-2.5"
+      style={{ background: "color-mix(in srgb, var(--st-success) 11%, transparent)" }}
+    >
+      <Check className="h-3 w-3" style={{ color: "var(--st-success)" }} aria-hidden="true" />
+      <span
+        className="text-[10px] font-semibold uppercase tracking-[0.12em]"
+        style={{ color: "var(--st-success)" }}
+      >
+        Included
+      </span>
+    </span>
+  );
+}
+
 export function ProblemSection() {
   return (
     <Section id="problem" tone="plain">
@@ -124,23 +143,25 @@ export function ProblemSection() {
         />
       </Reveal>
 
-      {/* One ledger in the page's own idiom: hairline rows, small-caps column
-          heads, the copper accent carrying the answer column. The totals row is
-          where the two roadmaps meet. */}
+      {/* One ledger, read left to right: the numbered item, what it costs you
+          (red dot), and the same item already solved (green pill). The status
+          colours are the studio's own, so the signal stays in the house
+          language rather than becoming paint. */}
       <Reveal delay={0.06}>
         <div className="mt-12">
           <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 pb-4">
             <div>
-              <Label>{PROBLEM.build.label}</Label>
-              <p className="mt-1 text-sm" style={{ color: "var(--st-text-muted)" }}>
+              <span className="flex items-center gap-2">
+                <StatusDot tone="danger" />
+                <Label>{PROBLEM.build.label}</Label>
+              </span>
+              <p className="mt-1.5 text-sm" style={{ color: "var(--st-text-muted)" }}>
                 {PROBLEM.build.lede}
               </p>
             </div>
-            <span
-              className="text-[10px] font-semibold uppercase tracking-[0.16em]"
-              style={{ color: "var(--st-accent-ink)" }}
-            >
-              {PROBLEM.withLabel}
+            <span className="flex items-center gap-2">
+              <StatusDot tone="success" />
+              <Label>{PROBLEM.withLabel}</Label>
             </span>
           </div>
 
@@ -148,36 +169,41 @@ export function ProblemSection() {
             {PROBLEM.build.items.map((row, index) => (
               <div
                 key={row.item}
-                className="grid items-baseline gap-x-6 gap-y-1 border-t py-4 sm:grid-cols-[13rem_1fr_auto]"
+                className="grid items-center gap-x-6 gap-y-2 border-t py-3.5 sm:grid-cols-[14rem_1fr_auto]"
                 style={{
                   borderColor: index === 0 ? "var(--st-border-strong)" : "var(--ab-rule)",
                 }}
               >
-                <dt className="text-sm font-medium" style={{ color: "var(--st-text)" }}>
-                  {row.item}
-                </dt>
-                <dd className="text-sm leading-relaxed" style={{ color: "var(--st-text-muted)" }}>
-                  {row.need}
-                </dd>
-                <dd className="flex items-center gap-1.5 sm:justify-end">
-                  <Check
-                    className="h-3.5 w-3.5 shrink-0"
-                    style={{ color: "var(--st-accent-ink)" }}
-                    aria-hidden="true"
-                  />
+                <dt className="flex items-baseline gap-2.5">
                   <span
-                    className="text-[10px] font-semibold uppercase tracking-[0.14em]"
-                    style={{ color: "var(--st-accent-ink)" }}
+                    className="text-xs font-semibold tabular-nums"
+                    style={{ color: "var(--st-text-faint)" }}
                   >
-                    Included
+                    0{index + 1}
                   </span>
+                  <span className="text-sm font-medium" style={{ color: "var(--st-text)" }}>
+                    {row.item}
+                  </span>
+                </dt>
+                <dd className="flex items-center gap-2.5">
+                  <StatusDot tone="danger" />
+                  <span
+                    className="text-sm leading-relaxed"
+                    style={{ color: "var(--st-text-muted)" }}
+                  >
+                    {row.need}
+                  </span>
+                </dd>
+                <dd className="sm:justify-self-end">
+                  <IncludedPill />
                 </dd>
               </div>
             ))}
           </dl>
 
+          {/* The totals meet on one row, coloured by what they mean. */}
           <div
-            className="grid items-baseline gap-x-6 gap-y-1 border-t py-5 sm:grid-cols-[13rem_1fr_auto]"
+            className="grid items-baseline gap-x-6 gap-y-1 border-t py-5 sm:grid-cols-[14rem_1fr_auto]"
             style={{ borderColor: "var(--st-text)" }}
           >
             <span>
@@ -185,13 +211,13 @@ export function ProblemSection() {
             </span>
             <p
               className="text-lg leading-snug"
-              style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
+              style={{ fontFamily: "var(--ab-serif)", color: "var(--st-danger)" }}
             >
               {PROBLEM.build.total}
             </p>
             <p
               className="text-lg leading-snug sm:text-right"
-              style={{ fontFamily: "var(--ab-serif)", color: "var(--st-accent-ink)" }}
+              style={{ fontFamily: "var(--ab-serif)", color: "var(--st-success)" }}
             >
               {PROBLEM.answer.total}
             </p>
