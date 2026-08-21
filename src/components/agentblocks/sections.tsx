@@ -545,46 +545,164 @@ export function WhySection() {
  * 6 — How to get started
  * ------------------------------------------------------------------ */
 
+/**
+ * The little architecture picture on each engagement card. Every card draws the
+ * same three-layer stack, so the only thing that changes between them is how
+ * much of it Lyzr supplies: your product is always the base, the AgentBlocks
+ * layer lights up two of six or all six, and the Applied AI team appears only
+ * on Turnkey.
+ */
+function EngagementStack({
+  lit,
+  team,
+  platformLabel,
+}: {
+  lit: number;
+  team: boolean;
+  platformLabel: string;
+}) {
+  const full = lit >= 6;
+  return (
+    <div className="flex h-[8.25rem] flex-col justify-end gap-2" aria-hidden="true">
+      {team ? (
+        <div
+          className="flex h-11 items-center rounded-[10px] px-3"
+          style={{ background: "var(--st-primary)", color: "var(--st-primary-on)" }}
+        >
+          <span className="text-[10px] font-semibold tracking-[0.14em] uppercase">
+            Applied AI team
+          </span>
+        </div>
+      ) : null}
+
+      <div
+        className="flex h-11 items-center justify-between gap-3 rounded-[10px] border px-3"
+        style={{
+          background: full ? "var(--st-accent-soft)" : "var(--st-surface)",
+          borderColor: full ? "var(--st-accent-ink)" : "var(--st-border-strong)",
+        }}
+      >
+        <span
+          className="text-[10px] font-semibold tracking-[0.12em] uppercase"
+          style={{ color: "var(--st-accent-ink)" }}
+        >
+          {platformLabel}
+        </span>
+        <span className="flex shrink-0 gap-1">
+          {Array.from({ length: 6 }, (_, index) => (
+            <span
+              key={index}
+              className="h-2.5 w-2.5 rounded-[3px]"
+              style={{
+                background: index < lit ? "var(--st-accent-ink)" : "transparent",
+                boxShadow: index < lit ? undefined : "inset 0 0 0 1px var(--st-border-strong)",
+              }}
+            />
+          ))}
+        </span>
+      </div>
+
+      <div
+        className="flex h-11 items-center rounded-[10px] border border-dashed px-3"
+        style={{ borderColor: "var(--st-border-strong)" }}
+      >
+        <span
+          className="text-[10px] font-semibold tracking-[0.14em] uppercase"
+          style={{ color: "var(--st-text-faint)" }}
+        >
+          Your product
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export function StartSection() {
   return (
     <Section id="start" tone="paper">
       <Reveal>
         <SectionHead
-          eyebrow="Get started"
+          eyebrow="Engagement models"
           title="Start where you are. We’ll meet you there."
-          lede="Every route preserves the same principle: your brand, your customer, your economics."
+          lede="Three levels of Lyzr involvement. Every one of them preserves the same principle: your brand, your customer, your economics."
         />
       </Reveal>
 
-      <div className="mt-12">
+      <div className="mt-12 grid gap-5 lg:grid-cols-3">
         {ENGAGEMENTS.map((option, index) => (
-          <Reveal key={option.key} delay={index * 0.06}>
-            <div
-              className="grid gap-x-8 gap-y-2 border-t py-7 md:grid-cols-[3rem_12rem_1fr_13rem]"
-              style={{ borderColor: "var(--st-border-strong)" }}
-            >
-              <span
-                className="text-xs font-semibold tracking-[0.14em]"
-                style={{ color: "var(--st-accent-ink)" }}
-              >
-                {option.step}
-              </span>
-              <div>
-                <Label>{option.support}</Label>
-                <h3
-                  className="mt-1.5 text-lg font-semibold"
+          <Reveal key={option.key} delay={index * 0.08} className="h-full">
+            <Panel className="flex h-full flex-col overflow-hidden">
+              <div className="p-6">
+                <div className="flex items-baseline gap-3">
+                  <span
+                    className="text-xs font-semibold tracking-[0.14em]"
+                    style={{ color: "var(--st-accent-ink)" }}
+                  >
+                    {option.step}
+                  </span>
+                  <h3
+                    className="text-[1.6rem] leading-none font-semibold tracking-[0.02em] uppercase"
+                    style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+                  >
+                    {option.tier}
+                  </h3>
+                </div>
+
+                {/* Fixed heights so the three diagrams share one baseline. */}
+                <p
+                  className="mt-4 text-[1.0625rem] leading-snug font-semibold lg:min-h-[3.25rem]"
                   style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
                 >
                   {option.title}
-                </h3>
+                </p>
+                <p
+                  className="mt-2 text-sm leading-snug lg:min-h-[4.25rem]"
+                  style={{ color: "var(--st-text-muted)" }}
+                >
+                  {option.fit}
+                </p>
+
+                <div className="mt-6">
+                  <EngagementStack
+                    lit={option.lit}
+                    team={option.team}
+                    platformLabel={option.platformLabel}
+                  />
+                </div>
               </div>
-              <p className="text-sm leading-relaxed" style={{ color: "var(--st-text-muted)" }}>
-                {option.body}
-              </p>
-              <p className="text-sm" style={{ color: "var(--st-text-muted)" }}>
-                {option.fit}
-              </p>
-            </div>
+
+              <div className="flex-1 border-t px-6 py-5" style={{ borderColor: "var(--ab-rule)" }}>
+                <Label>What you get</Label>
+                <ul className="mt-3 space-y-2">
+                  {option.gets.map((item) => (
+                    <li
+                      key={item}
+                      className="flex gap-2.5 text-sm leading-snug"
+                      style={{ color: "var(--st-text)" }}
+                    >
+                      <Check
+                        className="mt-0.5 h-3.5 w-3.5 shrink-0"
+                        style={{ color: "var(--st-accent-ink)" }}
+                        aria-hidden="true"
+                      />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div
+                className="flex min-h-[5rem] items-center border-t px-6 py-5"
+                style={{ borderColor: "var(--st-text)", background: "var(--st-surface)" }}
+              >
+                <p
+                  className="text-lg italic"
+                  style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
+                >
+                  {option.takeaway.lead} <Accent>{option.takeaway.accent}</Accent>
+                </p>
+              </div>
+            </Panel>
           </Reveal>
         ))}
       </div>

@@ -319,30 +319,62 @@ export const REASONS = [
  * 6 — How to get started
  * ------------------------------------------------------------------ */
 
+/**
+ * The three OEM engagement models, as one progression: how much of the stack
+ * Lyzr supplies grows from a few blocks, to the whole platform, to the platform
+ * plus the people who build the workflows on it. `layers` drives the little
+ * architecture diagram on each card, so the picture and the words cannot drift.
+ */
 export const ENGAGEMENTS = [
   {
-    key: "self-serve",
+    key: "modular",
     step: "01",
-    support: "Self-serve",
-    title: "License and operate",
-    body: "Your team embeds the platform, or selected blocks, through APIs and SDKs. Support and SLA from Lyzr; everything else is yours.",
-    fit: "Mature product and engineering teams",
+    tier: "Modular",
+    title: "Fill the gaps in your platform",
+    fit: "You already have an agent platform and need specific production capabilities.",
+    gets: [
+      "License only the AgentBlocks you need",
+      "Integrate through APIs and SDKs",
+      "Keep your existing architecture and platform",
+    ],
+    /** Blocks lit in the diagram, out of six, and whether the team layer shows. */
+    lit: 2,
+    team: false,
+    platformLabel: "Individual AgentBlocks",
+    takeaway: { lead: "Your platform.", accent: "Our blocks." },
   },
   {
-    key: "integrate",
+    key: "platform",
     step: "02",
-    support: "Targeted support",
-    title: "Integrate with us",
-    body: "A small launch team connects the blocks you select to your existing architecture and rolls out on your release process, then steps back.",
-    fit: "Teams with prototypes, or an existing platform to extend",
+    tier: "Platform",
+    title: "White-label the complete agent platform",
+    fit: "You want to launch or extend an agent platform without building the infrastructure underneath it.",
+    gets: [
+      "Complete white-labeled Lyzr agent platform",
+      "Integration into your existing product and architecture",
+      "Implementation support from Lyzr engineers",
+    ],
+    lit: 6,
+    team: false,
+    platformLabel: "The complete platform",
+    takeaway: { lead: "Your product.", accent: "Our platform." },
   },
   {
-    key: "build",
+    key: "turnkey",
     step: "03",
-    support: "Full support",
-    title: "Build with us",
-    body: "A full launch team, product and engineering working alongside yours, ships your first agentic product end to end, then hands it over.",
-    fit: "Teams launching their first agentic product",
+    tier: "Turnkey",
+    title: "Launch complete agentic solutions",
+    fit: "You want the platform and the expertise to identify, build and launch agentic workflows for your customers.",
+    gets: [
+      "Complete white-labeled Lyzr agent platform",
+      "End-to-end implementation",
+      "Applied AI team to scope and build agentic workflows",
+      "Support through production launch",
+    ],
+    lit: 6,
+    team: true,
+    platformLabel: "The complete platform",
+    takeaway: { lead: "Your customers.", accent: "We help build the solution." },
   },
 ];
 
