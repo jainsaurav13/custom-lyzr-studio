@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 
 import {
+  AccountEconomics,
   BlueprintCards,
   BuildTable,
   ComparisonTable,
   Ecosystem,
+  EvidenceCards,
   LyzrGlyph,
   RevenueModel,
 } from "./diagrams";
@@ -135,23 +137,23 @@ function WhyTelcos() {
       "Platform, inference, managed services and industry solutions — billed by you, not resold for someone else.",
     ],
     [
-      "Control of the market's AI layer",
-      "Whoever owns where agents are built and approved owns the enterprise relationship above the network.",
+      "Own the enterprise AI relationship",
+      "Become the trusted local layer through which customers access models, build agents and enforce policy.",
     ],
     [
       "National relevance",
       "Regulated and public-sector buyers need an in-country provider they can name in a procurement document.",
     ],
     [
-      "Accounts that stop churning",
-      "Connectivity is replaceable in a quarter. A governed platform holding their agents and data is not.",
+      "Increase strategic account value",
+      "Add recurring AI, infrastructure, security and managed-service revenue to existing enterprise relationships.",
     ],
   ];
   return (
     <Section
       id="why-telcos"
       eyebrow="Why telcos should own this market"
-      title="No one else in the market can offer all four."
+      title="Telcos are uniquely positioned to lead this market."
       lede="Enterprise relationships, in-country infrastructure, regulated-sector trust, and the ability to bill and support a service. The platform is the only missing piece."
       rule={false}
     >
@@ -190,7 +192,9 @@ function Catalogue() {
       line: "Model access you meter",
       items: [
         "Model APIs and private endpoints on your gateway",
-        "Local and open model hosting alongside commercial models",
+        "Locally developed and fine-tuned models, hosted in country",
+        "National and regional language support",
+        "Country-specific safety, policy and evaluation datasets",
         "Per-tenant metering, quotas and cost control",
       ],
       buyer: "Every segment",
@@ -256,6 +260,9 @@ function Revenue() {
       lede="Platform and inference recur. Services and solutions carry margin. Infrastructure gets pulled through by all of them."
     >
       <RevenueModel />
+      <div className="mt-6">
+        <AccountEconomics />
+      </div>
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_1fr] lg:gap-12">
         <div>
           <Heading3>How it compounds</Heading3>
@@ -282,7 +289,7 @@ function WhyLyzr() {
   const reasons: [string, string][] = [
     [
       "It ships as your service",
-      "Your brand, your tiers, your contract. Lyzr appears in the partnership agreement, not in the product.",
+      "The telco is the market-facing brand. Lyzr is disclosed as the technology partner wherever security, procurement or regulation requires it.",
     ],
     [
       "It sits alongside your cloud partners",
@@ -301,8 +308,8 @@ function WhyLyzr() {
     <Section
       id="why-lyzr"
       eyebrow="Why Lyzr"
-      title="The fastest way to have a platform, not a platform programme."
-      lede="Six pieces stand between an operator and this business. None of them are what customers choose you for."
+      title="Launch without building the platform from scratch."
+      lede="Six pieces sit between an operator and this business. Each is real engineering — and none of it is what customers choose you for."
     >
       <BuildTable />
       <div className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2 xl:grid-cols-4">
@@ -406,8 +413,8 @@ function Launch() {
     <Section
       id="launch"
       eyebrow="90-day lighthouse launch"
-      title="A customer using it in ninety days."
-      lede="Not a pilot that ends in a report. A production deployment, a live account and a packaged offer to sell next."
+      title="Target: a production lighthouse within 90 days."
+      lede="Not a pilot that ends in a report — a production deployment, a live account and a packaged offer to sell next. Subject to infrastructure, security and integration readiness."
     >
       <div className="grid gap-x-10 gap-y-8 sm:grid-cols-2 xl:grid-cols-4">
         {plan.map(([window, name, detail], index) => (
@@ -463,7 +470,8 @@ function Launch() {
           ))}
         </div>
         <Body className="mt-4">
-          Full mechanics, ownership split and economics for each are in the appendix.
+          Full mechanics, ownership split and economics for each are in the appendix. Timelines
+          assume infrastructure, security and integration readiness on both sides.
         </Body>
       </div>
     </Section>
@@ -477,75 +485,65 @@ function Evidence() {
     <Section
       id="evidence"
       eyebrow="Evidence and precedents"
-      title="The platform is already carrying regulated workloads."
-      lede="Ask for the architecture document, the security response and a reference call on any claim here."
+      title="Evidence that Lyzr can operate at enterprise scale."
+      lede="Every claim on this page should survive a reference call. Ask for the architecture document, the security response and the deployment topology on any of them."
     >
-      <p
-        className="text-[10px] font-semibold tracking-[0.16em] uppercase"
-        style={{ color: "var(--st-text-faint)" }}
-      >
-        Running on Lyzr underneath
-      </p>
-      <ul
-        className="mt-4 flex flex-wrap items-center gap-x-10 gap-y-4 border-y py-5"
-        style={{ borderColor: "var(--ab-rule)" }}
-      >
-        {PROOF_LOGOS.map((name) => (
-          <li
-            key={name}
-            className="text-base font-semibold tracking-[-0.01em]"
-            style={{ color: "var(--st-text-muted)", fontFamily: "var(--st-font-head)" }}
+      <EvidenceCards
+        trailing={
+          <div
+            className="rounded-[var(--st-radius)] border p-6"
+            style={{ borderColor: "var(--st-border)", background: "var(--ab-paper)" }}
           >
-            {name}
-          </li>
-        ))}
-      </ul>
-
-      <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_1fr] lg:gap-12">
-        <div>
-          <Eyebrow>The closest precedent</Eyebrow>
-          <h3
-            className="mt-3 text-[1.5rem] leading-[1.2] font-semibold tracking-[-0.03em] text-balance sm:text-[1.875rem]"
-            style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
-          >
-            A billion-dollar SaaS runs its agent platform on Lyzr — under its own brand.
-          </h3>
-          <p
-            className="mt-4 max-w-lg text-lg leading-snug"
-            style={{ color: "var(--st-text-muted)" }}
-          >
-            <Accent>
-              They had the engineers to build the layer themselves. They licensed it and shipped the
-              product instead.
-            </Accent>
-          </p>
-        </div>
-        <div
-          className="border-t pt-5 lg:border-t-0 lg:pt-0"
-          style={{ borderColor: "var(--ab-rule)" }}
-        >
-          <div className="space-y-4">
-            {[
-              ["Customers see", "Their brand, their product, their workbench"],
-              ["They keep", "The data model, the customer, the roadmap"],
-              ["Lyzr provides", "The white-labeled build, governance and runtime"],
-              ["It runs in", "Their cloud, and their customers' AWS, Azure or GCP"],
-            ].map(([label, detail]) => (
-              <div
-                key={label}
-                className="grid gap-1 border-t pt-4 first:border-t-0 first:pt-0 sm:grid-cols-[8rem_1fr] sm:gap-4"
-                style={{ borderColor: "var(--ab-rule)" }}
-              >
-                <p className="text-[13px] font-semibold" style={{ color: "var(--st-text)" }}>
-                  {label}
-                </p>
-                <p className="text-[13px]" style={{ color: "var(--st-text-muted)" }}>
-                  {detail}
-                </p>
-              </div>
-            ))}
+            <p
+              className="text-[10px] font-semibold tracking-[0.18em] uppercase"
+              style={{ color: "var(--st-text-faint)" }}
+            >
+              On request
+            </p>
+            <h3
+              className="mt-3 text-lg leading-snug font-semibold tracking-[-0.02em]"
+              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+            >
+              What we will put in front of your teams
+            </h3>
+            <RuleList
+              className="mt-4"
+              items={[
+                "Reference architecture and deployment topology for your environment",
+                "Security response: data handling, retention, audit",
+                "A product walkthrough against one of your candidate workloads",
+                "A customer reference call, under NDA where naming is restricted",
+              ]}
+            />
           </div>
+        }
+      />
+
+      <div className="mt-10 border-t pt-6" style={{ borderColor: "var(--ab-rule)" }}>
+        <p
+          className="text-[10px] font-semibold tracking-[0.18em] uppercase"
+          style={{ color: "var(--st-text-faint)" }}
+        >
+          Organizations running on Lyzr
+        </p>
+        <div className="mt-4 flex flex-wrap items-baseline gap-x-8 gap-y-3">
+          {PROOF_LOGOS.map((name) => (
+            <span
+              key={name}
+              className="text-base font-semibold tracking-[-0.01em]"
+              style={{ color: "var(--st-text-muted)", fontFamily: "var(--st-font-head)" }}
+            >
+              {name}
+            </span>
+          ))}
         </div>
+        <p
+          className="mt-4 max-w-2xl text-xs leading-relaxed"
+          style={{ color: "var(--st-text-faint)" }}
+        >
+          Workload, environment and deployment detail for each is shared under NDA rather than
+          summarised here.
+        </p>
       </div>
     </Section>
   );

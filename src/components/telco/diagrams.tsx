@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { cn } from "@/lib/utils";
 
 import { Body, Heading3, Numeral, RuleList } from "./ui";
@@ -264,7 +266,7 @@ export function BuildTable() {
           Total
         </p>
         <p className="hidden text-xs sm:block" style={{ color: "var(--st-text-faint)" }}>
-          A programme no customer will pay you for
+          Months of undifferentiated platform engineering before commercial launch
         </p>
         <p className="text-right text-xs font-semibold" style={{ color: "var(--st-accent-ink)" }}>
           From day one
@@ -442,14 +444,13 @@ export function Ecosystem() {
           className="rounded-[var(--st-radius)] px-6 py-8 text-center"
           style={{ background: "var(--ab-ink)", color: "var(--ab-ink-text)" }}
         >
-          <LyzrGlyph size={26} color="var(--ab-accent-on-ink)" />
-          <p
-            className="mt-4 text-[13px] font-semibold tracking-[0.14em] uppercase"
-            style={{ color: "var(--ab-accent-on-ink)" }}
+          <span
+            className="mx-auto flex h-10 w-28 items-center justify-center rounded-[6px] border border-dashed text-[10px] font-semibold tracking-[0.18em] uppercase"
+            style={{ borderColor: "var(--ab-ink-border)", color: "var(--ab-ink-faint)" }}
           >
-            Your brand
-          </p>
-          <p className="mt-2 text-xl leading-snug font-semibold tracking-[-0.02em]">
+            Your logo
+          </span>
+          <p className="mt-4 text-xl leading-snug font-semibold tracking-[-0.02em]">
             Sovereign AI platform
           </p>
           <p className="mt-3 text-xs leading-relaxed" style={{ color: "var(--ab-ink-faint)" }}>
@@ -580,6 +581,139 @@ export function RevenueModel() {
           </p>
         </div>
       ))}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * Evidence, in the shape a procurement team reads: who, what workload,
+ * deployed where, and what came of it. Anything not cleared for naming
+ * says so rather than being softened into an unsupported claim.
+ * ------------------------------------------------------------------ */
+
+export type EvidenceCase = {
+  customer: string;
+  workload: string;
+  deployment: string;
+  result: string;
+  status: string;
+};
+
+/**
+ * Only what Lyzr can substantiate today. Add cases here as they are cleared —
+ * the grid takes any number, and the four fields are the contract.
+ */
+export const EVIDENCE_CASES: EvidenceCase[] = [
+  {
+    customer: "Enterprise planning SaaS (name under NDA)",
+    workload: "White-labeled agent platform inside their own product",
+    deployment: "Their cloud, and their customers' managed AWS, Azure and GCP",
+    result: "Shipped the product instead of building the platform layer themselves",
+    status: "In production · reference available under NDA",
+  },
+];
+
+export function EvidenceCards({ trailing }: { trailing?: ReactNode }) {
+  return (
+    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {EVIDENCE_CASES.map((item) => (
+        <article
+          key={item.customer}
+          className="flex flex-col rounded-[var(--st-radius)] border p-6"
+          style={{
+            borderColor: "var(--st-border)",
+            background: "var(--st-surface-2)",
+            boxShadow: "var(--st-shadow)",
+          }}
+        >
+          <p
+            className="text-[10px] font-semibold tracking-[0.18em] uppercase"
+            style={{ color: "var(--st-accent-ink)" }}
+          >
+            {item.status}
+          </p>
+          <h3
+            className="mt-3 text-lg leading-snug font-semibold tracking-[-0.02em]"
+            style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+          >
+            {item.customer}
+          </h3>
+          <dl className="mt-4 space-y-3">
+            {[
+              ["Workload", item.workload],
+              ["Deployment", item.deployment],
+              ["Result", item.result],
+            ].map(([label, value]) => (
+              <div
+                key={label}
+                className="border-t pt-3 first:border-t-0 first:pt-0"
+                style={{ borderColor: "var(--ab-rule)" }}
+              >
+                <dt
+                  className="text-[10px] font-semibold tracking-[0.18em] uppercase"
+                  style={{ color: "var(--st-text-faint)" }}
+                >
+                  {label}
+                </dt>
+                <dd
+                  className="mt-1 text-[13px] leading-relaxed"
+                  style={{ color: "var(--st-text)" }}
+                >
+                  {value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </article>
+      ))}
+      {trailing}
+    </div>
+  );
+}
+
+const ACCOUNT_LINES: [string, string][] = [
+  ["Platform subscription", "Recurring, per tenant and environment"],
+  ["Inference consumption", "Recurring, every day their agents run"],
+  ["Implementation", "One-off, at onboarding and each new workload"],
+  ["Managed service", "Recurring, tiered by support and operations"],
+  ["Attached infrastructure", "Compute, hosting, connectivity and security"],
+];
+
+/** What one enterprise account touches — the shape, before the numbers exist. */
+export function AccountEconomics() {
+  return (
+    <div
+      className="rounded-[var(--st-radius)] border p-6"
+      style={{ borderColor: "var(--st-border)", background: "var(--ab-paper)" }}
+    >
+      <p
+        className="text-[10px] font-semibold tracking-[0.18em] uppercase"
+        style={{ color: "var(--st-accent-ink)" }}
+      >
+        Illustrative — one enterprise account
+      </p>
+      <p className="mt-3 max-w-2xl text-[15px] leading-snug" style={{ color: "var(--st-text)" }}>
+        A single enterprise account can generate platform subscription revenue, recurring inference
+        consumption, implementation fees, managed-service revenue and attached infrastructure spend.
+      </p>
+      <div className="mt-5 grid gap-x-8 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+        {ACCOUNT_LINES.map(([line, shape], index) => (
+          <div key={line} className="flex items-baseline gap-3">
+            <Numeral value={index + 1} />
+            <div>
+              <p className="text-[13px] font-semibold" style={{ color: "var(--st-text)" }}>
+                {line}
+              </p>
+              <p className="text-xs" style={{ color: "var(--st-text-faint)" }}>
+                {shape}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="mt-5 text-xs" style={{ color: "var(--st-text-faint)" }}>
+        Values are set per operator once pricing and delivery costs are agreed.
+      </p>
     </div>
   );
 }
