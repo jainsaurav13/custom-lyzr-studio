@@ -2,12 +2,19 @@
 
 A mock of the Lyzr agent studio that can be re-skinned for a prospect in about
 thirty seconds and handed over as a link. The prospect sees the platform wearing
-*their* logo, colours and typeface, filled with *their* company name, instead of
+_their_ logo, colours and typeface, filled with _their_ company name, instead of
 imagining it.
 
 The app is a single page: the studio itself, at `/`. Home is the Architect —
 describe an agent in the composer and it drafts one, the same way the real
 studio does.
+
+A second, unbranded page lives at `/telco`: the Lyzr–telco partnership
+blueprint — how an operator becomes a provider of governed enterprise AI
+services, the three partnership models, the sovereignty boundary, the reference
+architecture and the phased route to market. It is Lyzr's own document rather
+than a white-label surface, so it paints from a fixed palette (Lyzr purple,
+telco blue, enterprise green) instead of the brand kit.
 
 ## Quick start
 
@@ -43,8 +50,8 @@ Other scripts: `npm run build`, `npm run preview`, `npm run typecheck`,
 5. **Share → Copy share link**, and send it. The recipient needs no account.
 
 Nothing is stored server-side: the entire brand kit is encoded into the URL, so
-the link *is* the demo. Only the small profile derived from a brief travels with
-it — never the brief text. *Saved demos* on the Share tab keeps recent kits in the
+the link _is_ the demo. Only the small profile derived from a brief travels with
+it — never the brief text. _Saved demos_ on the Share tab keeps recent kits in the
 rep's own browser (localStorage) for juggling several accounts.
 
 Every screen carries a small strip saying the workspace is illustrative and the
