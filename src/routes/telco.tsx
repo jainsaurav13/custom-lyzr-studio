@@ -11,9 +11,15 @@ export const Route = createFileRoute("/telco")({
     meta: [
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
-      { name: "theme-color", content: "#F8FAFC" },
+      { name: "theme-color", content: "#fafbfc" },
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
+    ],
+    links: [
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap",
+      },
     ],
   }),
   component: TelcoPage,
