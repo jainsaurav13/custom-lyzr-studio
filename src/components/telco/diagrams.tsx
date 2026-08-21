@@ -1,6 +1,3 @@
-import { Building2, RadioTower } from "lucide-react";
-import type { ReactNode } from "react";
-
 import { cn } from "@/lib/utils";
 
 import { Body, Heading3, Numeral, RuleList } from "./ui";
@@ -31,167 +28,6 @@ export function LyzrGlyph({
       />
       <path d="M31 13 L17 35" stroke={color} strokeWidth="4.5" strokeLinecap="round" />
     </svg>
-  );
-}
-
-function Arrow({ label }: { label: string }) {
-  return (
-    <div className="flex shrink-0 flex-col items-center justify-center gap-2 md:py-0">
-      <svg
-        width="64"
-        height="12"
-        viewBox="0 0 64 12"
-        fill="none"
-        aria-hidden
-        className="my-6 rotate-90 md:my-0 md:rotate-0"
-      >
-        <path d="M0 6 H52" stroke="var(--st-accent)" strokeWidth="1.5" />
-        <path d="M50 1.5 L62 6 L50 10.5 Z" fill="var(--st-accent)" />
-      </svg>
-      <span
-        className="text-center text-[11px] leading-tight tracking-[0.02em]"
-        style={{ color: "var(--st-text-faint)" }}
-      >
-        {label}
-      </span>
-    </div>
-  );
-}
-
-/**
- * Three actors, three treatments rather than three hues: Lyzr is the ink panel
- * underneath, the telco carries the accent because it carries the market, and
- * the enterprise sits on plain paper.
- */
-function ChainNode({
-  variant,
-  icon,
-  name,
-  role,
-  detail,
-}: {
-  variant: "ink" | "accent" | "paper";
-  icon: ReactNode;
-  name: string;
-  role: string;
-  detail: string;
-}) {
-  const onInk = variant === "ink";
-  return (
-    <div
-      className="flex flex-1 flex-col rounded-[var(--st-radius)] border p-6"
-      style={{
-        background: onInk ? "var(--ab-ink)" : "var(--st-surface-2)",
-        borderColor: onInk
-          ? "var(--ab-ink)"
-          : variant === "accent"
-            ? "var(--st-accent)"
-            : "var(--st-border)",
-        color: onInk ? "var(--ab-ink-text)" : "var(--st-text)",
-      }}
-    >
-      <div
-        className="flex h-10 items-center"
-        style={{
-          color: onInk
-            ? "var(--ab-accent-on-ink)"
-            : variant === "accent"
-              ? "var(--st-accent)"
-              : "var(--st-text-faint)",
-        }}
-      >
-        {icon}
-      </div>
-      <p
-        className="mt-4 text-[13px] leading-snug font-semibold tracking-[0.14em] uppercase lg:min-h-[2.25rem]"
-        style={{ color: onInk ? "var(--ab-ink-text)" : "var(--st-text)" }}
-      >
-        {name}
-      </p>
-      <span
-        className="my-4 block h-px w-full"
-        style={{ background: onInk ? "var(--ab-ink-border)" : "var(--ab-rule)" }}
-      />
-      <p
-        className="text-[15px] leading-snug lg:min-h-[1.5rem]"
-        style={{
-          fontFamily: "var(--ab-serif)",
-          color: onInk ? "var(--ab-accent-on-ink)" : "var(--st-accent-ink)",
-        }}
-      >
-        {role}
-      </p>
-      <Body className="mt-2" onInk={onInk}>
-        {detail}
-      </Body>
-    </div>
-  );
-}
-
-const CHAIN_BENEFITS = [
-  { label: "You own the customer", detail: "Brand, contract, pricing" },
-  { label: "Data stays in boundary", detail: "Approved locations only" },
-  { label: "New AI revenue", detail: "Platform, services, attached network" },
-  { label: "Live in a quarter", detail: "Not an 18-month build" },
-];
-
-/** The value chain: from telecom provider to sovereign AI agent provider. */
-export function ValueChain() {
-  return (
-    <div
-      className="rounded-[var(--st-radius-lg)] border p-6 sm:p-8"
-      style={{
-        borderColor: "var(--st-border)",
-        background: "var(--st-surface)",
-        boxShadow: "var(--st-shadow)",
-      }}
-    >
-      <div className="flex flex-col items-stretch gap-2 md:flex-row">
-        <ChainNode
-          variant="ink"
-          icon={<LyzrGlyph size={34} color="var(--ab-accent-on-ink)" />}
-          name="Lyzr"
-          role="The agent platform"
-          detail="Builds and licenses the technology underneath."
-        />
-        <Arrow label="Licenses the platform" />
-        <ChainNode
-          variant="accent"
-          icon={<RadioTower size={32} strokeWidth={1.5} />}
-          name="Telco"
-          role="The branded service"
-          detail="Hosts, brands, prices and operates it."
-        />
-        <Arrow label="Sells governed agents" />
-        <ChainNode
-          variant="paper"
-          icon={<Building2 size={32} strokeWidth={1.5} />}
-          name="Enterprise & government"
-          role="Enterprise adoption"
-          detail="Buys governed agents from a provider it trusts."
-        />
-      </div>
-
-      <div
-        className="mt-8 grid gap-x-10 gap-y-6 border-t pt-8 sm:grid-cols-2 lg:grid-cols-4"
-        style={{ borderColor: "var(--ab-rule)" }}
-      >
-        {CHAIN_BENEFITS.map((benefit, index) => (
-          <div key={benefit.label}>
-            <Numeral value={index + 1} />
-            <p
-              className="mt-2 text-sm font-semibold lg:min-h-6"
-              style={{ color: "var(--st-text)", fontFamily: "var(--st-font-head)" }}
-            >
-              {benefit.label}
-            </p>
-            <p className="mt-1 text-xs leading-relaxed" style={{ color: "var(--st-text-faint)" }}>
-              {benefit.detail}
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
   );
 }
 
@@ -354,48 +190,6 @@ export function BlueprintCards() {
   );
 }
 
-/** Legend for the blueprints — who is who in every motion. */
-export function BlueprintLegend({ className }: { className?: string }) {
-  const entries = [
-    {
-      label: "Lyzr",
-      detail: "The platform technology and the enablement around it.",
-    },
-    {
-      label: "Telco",
-      detail: "The customer, the brand, the commercial offer.",
-    },
-    {
-      label: "Enterprise",
-      detail: "Runs the agents inside its own systems.",
-    },
-    {
-      label: "Sovereignty",
-      detail: "Every model runs private — your infrastructure or theirs.",
-    },
-  ];
-  return (
-    <div
-      className={cn("grid gap-x-10 gap-y-6 border-t pt-8 md:grid-cols-2 lg:grid-cols-4", className)}
-      style={{ borderColor: "var(--ab-rule)" }}
-    >
-      {entries.map((entry) => (
-        <div key={entry.label}>
-          <p
-            className="text-[11px] font-semibold tracking-[0.16em] uppercase"
-            style={{ color: "var(--st-text)" }}
-          >
-            {entry.label}
-          </p>
-          <p className="mt-2 text-xs leading-relaxed" style={{ color: "var(--st-text-faint)" }}>
-            {entry.detail}
-          </p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 /* ------------------------------------------------------------------ *
  * Narrative components — the build-vs-license table, the service stack
  * and the comparison table the story leans on.
@@ -476,110 +270,6 @@ export function BuildTable() {
           From day one
         </p>
       </div>
-    </div>
-  );
-}
-
-const STACK: { band: string; label: string; items: string[]; tone: "telco" | "lyzr" | "base" }[] = [
-  {
-    band: "Yours alone",
-    label: "The service your market buys",
-    tone: "telco",
-    items: ["Brand", "Pricing", "Contracts", "Channel", "Customer success"],
-  },
-  {
-    band: "Licensed from Lyzr",
-    label: "The agent platform layer",
-    tone: "lyzr",
-    items: [
-      "Agent builder",
-      "Orchestration",
-      "Governed runtime",
-      "Memory & tools",
-      "Guardrails",
-      "Evaluation",
-      "Observability",
-      "Tenant admin & APIs",
-    ],
-  },
-  {
-    band: "Stays in place",
-    label: "The estate you already run",
-    tone: "base",
-    items: [
-      "Approved models",
-      "Telco & sovereign cloud",
-      "Enterprise systems",
-      "IAM & SSO",
-      "SOC & audit",
-      "Billing",
-      "Network & edge",
-    ],
-  },
-];
-
-/** The service, drawn as the three bands an operator has to reason about. */
-export function ServiceStack() {
-  return (
-    <div className="space-y-3">
-      {STACK.map((band) => {
-        const onInk = band.tone === "lyzr";
-        return (
-          <div
-            key={band.band}
-            className="rounded-[var(--st-radius)] border px-6 py-5"
-            style={{
-              borderColor: onInk ? "var(--ab-ink)" : "var(--st-border)",
-              background: onInk
-                ? "var(--ab-ink)"
-                : band.tone === "telco"
-                  ? "var(--st-surface-2)"
-                  : "var(--ab-paper)",
-            }}
-          >
-            <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-              <p
-                className="text-[10px] font-semibold tracking-[0.16em] uppercase"
-                style={{ color: onInk ? "var(--ab-accent-on-ink)" : "var(--st-accent-ink)" }}
-              >
-                {band.band}
-              </p>
-              <p
-                className="text-[15px]"
-                style={{
-                  fontFamily: "var(--ab-serif)",
-                  color: onInk ? "var(--ab-ink-text)" : "var(--st-text)",
-                }}
-              >
-                {band.label}
-              </p>
-            </div>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {band.items.map((item) => (
-                <span
-                  key={item}
-                  className="rounded-full border px-3 py-1 text-xs"
-                  style={
-                    onInk
-                      ? {
-                          borderColor: "var(--ab-ink-border)",
-                          color: "var(--ab-ink-muted)",
-                          background: "var(--ab-ink-raised)",
-                        }
-                      : {
-                          borderColor: "var(--st-border)",
-                          color: "var(--st-text-muted)",
-                          background: "var(--st-surface)",
-                        }
-                  }
-                >
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-        );
-      })}
     </div>
   );
 }
@@ -678,6 +368,221 @@ export function ComparisonTable() {
           ))}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * The ecosystem: what feeds the platform, who buys from it, what it earns.
+ * ------------------------------------------------------------------ */
+
+const INPUTS: [string, string][] = [
+  ["Approved AI models", "Local · open · commercial"],
+  ["Your infrastructure", "Cloud · data centres · network"],
+  ["Lyzr platform", "Agent builder · inference gateway · governance"],
+];
+
+const BUYERS: [string, string][] = [
+  ["Government", "Auditable agents inside the national boundary"],
+  ["Enterprises", "Agents and model access across their own systems"],
+  ["SMBs", "Packaged agents on consumption pricing"],
+];
+
+const STREAMS = [
+  "Platform subscriptions",
+  "Inference consumption",
+  "Managed services",
+  "Industry solutions",
+  "Infrastructure and network",
+];
+
+function Feed({ label, detail }: { label: string; detail: string }) {
+  return (
+    <div
+      className="rounded-[var(--st-radius-sm)] border px-4 py-3"
+      style={{ borderColor: "var(--st-border)", background: "var(--st-surface-2)" }}
+    >
+      <p className="text-[13px] font-semibold" style={{ color: "var(--st-text)" }}>
+        {label}
+      </p>
+      <p className="mt-0.5 text-xs" style={{ color: "var(--st-text-faint)" }}>
+        {detail}
+      </p>
+    </div>
+  );
+}
+
+/** One picture of the business: inputs, the branded platform, buyers, revenue. */
+export function Ecosystem() {
+  return (
+    <div
+      className="rounded-[var(--st-radius-lg)] border p-6 sm:p-8"
+      style={{
+        borderColor: "var(--st-border)",
+        background: "var(--st-surface)",
+        boxShadow: "var(--st-shadow)",
+      }}
+    >
+      <div className="grid items-center gap-6 lg:grid-cols-[1fr_auto_1.1fr_auto_1fr]">
+        <div className="space-y-3">
+          <p
+            className="text-[10px] font-semibold tracking-[0.16em] uppercase"
+            style={{ color: "var(--st-text-faint)" }}
+          >
+            Runs on
+          </p>
+          {INPUTS.map(([label, detail]) => (
+            <Feed key={label} label={label} detail={detail} />
+          ))}
+        </div>
+
+        <Connector />
+
+        <div
+          className="rounded-[var(--st-radius)] px-6 py-8 text-center"
+          style={{ background: "var(--ab-ink)", color: "var(--ab-ink-text)" }}
+        >
+          <LyzrGlyph size={26} color="var(--ab-accent-on-ink)" />
+          <p
+            className="mt-4 text-[13px] font-semibold tracking-[0.14em] uppercase"
+            style={{ color: "var(--ab-accent-on-ink)" }}
+          >
+            Your brand
+          </p>
+          <p
+            className="mt-2 text-[1.375rem] leading-tight"
+            style={{ fontFamily: "var(--ab-serif)" }}
+          >
+            Sovereign AI platform
+          </p>
+          <p className="mt-3 text-xs leading-relaxed" style={{ color: "var(--ab-ink-faint)" }}>
+            Agents, model access and governance, operated in country
+          </p>
+        </div>
+
+        <Connector />
+
+        <div className="space-y-3">
+          <p
+            className="text-[10px] font-semibold tracking-[0.16em] uppercase"
+            style={{ color: "var(--st-text-faint)" }}
+          >
+            Sold to
+          </p>
+          {BUYERS.map(([label, detail]) => (
+            <Feed key={label} label={label} detail={detail} />
+          ))}
+        </div>
+      </div>
+
+      <div
+        className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-t pt-6"
+        style={{ borderColor: "var(--ab-rule)" }}
+      >
+        <p
+          className="text-[10px] font-semibold tracking-[0.16em] uppercase"
+          style={{ color: "var(--st-accent-ink)" }}
+        >
+          You bill for
+        </p>
+        {STREAMS.map((stream) => (
+          <span key={stream} className="text-[13px]" style={{ color: "var(--st-text-muted)" }}>
+            {stream}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Connector() {
+  return (
+    <svg
+      width="28"
+      height="12"
+      viewBox="0 0 28 12"
+      fill="none"
+      aria-hidden
+      className="mx-auto my-2 rotate-90 lg:my-0 lg:rotate-0"
+    >
+      <path d="M0 6 H18" stroke="var(--st-accent)" strokeWidth="1.5" />
+      <path d="M16 1.5 L28 6 L16 10.5 Z" fill="var(--st-accent)" />
+    </svg>
+  );
+}
+
+const REVENUE: { stream: string; meters: string; buyer: string }[] = [
+  {
+    stream: "Platform subscriptions",
+    meters: "Tenants, seats, environments",
+    buyer: "Enterprise and government",
+  },
+  {
+    stream: "Inference consumption",
+    meters: "Tokens and calls through your gateway",
+    buyer: "Every customer, including SMB",
+  },
+  {
+    stream: "Managed services",
+    meters: "Implementation, operations, support tiers",
+    buyer: "Enterprise and regulated accounts",
+  },
+  {
+    stream: "Industry solutions",
+    meters: "Packaged agents, per workflow or per site",
+    buyer: "Sector customers and SMB",
+  },
+  {
+    stream: "Infrastructure and network",
+    meters: "Compute, hosting, connectivity, security",
+    buyer: "Pulled through by the platform",
+  },
+];
+
+/** The five lines a telco can bill against once it owns the platform. */
+export function RevenueModel() {
+  return (
+    <div
+      className="overflow-hidden rounded-[var(--st-radius)] border"
+      style={{ borderColor: "var(--st-border)", background: "var(--st-surface-2)" }}
+    >
+      <div
+        className="grid grid-cols-[1.1fr_1fr] gap-4 border-b px-6 py-3 sm:grid-cols-[1.1fr_1.2fr_1fr] sm:gap-8"
+        style={{ borderColor: "var(--ab-rule)", background: "var(--ab-paper)" }}
+      >
+        {["Revenue stream", "What it meters", "Who buys"].map((head, index) => (
+          <p
+            key={head}
+            className={cn(
+              "text-[10px] font-semibold tracking-[0.16em] uppercase",
+              index === 1 && "hidden sm:block",
+            )}
+            style={{ color: index === 0 ? "var(--st-accent-ink)" : "var(--st-text-faint)" }}
+          >
+            {head}
+          </p>
+        ))}
+      </div>
+      {REVENUE.map((row, index) => (
+        <div
+          key={row.stream}
+          className="grid grid-cols-[1.1fr_1fr] items-baseline gap-4 border-b px-6 py-4 last:border-b-0 sm:grid-cols-[1.1fr_1.2fr_1fr] sm:gap-8"
+          style={{ borderColor: "var(--ab-rule)" }}
+        >
+          <div className="flex items-baseline gap-3">
+            <Numeral value={index + 1} />
+            <p className="text-sm font-medium" style={{ color: "var(--st-text)" }}>
+              {row.stream}
+            </p>
+          </div>
+          <p className="hidden text-xs sm:block" style={{ color: "var(--st-text-faint)" }}>
+            {row.meters}
+          </p>
+          <p className="text-xs" style={{ color: "var(--st-text-muted)" }}>
+            {row.buyer}
+          </p>
+        </div>
+      ))}
     </div>
   );
 }

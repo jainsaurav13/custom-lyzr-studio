@@ -2,9 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { TelcoPage } from "@/components/telco/TelcoPage";
 
-const TITLE = "Lyzr × Telco — sovereign agent platform partnership";
+const TITLE = "Launch your sovereign AI platform — Lyzr for telecom operators";
 const DESCRIPTION =
-  "How a telecom operator becomes a provider of governed enterprise AI services with Lyzr: three partnership models, the sovereignty boundary, the reference architecture and a phased route to market.";
+  "How a telecom operator launches a locally governed AI platform under its own brand: what customers buy, the five revenue lines, the sovereignty controls and a 90-day lighthouse launch.";
 
 export const Route = createFileRoute("/telco")({
   head: () => ({
