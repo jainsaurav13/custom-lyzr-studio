@@ -40,7 +40,7 @@ export function Shell({ className, children }: { className?: string; children: R
 export function Eyebrow({ children, onInk = false }: { children: ReactNode; onInk?: boolean }) {
   return (
     <p
-      className="text-[11px] font-semibold tracking-[0.16em] uppercase"
+      className="text-[11px] font-semibold tracking-[0.18em] uppercase"
       style={{ color: onInk ? "var(--ab-accent-on-ink)" : "var(--st-accent-ink)" }}
     >
       {children}
@@ -60,11 +60,11 @@ export function Display({
   return (
     <h2
       className={cn(
-        "text-[1.85rem] leading-[1.12] tracking-[-0.02em] sm:text-[2.35rem]",
+        "text-[1.75rem] leading-[1.12] font-semibold tracking-[-0.03em] sm:text-[2.35rem]",
         className,
       )}
       style={{
-        fontFamily: "var(--ab-serif)",
+        fontFamily: "var(--st-font-head)",
         color: onInk ? "var(--ab-ink-text)" : "var(--st-text)",
       }}
     >
@@ -76,7 +76,7 @@ export function Display({
 export function Lede({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <p
-      className={cn("max-w-2xl text-[1.0625rem] leading-snug", className)}
+      className={cn("max-w-2xl text-base leading-relaxed", className)}
       style={{ color: "var(--st-text-muted)" }}
     >
       {children}
@@ -172,7 +172,7 @@ export function Heading3({
 }) {
   return (
     <h3
-      className={cn("text-[15px] font-semibold tracking-[-0.01em]", className)}
+      className={cn("text-lg leading-snug font-semibold tracking-[-0.01em]", className)}
       style={{
         fontFamily: "var(--st-font-head)",
         color: onInk ? "var(--ab-ink-text)" : "var(--st-text)",
@@ -245,6 +245,26 @@ export function Numeral({ value, onInk = false }: { value: number; onInk?: boole
     >
       <span style={{ opacity: 0.5 }}>0</span>
       <span>{value}</span>
+    </span>
+  );
+}
+
+/**
+ * Instrument Serif, italic — the only place the serif appears, matching how the
+ * AgentBlocks page spends it: a phrase inside a heading, a couplet, a pull line.
+ */
+export function Accent({
+  children,
+  className,
+  style,
+}: {
+  children: ReactNode;
+  className?: string;
+  style?: CSSProperties;
+}) {
+  return (
+    <span className={cn("italic", className)} style={{ fontFamily: "var(--ab-serif)", ...style }}>
+      {children}
     </span>
   );
 }

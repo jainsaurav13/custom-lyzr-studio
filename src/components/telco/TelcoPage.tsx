@@ -11,6 +11,7 @@ import {
 import {
   Body,
   ButtonLink,
+  Accent,
   Display,
   Eyebrow,
   Heading3,
@@ -97,11 +98,11 @@ function Hero() {
       <Shell className="relative pt-16 pb-14 sm:pt-24 sm:pb-18">
         <Eyebrow>For telecom operators</Eyebrow>
         <h1
-          className="mt-5 max-w-3xl text-[2rem] leading-[1.12] tracking-[-0.035em] text-balance sm:text-[2.6rem]"
-          style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
+          className="mt-5 max-w-3xl text-[2.1rem] leading-[1.1] font-semibold tracking-[-0.035em] text-balance sm:text-[2.7rem]"
+          style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
         >
           Launch your country&rsquo;s{" "}
-          <span style={{ color: "var(--st-accent-ink)" }}>sovereign AI platform</span>.
+          <Accent style={{ color: "var(--st-accent-ink)" }}>sovereign AI platform</Accent>.
         </h1>
         <Lede className="mt-5">
           Offer enterprises, government and SMBs a locally governed platform for building AI agents
@@ -159,8 +160,8 @@ function WhyTelcos() {
           <div key={title} className="border-t pt-5" style={{ borderColor: "var(--ab-rule)" }}>
             <Numeral value={index + 1} />
             <h3
-              className="mt-2 text-[1.125rem] leading-tight text-balance"
-              style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
+              className="mt-2 text-lg leading-snug font-semibold tracking-[-0.02em] text-balance"
+              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
             >
               {title}
             </h3>
@@ -230,8 +231,8 @@ function Catalogue() {
               </span>
             </div>
             <h3
-              className="mt-3 text-[1.375rem] leading-tight"
-              style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
+              className="mt-3 text-xl leading-snug font-semibold tracking-[-0.02em]"
+              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
             >
               {product.name}
             </h3>
@@ -308,8 +309,8 @@ function WhyLyzr() {
         {reasons.map(([title, detail]) => (
           <div key={title} className="border-t pt-5" style={{ borderColor: "var(--ab-rule)" }}>
             <h3
-              className="text-[1.125rem] leading-tight text-balance"
-              style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
+              className="text-lg leading-snug font-semibold tracking-[-0.02em] text-balance"
+              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
             >
               {title}
             </h3>
@@ -421,8 +422,8 @@ function Launch() {
               </p>
             </div>
             <h3
-              className="mt-2 text-[1.125rem] leading-tight"
-              style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
+              className="mt-2 text-lg leading-snug font-semibold tracking-[-0.02em]"
+              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
             >
               {name}
             </h3>
@@ -504,15 +505,20 @@ function Evidence() {
         <div>
           <Eyebrow>The closest precedent</Eyebrow>
           <h3
-            className="mt-3 text-[1.375rem] leading-[1.2] text-balance"
-            style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
+            className="mt-3 text-[1.5rem] leading-[1.2] font-semibold tracking-[-0.03em] text-balance sm:text-[1.875rem]"
+            style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
           >
             A billion-dollar SaaS runs its agent platform on Lyzr — under its own brand.
           </h3>
-          <Body className="mt-4">
-            They had the engineers to build the layer themselves. They licensed it and shipped the
-            product instead. Same motion an operator would run, one segment over.
-          </Body>
+          <p
+            className="mt-4 max-w-lg text-lg leading-snug"
+            style={{ color: "var(--st-text-muted)" }}
+          >
+            <Accent>
+              They had the engineers to build the layer themselves. They licensed it and shipped the
+              product instead.
+            </Accent>
+          </p>
         </div>
         <div
           className="border-t pt-5 lg:border-t-0 lg:pt-0"
@@ -659,8 +665,8 @@ function Appendix() {
           style={{ borderColor: "var(--ab-rule)" }}
         >
           <span
-            className="text-[15px]"
-            style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
+            className="text-[15px] font-medium"
+            style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
           >
             The three entry models, in full
           </span>
@@ -683,8 +689,8 @@ function Appendix() {
           style={{ borderColor: "var(--ab-rule)" }}
         >
           <span
-            className="text-[15px]"
-            style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
+            className="text-[15px] font-medium"
+            style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
           >
             The four routes you are choosing between
           </span>
@@ -708,8 +714,8 @@ function Appendix() {
             style={{ borderColor: "var(--ab-rule)" }}
           >
             <span
-              className="text-[15px]"
-              style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
+              className="text-[15px] font-medium"
+              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
             >
               {item.q}
             </span>

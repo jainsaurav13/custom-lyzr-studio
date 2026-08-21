@@ -135,8 +135,8 @@ export function BlueprintCards() {
             </span>
           </div>
           <h3
-            className="mt-3 text-[1.375rem] leading-[1.2] text-balance"
-            style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
+            className="mt-3 text-xl leading-snug font-semibold tracking-[-0.02em] text-balance"
+            style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
           >
             {model.title}
           </h3>
@@ -179,7 +179,7 @@ export function BlueprintCards() {
           </div>
 
           <p
-            className="mt-5 text-[15px] leading-snug"
+            className="mt-5 text-lg leading-snug italic"
             style={{ fontFamily: "var(--ab-serif)", color: "var(--st-accent-ink)" }}
           >
             {model.couplet}
@@ -449,10 +449,7 @@ export function Ecosystem() {
           >
             Your brand
           </p>
-          <p
-            className="mt-2 text-[1.375rem] leading-tight"
-            style={{ fontFamily: "var(--ab-serif)" }}
-          >
+          <p className="mt-2 text-xl leading-snug font-semibold tracking-[-0.02em]">
             Sovereign AI platform
           </p>
           <p className="mt-3 text-xs leading-relaxed" style={{ color: "var(--ab-ink-faint)" }}>
