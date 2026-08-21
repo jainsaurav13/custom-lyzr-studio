@@ -625,6 +625,8 @@ export function StartSection() {
           eyebrow="Engagement models"
           title="Start where you are. We’ll meet you there."
           lede="Three levels of Lyzr involvement. Every one of them preserves the same principle: your brand, your customer, your economics."
+          // Full container width, so the lede holds one line on a laptop.
+          className="max-w-none"
         />
       </Reveal>
 
