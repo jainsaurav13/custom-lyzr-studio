@@ -198,6 +198,7 @@ export function ValueChain() {
 type Blueprint = {
   title: string;
   standfirst: string;
+  couplet: string;
   lyzrRole: string;
   telcoRole: string;
   customer: string;
@@ -211,6 +212,7 @@ const BLUEPRINTS: Blueprint[] = [
   {
     title: "Telco-owned sovereign agent platform",
     standfirst: "The strategic destination",
+    couplet: "Your platform. Our technology.",
     lyzrRole: "Licenses the platform and supports its lifecycle",
     telcoRole: "Brands, operates and takes the platform to market",
     customer: "Enterprise customers",
@@ -226,6 +228,7 @@ const BLUEPRINTS: Blueprint[] = [
   {
     title: "Telco-prime managed agent service",
     standfirst: "The fastest commercial entry",
+    couplet: "Your customer. We deliver underneath.",
     lyzrRole: "Implements, customizes and supports the platform",
     telcoRole: "Sells, contracts and manages the customer",
     customer: "Enterprise customers",
@@ -241,6 +244,7 @@ const BLUEPRINTS: Blueprint[] = [
   {
     title: "Private agent platform and managed AI distribution",
     standfirst: "For isolated environments",
+    couplet: "Your infrastructure. Their boundary.",
     lyzrRole: "Supplies the dedicated agent platform",
     telcoRole: "Packages infrastructure, security and operations",
     customer: "Regulated customers",
@@ -338,6 +342,13 @@ export function BlueprintCards() {
             <Heading3 className="text-sm">Why it works</Heading3>
             <RuleList className="mt-2" items={model.why} />
           </div>
+
+          <p
+            className="mt-5 text-[15px] leading-snug"
+            style={{ fontFamily: "var(--ab-serif)", color: "var(--st-accent-ink)" }}
+          >
+            {model.couplet}
+          </p>
         </article>
       ))}
     </div>
@@ -382,6 +393,304 @@ export function BlueprintLegend({ className }: { className?: string }) {
           </p>
         </div>
       ))}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * Narrative components — the build-vs-license table, the service stack
+ * and the comparison table the story leans on.
+ * ------------------------------------------------------------------ */
+
+const BUILD_PIECES: [string, string][] = [
+  ["Per-tenant isolation", "No enterprise customer will share a data boundary with another"],
+  [
+    "In-country and customer-controlled deployment",
+    "Your regulated accounts will insist on where it runs",
+  ],
+  [
+    "Guardrails, evaluation and audit evidence",
+    "Their risk team audits you, not your model vendor",
+  ],
+  [
+    "Model and cloud abstraction",
+    "The approved catalogue changes, and the platform has to absorb it",
+  ],
+  [
+    "Tenant admin, billing and service management",
+    "It has to bill, support and report like the rest of your estate",
+  ],
+  ["Platform lifecycle: upgrades, L2/L3, roadmap", "Someone owns this every week, forever"],
+];
+
+/** What an operator would have to build to become the provider itself. */
+export function BuildTable() {
+  return (
+    <div
+      className="overflow-hidden rounded-[var(--st-radius)] border"
+      style={{ borderColor: "var(--st-border)", background: "var(--st-surface-2)" }}
+    >
+      <div
+        className="grid grid-cols-[1fr_auto] gap-4 border-b px-6 py-4 sm:grid-cols-[1.4fr_1fr_auto] sm:gap-8"
+        style={{ borderColor: "var(--ab-rule)", background: "var(--ab-paper)" }}
+      >
+        <p
+          className="text-[10px] font-semibold tracking-[0.16em] uppercase"
+          style={{ color: "var(--st-text-faint)" }}
+        >
+          If you build it yourself
+        </p>
+        <p
+          className="hidden text-[10px] font-semibold tracking-[0.16em] uppercase sm:block"
+          style={{ color: "var(--st-text-faint)" }}
+        >
+          Why it is unavoidable
+        </p>
+        <p
+          className="text-right text-[10px] font-semibold tracking-[0.16em] uppercase"
+          style={{ color: "var(--st-accent-ink)" }}
+        >
+          With Lyzr
+        </p>
+      </div>
+
+      {BUILD_PIECES.map(([piece, why], index) => (
+        <div
+          key={piece}
+          className="grid grid-cols-[1fr_auto] items-baseline gap-4 border-b px-6 py-4 sm:grid-cols-[1.4fr_1fr_auto] sm:gap-8"
+          style={{ borderColor: "var(--ab-rule)" }}
+        >
+          <div className="flex items-baseline gap-3">
+            <Numeral value={index + 1} />
+            <p className="text-sm font-medium" style={{ color: "var(--st-text)" }}>
+              {piece}
+            </p>
+          </div>
+          <p
+            className="hidden text-xs leading-relaxed sm:block"
+            style={{ color: "var(--st-text-faint)" }}
+          >
+            {why}
+          </p>
+          <p className="text-right text-xs font-semibold" style={{ color: "var(--st-accent-ink)" }}>
+            Included
+          </p>
+        </div>
+      ))}
+
+      <div className="grid grid-cols-[1fr_auto] gap-4 px-6 py-5 sm:grid-cols-[1.4fr_1fr_auto] sm:gap-8">
+        <p className="text-sm font-semibold" style={{ color: "var(--st-text)" }}>
+          Total
+        </p>
+        <p className="hidden text-xs sm:block" style={{ color: "var(--st-text-faint)" }}>
+          A platform programme no enterprise customer will ever pay you for
+        </p>
+        <p className="text-right text-xs font-semibold" style={{ color: "var(--st-accent-ink)" }}>
+          From day one
+        </p>
+      </div>
+    </div>
+  );
+}
+
+const STACK: { band: string; label: string; items: string[]; tone: "telco" | "lyzr" | "base" }[] = [
+  {
+    band: "Yours alone",
+    label: "The service your market buys",
+    tone: "telco",
+    items: ["Brand", "Service tiers", "Pricing", "Contracts", "Channel", "Customer success"],
+  },
+  {
+    band: "Licensed from Lyzr",
+    label: "The agent platform layer",
+    tone: "lyzr",
+    items: [
+      "Agent builder",
+      "Orchestration",
+      "Governed runtime",
+      "Memory & tools",
+      "Guardrails",
+      "Evaluation",
+      "Observability",
+      "Tenant admin & APIs",
+    ],
+  },
+  {
+    band: "Stays in place",
+    label: "The estate you already run",
+    tone: "base",
+    items: [
+      "Approved models",
+      "Telco & sovereign cloud",
+      "Enterprise systems",
+      "IAM & SSO",
+      "SOC & audit",
+      "Billing",
+      "Network & edge",
+    ],
+  },
+];
+
+/** The service, drawn as the three bands an operator has to reason about. */
+export function ServiceStack() {
+  return (
+    <div className="space-y-3">
+      {STACK.map((band) => {
+        const onInk = band.tone === "lyzr";
+        return (
+          <div
+            key={band.band}
+            className="rounded-[var(--st-radius)] border px-6 py-5"
+            style={{
+              borderColor: onInk ? "var(--ab-ink)" : "var(--st-border)",
+              background: onInk
+                ? "var(--ab-ink)"
+                : band.tone === "telco"
+                  ? "var(--st-surface-2)"
+                  : "var(--ab-paper)",
+            }}
+          >
+            <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+              <p
+                className="text-[10px] font-semibold tracking-[0.16em] uppercase"
+                style={{ color: onInk ? "var(--ab-accent-on-ink)" : "var(--st-accent-ink)" }}
+              >
+                {band.band}
+              </p>
+              <p
+                className="text-[15px]"
+                style={{
+                  fontFamily: "var(--ab-serif)",
+                  color: onInk ? "var(--ab-ink-text)" : "var(--st-text)",
+                }}
+              >
+                {band.label}
+              </p>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {band.items.map((item) => (
+                <span
+                  key={item}
+                  className="rounded-full border px-3 py-1 text-xs"
+                  style={
+                    onInk
+                      ? {
+                          borderColor: "var(--ab-ink-border)",
+                          color: "var(--ab-ink-muted)",
+                          background: "var(--ab-ink-raised)",
+                        }
+                      : {
+                          borderColor: "var(--st-border)",
+                          color: "var(--st-text-muted)",
+                          background: "var(--st-surface)",
+                        }
+                  }
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+const COMPARISON: { row: string; cells: [string, string, string, string] }[] = [
+  {
+    row: "Whose brand the customer buys",
+    cells: [
+      "Yours, after you build all of it",
+      "Theirs — their console, their ecosystem",
+      "The integrator's, project by project",
+      "Yours, by design",
+    ],
+  },
+  {
+    row: "Where it can run",
+    cells: [
+      "Wherever you engineer it to",
+      "Their cloud regions",
+      "Wherever the project is built",
+      "Telco cloud, sovereign cloud or the customer's own",
+    ],
+  },
+  {
+    row: "Governance across models and clouds",
+    cells: [
+      "You build and maintain it",
+      "Strongest inside their own stack",
+      "One tool per problem",
+      "One policy layer across approved environments",
+    ],
+  },
+  {
+    row: "Time before a customer sees it",
+    cells: [
+      "Nine to eighteen months of platform work",
+      "Fast to pilot, slow to white-label",
+      "Fast per project, never repeatable",
+      "Lighthouse in weeks, offer in a quarter",
+    ],
+  },
+];
+
+const COMPARISON_HEADS = [
+  "Build it yourself",
+  "Resell a hyperscaler platform",
+  "Per-customer SI project",
+  "Lyzr partnership",
+];
+
+/** The four routes an operator is really choosing between. */
+export function ComparisonTable() {
+  return (
+    <div className="-mx-6 overflow-x-auto px-6 sm:mx-0 sm:px-0">
+      <table className="w-full min-w-[860px] border-collapse text-left">
+        <thead>
+          <tr>
+            <th className="w-52 py-3 pr-4 align-bottom" />
+            {COMPARISON_HEADS.map((head, index) => (
+              <th
+                key={head}
+                className="border-b py-3 pr-4 align-bottom text-[10px] font-semibold tracking-[0.16em] uppercase"
+                style={{
+                  borderColor: "var(--ab-rule)",
+                  color: index === 3 ? "var(--st-accent-ink)" : "var(--st-text-faint)",
+                }}
+              >
+                {head}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {COMPARISON.map((row) => (
+            <tr key={row.row}>
+              <th
+                className="border-b py-4 pr-6 align-top text-sm font-semibold"
+                style={{ borderColor: "var(--ab-rule)", color: "var(--st-text)" }}
+              >
+                {row.row}
+              </th>
+              {row.cells.map((cell, index) => (
+                <td
+                  key={index}
+                  className="border-b py-4 pr-4 align-top text-xs leading-relaxed"
+                  style={{
+                    borderColor: "var(--ab-rule)",
+                    color: index === 3 ? "var(--st-text)" : "var(--st-text-faint)",
+                    fontWeight: index === 3 ? 500 : 400,
+                  }}
+                >
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
