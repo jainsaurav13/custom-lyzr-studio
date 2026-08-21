@@ -93,8 +93,9 @@ export const TRUSTED_BY = {
 /**
  * The section is a fork in the road, so the data is shaped like one: a ledger
  * of what building it yourself costs, and the alternative, each closing on a
- * "total" line. The six items are the same six as before; they are inventory
- * now rather than six red crosses in a row.
+ * "total" line. The six items are deliberately the hard ones: a registry, a
+ * guardrail filter, prompt versioning and tracing are all commodity now, and
+ * claiming credit for them invites the reader to dismiss the rest.
  */
 export const PROBLEM = {
   eyebrow: "The problem",
@@ -104,17 +105,26 @@ export const PROBLEM = {
 
   build: {
     label: "If you build it yourself",
-    lede: "Six pieces of platform engineering, before a single customer sees anything.",
+    lede: "The six hardest pieces, and not one of them is what your customers buy.",
     items: [
-      { item: "Registry", need: "Nobody knows what is running, or who owns it" },
       {
-        item: "Evaluation harness",
-        need: "“It looked fine in the demo” is not a release gate",
+        item: "Per-tenant isolation",
+        need: "No enterprise customer will share a data boundary with another",
       },
-      { item: "Guardrails", need: "The agent can reach real systems and real data" },
-      { item: "Versioning and rollback", need: "A bad prompt is now a production incident" },
-      { item: "Per-tenant isolation", need: "Your customers will not share a data boundary" },
-      { item: "Traces and cost attribution", need: "Someone has to answer for the bill" },
+      {
+        item: "Customer-managed deployment",
+        need: "Your largest accounts will want it running in their own cloud",
+      },
+      {
+        item: "Delegated permissions",
+        need: "The agent inherits what each user is allowed to do, in every system",
+      },
+      {
+        item: "Regression gating",
+        need: "The model changes underneath you, and customers notice first",
+      },
+      { item: "Audit evidence", need: "Their risk team audits you, not your model vendor" },
+      { item: "Per-tenant cost control", need: "Token spend is your cost of goods now" },
     ],
     total: "Nine to eighteen months, and no customer will ever pay you for it.",
   },
