@@ -76,7 +76,7 @@ export function Display({
 export function Lede({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <p
-      className={cn("max-w-3xl text-[1.0625rem] leading-relaxed", className)}
+      className={cn("max-w-2xl text-[1.0625rem] leading-snug", className)}
       style={{ color: "var(--st-text-muted)" }}
     >
       {children}
@@ -102,16 +102,16 @@ export function Section({
   return (
     <section
       id={id}
-      className={cn("scroll-mt-20 py-16 sm:py-20", rule && "border-t")}
+      className={cn("scroll-mt-20 py-14 sm:py-18", rule && "border-t")}
       style={rule ? { borderColor: "var(--ab-rule)" } : undefined}
     >
       <Shell>
         <header className="max-w-3xl">
           <Eyebrow>{eyebrow}</Eyebrow>
-          <Display className="mt-4 text-balance">{title}</Display>
-          {lede ? <Lede className="mt-5">{lede}</Lede> : null}
+          <Display className="mt-3 text-balance">{title}</Display>
+          {lede ? <Lede className="mt-4">{lede}</Lede> : null}
         </header>
-        {children ? <div className="mt-12">{children}</div> : null}
+        {children ? <div className="mt-10">{children}</div> : null}
       </Shell>
     </section>
   );
@@ -172,7 +172,7 @@ export function Heading3({
 }) {
   return (
     <h3
-      className={cn("text-[1.0625rem] font-semibold tracking-[-0.01em]", className)}
+      className={cn("text-[15px] font-semibold tracking-[-0.01em]", className)}
       style={{
         fontFamily: "var(--st-font-head)",
         color: onInk ? "var(--ab-ink-text)" : "var(--st-text)",
@@ -194,7 +194,7 @@ export function Body({
 }) {
   return (
     <p
-      className={cn("text-sm leading-relaxed", className)}
+      className={cn("text-[13px] leading-relaxed", className)}
       style={{ color: onInk ? "var(--ab-ink-muted)" : "var(--st-text-muted)" }}
     >
       {children}
@@ -217,7 +217,7 @@ export function RuleList({
       {items.map((item, index) => (
         <li
           key={index}
-          className="flex gap-3 py-2.5 text-sm leading-relaxed first:pt-0 last:pb-0"
+          className="flex gap-3 py-2 text-[13px] leading-relaxed first:pt-0 last:pb-0"
           style={{
             color: onInk ? "var(--ab-ink-muted)" : "var(--st-text-muted)",
             borderColor: onInk ? "var(--ab-ink-border)" : "var(--ab-rule)",

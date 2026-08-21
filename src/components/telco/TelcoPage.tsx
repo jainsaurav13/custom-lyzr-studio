@@ -105,17 +105,15 @@ function Hero() {
       <Shell className="relative pt-16 pb-14 sm:pt-24 sm:pb-20">
         <Eyebrow>For telecom operators</Eyebrow>
         <h1
-          className="mt-6 max-w-4xl text-[2.1rem] leading-[1.1] tracking-[-0.03em] text-balance sm:text-[2.9rem]"
+          className="mt-5 max-w-3xl text-[2rem] leading-[1.12] tracking-[-0.035em] text-balance sm:text-[2.6rem]"
           style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
         >
-          Become the provider of{" "}
-          <span style={{ color: "var(--st-accent-ink)" }}>governed enterprise AI services</span>,
-          not a distributor of someone else&rsquo;s.
+          Sell <span style={{ color: "var(--st-accent-ink)" }}>governed enterprise AI</span> as your
+          own service, not someone else&rsquo;s.
         </h1>
-        <Lede className="mt-6">
-          Lyzr supplies the deployable agent platform and the operating enablement around it. The
-          operator keeps the customer relationship, the brand, the commercial offer and the
-          sovereign operating policy — and sells a service its market already trusts it to run.
+        <Lede className="mt-5">
+          Lyzr supplies the platform. You keep the brand, the customer, the pricing and the
+          sovereign operating policy.
         </Lede>
         <div className="mt-7 flex flex-wrap gap-2">
           {HERO_POINTS.map((point) => (
@@ -129,10 +127,10 @@ function Hero() {
           </ButtonLink>
         </div>
 
-        <div className="mt-14">
+        <div className="mt-12">
           <ValueChain />
         </div>
-        <p className="mt-6 text-sm" style={{ color: "var(--st-text-faint)" }}>
+        <p className="mt-5 text-[13px]" style={{ color: "var(--st-text-faint)" }}>
           Lyzr provides the technology. The telco owns the market.
         </p>
       </Shell>
@@ -147,8 +145,8 @@ function InProduction() {
     <Section
       id="production"
       eyebrow="Agents in production"
-      title="The platform underneath is already carrying regulated enterprises."
-      lede="Sovereignty arguments are won on operating evidence, not architecture diagrams. The agent platform an operator would license is the one already running inside institutions with the same risk posture as its own enterprise accounts."
+      title="Already carrying regulated enterprises."
+      lede="Sovereignty arguments are won on operating evidence, not architecture diagrams."
     >
       <div>
         <p
@@ -180,10 +178,9 @@ function InProduction() {
             className="mt-4 text-[1.6rem] leading-[1.2] text-balance"
             style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
           >
-            A billion-dollar enterprise planning SaaS runs its own agent platform on Lyzr — under
-            its own brand.
+            A billion-dollar SaaS runs its agent platform on Lyzr — under its own brand.
           </h3>
-          <Body className="mt-5">
+          <Body className="mt-4">
             It is the same motion an operator is considering: a company with the engineers to build
             the layer itself licensed it instead, and shipped the product its customers were
             actually waiting for.
@@ -192,19 +189,10 @@ function InProduction() {
         <Card>
           <div className="space-y-5">
             {[
-              [
-                "What their customers see",
-                "Their brand, their product, their agent workbench and marketplace",
-              ],
-              [
-                "What stays theirs",
-                "The platform proposition, the data model, the customer relationship and the roadmap",
-              ],
-              [
-                "What Lyzr provides",
-                "The white-labeled build, governance and runtime layer underneath",
-              ],
-              ["Where it runs", "Their own cloud, and their customers' managed AWS, Azure or GCP"],
+              ["Customers see", "Their brand, their product, their workbench"],
+              ["They keep", "The data model, the customer, the roadmap"],
+              ["Lyzr provides", "The white-labeled build, governance and runtime"],
+              ["It runs in", "Their cloud, and their customers' AWS, Azure or GCP"],
             ].map(([label, detail], index) => (
               <div
                 key={label}
@@ -233,74 +221,48 @@ function Problem() {
       id="problem"
       eyebrow="The problem"
       title="The agents are the easy part."
-      lede="Enterprise AI is creating a control point above connectivity and cloud: the platform through which organizations build, approve, run and monitor agents. An operator can own that layer — the question is not whether its engineers could build it, but whether they should."
+      lede="The control point is the platform above them: where agents get built, approved, run and monitored. Your engineers could build it. The question is whether they should."
     >
-      <div className="grid gap-10 lg:grid-cols-[1.08fr_1fr] lg:gap-12">
+      <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
         <div>
-          <Heading3>What the operator already brings</Heading3>
-          <RuleList
-            className="mt-4"
-            items={[
-              "Enterprise and public-sector customer relationships.",
-              "Local data centres, cloud, edge, network and cybersecurity services.",
-              "Identity, service management, billing and customer support.",
-              "In-country operations and regulated-sector credibility.",
-              "Partner, developer, system-integrator and SMB distribution channels.",
-            ]}
-          />
-        </div>
-        <Card>
-          <Heading3>What it does not bring</Heading3>
-          <Body className="mt-3">
-            A governed agent platform: the builder, the runtime, the policy layer and the lifecycle
-            around them. That is the piece this partnership supplies — and the piece no enterprise
-            customer will ever pay a line item for.
-          </Body>
-          <div className="mt-6 space-y-4">
+          <Heading3>You already own</Heading3>
+          <div className="mt-4 flex flex-wrap gap-2">
             {[
-              [
-                "This is not cloud resale",
-                "The telco is the market-facing provider of the service.",
-              ],
-              [
-                "Hyperscalers stay in place",
-                "Approved compute, models and infrastructure underneath.",
-              ],
-              [
-                "Lyzr stays underneath",
-                "Technology and enablement, never the customer relationship.",
-              ],
-            ].map(([label, detail]) => (
-              <div
-                key={label}
-                className="border-t pt-4 first:border-t-0 first:pt-0"
-                style={{ borderColor: "var(--ab-rule)" }}
-              >
-                <p className="text-sm font-semibold" style={{ color: "var(--st-text)" }}>
-                  {label}
-                </p>
-                <p className="mt-1 text-xs" style={{ color: "var(--st-text-faint)" }}>
-                  {detail}
-                </p>
-              </div>
+              "Enterprise accounts",
+              "Government relationships",
+              "Local data centres",
+              "Network & security",
+              "Identity & billing",
+              "In-country operations",
+              "Partner channels",
+            ].map((asset) => (
+              <Pill key={asset}>{asset}</Pill>
             ))}
           </div>
-        </Card>
+        </div>
+        <div>
+          <Heading3>You do not own</Heading3>
+          <p
+            className="mt-4 text-[1.0625rem] leading-snug"
+            style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
+          >
+            The governed agent platform: builder, runtime, policy layer, lifecycle. Six pieces, and
+            not one of them is what your customers buy.
+          </p>
+        </div>
       </div>
 
-      <div className="mt-12">
+      <div className="mt-10">
         <BuildTable />
       </div>
 
-      <InkPanel className="mt-12">
+      <InkPanel className="mt-10">
         <Eyebrow onInk>The better roadmap</Eyebrow>
-        <Display className="mt-4 max-w-3xl" onInk>
+        <Display className="mt-3 max-w-2xl" onInk>
           Own the offer. License the platform underneath it.
         </Display>
-        <Body className="mt-5 max-w-2xl" onInk>
-          The operator&rsquo;s advantage is its enterprise relationships, its regulated-market
-          trust, its local infrastructure and its ability to sell and support a service. None of
-          that is produced by writing an agent runtime.
+        <Body className="mt-4 max-w-xl" onInk>
+          Nothing you win an enterprise deal with is produced by writing an agent runtime.
         </Body>
       </InkPanel>
     </Section>
@@ -309,37 +271,27 @@ function Problem() {
 
 function Service() {
   const capabilities: [string, string][] = [
-    ["Agent building and orchestration", "Across approved models, tools and enterprise systems."],
-    ["Governed runtime", "Deploy and operate production agents under policy."],
-    [
-      "Guardrails and evaluation",
-      "Observability, auditability and policy enforcement as defaults.",
-    ],
-    ["Reusable blueprints", "Connectors and solution components that keep delivery repeatable."],
-    [
-      "Deployment flexibility",
-      "Telco cloud, sovereign cloud, customer environments, approved hyperscalers.",
-    ],
-    [
-      "Tenant administration and APIs",
-      "Integration with identity, security, billing and service management.",
-    ],
-    [
-      "Enablement and support",
-      "Reference architecture, platform upgrades, and L2/L3 support behind the operator.",
-    ],
+    ["Agent builder", "Across approved models, tools and systems"],
+    ["Governed runtime", "Production agents, running under policy"],
+    ["Guardrails & evaluation", "Quality gates before a customer sees it"],
+    ["Observability & audit", "Runs, cost, quality, evidence"],
+    ["Blueprints & connectors", "Delivery that repeats instead of restarts"],
+    ["Deployment control", "Your cloud, sovereign cloud or theirs"],
+    ["Tenant admin & APIs", "Identity, security, billing, service management"],
+    ["Enablement & L2/L3", "Reference architecture and support behind you"],
   ];
+
   return (
     <Section
       id="service"
       eyebrow="What's inside"
-      title="What the telco owns, what Lyzr supplies, what stays exactly as it is."
-      lede="The service should be explained as three bands, not as a product diagram. Nothing in the operator's estate gets ripped out to make room for the platform layer."
+      title="Three bands. Only one of them is ours."
+      lede="Nothing in your estate gets ripped out to make room for the platform layer."
     >
       <ServiceStack />
 
-      <div className="mt-12">
-        <Heading3>What the Lyzr layer actually contains</Heading3>
+      <div className="mt-10">
+        <Heading3>Inside the Lyzr band</Heading3>
         <div
           className="mt-6 grid gap-x-10 gap-y-8 border-t pt-8 sm:grid-cols-2 lg:grid-cols-3"
           style={{ borderColor: "var(--ab-rule)" }}
@@ -352,10 +304,8 @@ function Service() {
             </div>
           ))}
         </div>
-        <Body className="mt-8 max-w-3xl">
-          Every claim on this page should be met with a product demonstration, an architecture
-          document, a security response or customer evidence. The proposal becomes credible when the
-          operating proof is as clear as the strategic narrative.
+        <Body className="mt-8 max-w-xl">
+          Every claim here comes with a demo, an architecture document or a security response.
         </Body>
       </div>
     </Section>
@@ -365,60 +315,43 @@ function Service() {
 function Why() {
   const reasons: [string, string][] = [
     [
-      "It goes to market as the telco's service",
-      "Brand, service tiers, pricing, contracts and billing are the operator's. Lyzr appears in the partnership agreement, not in the customer's product.",
+      "It ships as your service",
+      "Your brand, tiers and contract. Lyzr appears in the agreement, not the product.",
     ],
     [
-      "It complements the cloud partnerships already in place",
-      "Approved hyperscalers, model providers and local infrastructure keep operating underneath. This is a product and policy layer across those environments, not a replacement for them.",
+      "It does not displace your cloud partners",
+      "Approved hyperscalers and models keep running underneath.",
     ],
     [
       "Sovereignty is defined, not asserted",
-      "Data, operations, models, infrastructure, policy, commercials and exit are each specified for the deployment before anyone uses the word sovereign.",
+      "Seven boundaries, specified per deployment, before the word is used.",
     ],
     [
-      "It runs where the regulator requires",
-      "Telco cloud, sovereign cloud, a customer-controlled environment or an approved hyperscaler — including single-tenant and on-premises for regulated accounts.",
+      "It runs where the regulator says",
+      "Telco cloud, sovereign cloud, or single-tenant in the customer's.",
     ],
     [
-      "The operator starts at its own readiness",
-      "A managed service, a private deployment or a full platform launch are three entry points into the same technology, not three different products.",
+      "You start at your own readiness",
+      "Managed service, private deployment or full platform — same technology.",
     ],
-    [
-      "There is a way out",
-      "Customer data, agent configurations and agreed artifacts can be exported or moved under contractual terms. The reason to stay should be that it works.",
-    ],
+    ["There is a way out", "Data, configurations and artifacts are exportable by contract."],
   ];
   const dimensions: [string, string][] = [
-    [
-      "Data",
-      "Prompts, files, memory, logs, embeddings and metadata stay in approved locations under defined retention and access rules.",
-    ],
-    [
-      "Operational",
-      "Approved local teams control administration, incidents, support, change and recovery.",
-    ],
-    [
-      "Model",
-      "The operator and the customer decide which private, open, local or hyperscaler models may be used.",
-    ],
-    [
-      "Infrastructure",
-      "Workloads run on approved telco, sovereign-cloud, regional or customer-controlled infrastructure.",
-    ],
-    ["Policy", "Access, guardrails, evaluation, audit and routing rules are locally governed."],
-    ["Commercial", "The telco owns the offer, the customer relationship, pricing and the channel."],
-    [
-      "Exit",
-      "Customer data, agent configurations and agreed artifacts can be exported or moved under contractual terms.",
-    ],
+    ["Data", "Prompts, logs, embeddings stay in approved locations"],
+    ["Operational", "Local teams run administration, incidents and recovery"],
+    ["Model", "You and the customer set the approved catalogue"],
+    ["Infrastructure", "Telco, sovereign, regional or customer-controlled"],
+    ["Policy", "Access, guardrails, evaluation and routing governed locally"],
+    ["Commercial", "You own the offer, the pricing and the channel"],
+    ["Exit", "Data and agent assets leave under contractual terms"],
   ];
+
   return (
     <Section
       id="why"
       eyebrow="Why Lyzr"
-      title="Built for sovereignty, and against lock-in — the operator's as much as the customer's."
-      lede="Sovereignty is an operating outcome produced by architecture, governance and contracts. It is broader than data residency, and it does not require every component to be domestically developed."
+      title="Built for sovereignty. Built against lock-in."
+      lede="Sovereignty is an operating outcome — architecture, governance and contracts. Residency alone is not it."
     >
       <div className="grid gap-x-10 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
         {reasons.map(([title, detail]) => (
@@ -434,25 +367,23 @@ function Why() {
         ))}
       </div>
 
-      <div className="mt-16">
-        <Heading3>The seven boundaries to define before the word is used</Heading3>
-        <div className="mt-6 border-t" style={{ borderColor: "var(--ab-rule)" }}>
+      <div className="mt-14">
+        <Heading3>The seven boundaries, defined per deployment</Heading3>
+        <div className="mt-6 grid gap-x-10 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
           {dimensions.map(([name, detail], index) => (
-            <div
-              key={name}
-              className="grid gap-2 border-b py-5 sm:grid-cols-[14rem_1fr] sm:gap-8"
-              style={{ borderColor: "var(--ab-rule)" }}
-            >
+            <div key={name} className="border-t pt-4" style={{ borderColor: "var(--ab-rule)" }}>
               <div className="flex items-baseline gap-3">
                 <Numeral value={index + 1} />
                 <p
                   className="text-sm font-semibold"
                   style={{ color: "var(--st-text)", fontFamily: "var(--st-font-head)" }}
                 >
-                  {name} sovereignty
+                  {name}
                 </p>
               </div>
-              <Body>{detail}</Body>
+              <p className="mt-1 text-xs leading-relaxed" style={{ color: "var(--st-text-faint)" }}>
+                {detail}
+              </p>
             </div>
           ))}
         </div>
@@ -462,54 +393,57 @@ function Why() {
 }
 
 function Ownership() {
-  const columns: { who: string; items: string[] }[] = [
-    {
-      who: "The telecom operator owns",
-      items: [
-        "Customer relationship, brand, commercial offer, pricing, contracts and billing.",
-        "Sovereign operating policy, approved deployment boundary and model catalogue.",
-        "Enterprise channel, local partnerships, customer success and L1 service.",
-        "Local infrastructure and security integration where the offer includes it.",
+  const columns: [string, string[]][] = [
+    [
+      "You own",
+      [
+        "Brand & offer",
+        "Pricing & contracts",
+        "Deployment boundary",
+        "Model catalogue",
+        "L1 & customer success",
       ],
-    },
-    {
-      who: "Lyzr owns",
-      items: [
-        "Core platform intellectual property and product roadmap.",
-        "Agent builder, orchestration, runtime, governance and platform engineering.",
-        "Reference architecture, platform enablement, upgrades and L2/L3 support.",
-        "Standard reusable capabilities supplied under the partnership agreement.",
+    ],
+    [
+      "Lyzr owns",
+      [
+        "Platform IP & roadmap",
+        "Builder & runtime",
+        "Governance layer",
+        "Upgrades",
+        "L2/L3 support",
       ],
-    },
-    {
-      who: "The enterprise customer controls",
-      items: [
-        "Business data, credentials, permissions, records and source-system access.",
-        "Business policy and approval of production agent behaviour.",
-        "Customer-specific agent assets and portability rights, as defined contractually.",
+    ],
+    [
+      "The customer controls",
+      ["Their data & credentials", "Permissions", "Agent behaviour approval", "Portability rights"],
+    ],
+    [
+      "Held jointly",
+      [
+        "Lighthouse selection",
+        "Service levels",
+        "Security reviews",
+        "Blueprints & GTM",
+        "Expansion calls",
       ],
-    },
-    {
-      who: "Held jointly",
-      items: [
-        "Lighthouse-account selection, solution design and launch planning.",
-        "Service levels, incident response, security reviews and change governance.",
-        "Local blueprints, connectors, marketplace terms and go-to-market enablement.",
-        "Success measures, operating reviews and expansion decisions.",
-      ],
-    },
+    ],
   ];
   return (
     <Section
       eyebrow="Ownership"
       title="Who owns what."
-      lede="Separating platform ownership from market-facing product ownership is what makes this durable — for the operator, for Lyzr and for the customer's risk team."
+      lede="Platform ownership and market-facing product ownership are separate. That is what makes it durable."
     >
-      <div className="grid gap-x-10 gap-y-10 md:grid-cols-2">
-        {columns.map((column) => (
-          <div key={column.who} className="border-t pt-6" style={{ borderColor: "var(--ab-rule)" }}>
-            <Heading3>{column.who}</Heading3>
-            <RuleList className="mt-4" items={column.items} />
+      <div className="grid gap-x-10 gap-y-8 sm:grid-cols-2 xl:grid-cols-4">
+        {columns.map(([who, items]) => (
+          <div key={who} className="border-t pt-5" style={{ borderColor: "var(--ab-rule)" }}>
+            <Heading3>{who}</Heading3>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {items.map((item) => (
+                <Pill key={item}>{item}</Pill>
+              ))}
+            </div>
           </div>
         ))}
       </div>
@@ -518,104 +452,75 @@ function Ownership() {
 }
 
 function GetStarted() {
-  const phases = [
-    {
-      phase: "Phase 0",
-      name: "Partnership design",
-      items: [
-        "Agree the target market, deployment boundary, model catalogue and sovereignty requirements.",
-        "Select the initial partnership model and the commercial mechanism.",
-        "Choose two or three lighthouse use cases and define success criteria.",
-        "Validate architecture, security, support and integration requirements.",
+  const phases: [string, string, string[]][] = [
+    [
+      "Phase 0",
+      "Partnership design",
+      [
+        "Boundary, model catalogue, sovereignty rules",
+        "Model and commercial mechanism",
+        "Two or three lighthouse use cases",
       ],
-    },
-    {
-      phase: "Phase 1",
-      name: "Lighthouse deployment",
-      items: [
-        "Deploy a controlled Lyzr environment in the agreed infrastructure.",
-        "Integrate identity, models, priority systems, monitoring and service management.",
-        "Launch production agents with selected internal or external customers.",
-        "Measure reliability, adoption, time to deploy, customer value and operating effort.",
+    ],
+    [
+      "Phase 1",
+      "Lighthouse deployment",
+      [
+        "Controlled environment in agreed infrastructure",
+        "Identity, models, priority systems wired in",
+        "Production agents, measured",
       ],
-    },
-    {
-      phase: "Phase 2",
-      name: "Commercial launch",
-      items: [
-        "Create telco-branded packages, pricing, contracts and service levels.",
-        "Train enterprise sellers, solution engineers, support teams and delivery partners.",
-        "Launch repeatable horizontal and industry-specific offers.",
-        "Establish joint governance, customer-success and product-feedback processes.",
+    ],
+    [
+      "Phase 2",
+      "Commercial launch",
+      [
+        "Branded packages, pricing, SLAs",
+        "Sellers and support trained",
+        "Repeatable horizontal and industry offers",
       ],
-    },
-    {
-      phase: "Phase 3",
-      name: "Platform expansion",
-      items: [
-        "Add models, connectors, solution packs, partners and regulated deployment patterns.",
-        "Expand through enterprise, SMB, public-sector and developer channels.",
-        "Introduce marketplace economics once supply and demand are repeatable.",
-        "Progress toward Model 1 where the operator began at Model 2 or 3.",
+    ],
+    [
+      "Phase 3",
+      "Platform expansion",
+      [
+        "More models, connectors, solution packs",
+        "SMB, public-sector and developer channels",
+        "Marketplace economics when supply repeats",
       ],
-    },
+    ],
   ];
   const lighthouses: [string, string][] = [
-    [
-      "Customer operations",
-      "Governed service, sales or retention agents, integrated with contact-centre and customer systems.",
-    ],
-    [
-      "Enterprise productivity",
-      "Knowledge, service-desk, employee-support or workflow agents connected to approved company data.",
-    ],
-    [
-      "Telco operations",
-      "Network, field-service, incident or assurance agents that prove the platform on the operator's own work.",
-    ],
-    [
-      "Regulated workflows",
-      "Auditable agents for government, financial services, healthcare or critical infrastructure.",
-    ],
+    ["Customer operations", "Service, sales and retention agents on your contact-centre stack"],
+    ["Enterprise productivity", "Knowledge, service-desk and workflow agents on approved data"],
+    ["Telco operations", "Network, field-service and assurance agents, proved on your own work"],
+    ["Regulated workflows", "Auditable agents for government, finance and healthcare"],
   ];
   const terms: [string, string][] = [
-    [
-      "Model 1",
-      "OEM or platform licence, minimum commitment, capacity or usage tiers, support and optional marketplace economics.",
-    ],
-    [
-      "Model 2",
-      "Platform subscription, implementation and enablement fees, managed-service economics and agreed usage charges.",
-    ],
-    [
-      "Model 3",
-      "Dedicated-deployment licence, infrastructure capacity, security and operations, support and tenant or environment fees.",
-    ],
+    ["Model 1", "OEM licence, minimum commitment, usage tiers, optional marketplace"],
+    ["Model 2", "Subscription, implementation and enablement, managed-service economics"],
+    ["Model 3", "Deployment licence, dedicated capacity, security and operations"],
   ];
   return (
     <Section
       id="start"
       eyebrow="Get started"
       title="Start where you are. We'll meet you there."
-      lede="Three partnership models, each preserving the same principle: the telco's brand, the telco's customer, the telco's economics. Model 1 is the destination; it does not have to be the starting point."
+      lede="Three models, one principle: your brand, your customer, your economics. Model 1 is the destination, not the entry point."
     >
       <BlueprintCards />
-      <BlueprintLegend className="mt-10" />
+      <BlueprintLegend className="mt-8" />
 
-      <InkPanel className="mt-12">
+      <InkPanel className="mt-10">
         <Eyebrow onInk>Recommended progression</Eyebrow>
-        <Display className="mt-4 max-w-3xl" onInk>
-          Enter where the operator is ready. Consolidate into the platform later.
+        <Display className="mt-3 max-w-2xl" onInk>
+          Enter where you are ready. Consolidate later.
         </Display>
-        <Body className="mt-5 max-w-2xl" onInk>
-          Begin with Model 2, Model 3 or both, prove demand with lighthouse customers, then fold
-          those offers into a telco-owned platform.
-        </Body>
         <div className="mt-8 grid gap-6 sm:grid-cols-3">
           {[
-            ["Enter", "Model 2 or Model 3, on a defined deployment boundary."],
-            ["Prove", "Two or three lighthouse customers with measured outcomes."],
-            ["Consolidate", "A telco-owned, telco-branded sovereign platform."],
+            ["Enter", "Model 2 or 3, on a defined boundary"],
+            ["Prove", "Two or three lighthouses, measured"],
+            ["Consolidate", "Your own sovereign platform"],
           ].map(([step, detail], index) => (
             <div
               key={step}
@@ -637,78 +542,78 @@ function GetStarted() {
         </div>
       </InkPanel>
 
-      <div className="mt-16">
+      <div className="mt-14">
         <Heading3>The phases behind whichever model you pick</Heading3>
-        <div className="mt-6 grid gap-x-10 gap-y-10 sm:grid-cols-2 xl:grid-cols-4">
-          {phases.map((phase, index) => (
-            <div
-              key={phase.phase}
-              className="border-t pt-6"
-              style={{ borderColor: "var(--ab-rule)" }}
-            >
+        <div className="mt-6 grid gap-x-10 gap-y-8 sm:grid-cols-2 xl:grid-cols-4">
+          {phases.map(([phase, name, items], index) => (
+            <div key={phase} className="border-t pt-5" style={{ borderColor: "var(--ab-rule)" }}>
               <div className="flex items-baseline gap-3">
                 <Numeral value={index} />
                 <p
                   className="text-[11px] font-semibold tracking-[0.16em] uppercase"
                   style={{ color: "var(--st-text-faint)" }}
                 >
-                  {phase.phase}
+                  {phase}
                 </p>
               </div>
               <h3
-                className="mt-3 text-[1.25rem] leading-tight"
+                className="mt-2 text-[1.125rem] leading-tight"
                 style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
               >
-                {phase.name}
+                {name}
               </h3>
-              <RuleList className="mt-4" items={phase.items} />
+              <RuleList className="mt-3" items={items} />
             </div>
           ))}
         </div>
       </div>
 
-      <div className="mt-16 grid gap-12 lg:grid-cols-2">
+      <div className="mt-14 grid gap-10 lg:grid-cols-2 lg:gap-12">
         <div>
           <Heading3>What to launch first</Heading3>
-          <Body className="mt-3">
-            Lead with a small number of high-value solutions rather than a generic agent builder.
-            Every lighthouse needs a business owner, a production boundary, a measurable outcome,
-            security approval and a path to a repeatable offer.
-          </Body>
-          <div className="mt-6 border-t" style={{ borderColor: "var(--ab-rule)" }}>
+          <div className="mt-4 border-t" style={{ borderColor: "var(--ab-rule)" }}>
             {lighthouses.map(([name, detail], index) => (
-              <div key={name} className="border-b py-4" style={{ borderColor: "var(--ab-rule)" }}>
+              <div key={name} className="border-b py-3" style={{ borderColor: "var(--ab-rule)" }}>
                 <div className="flex items-baseline gap-3">
                   <Numeral value={index + 1} />
                   <p className="text-sm font-semibold" style={{ color: "var(--st-text)" }}>
                     {name}
                   </p>
                 </div>
-                <Body className="mt-1.5">{detail}</Body>
+                <p
+                  className="mt-1 text-xs leading-relaxed"
+                  style={{ color: "var(--st-text-faint)" }}
+                >
+                  {detail}
+                </p>
               </div>
             ))}
           </div>
         </div>
         <div>
-          <Heading3>How the commercials follow the model</Heading3>
-          <Body className="mt-3">
-            Terms should create predictable platform economics for Lyzr and real product, services
-            and infrastructure margin for the telco — and stop every customer from becoming a
-            bespoke engineering project.
-          </Body>
-          <div className="mt-6 border-t" style={{ borderColor: "var(--ab-rule)" }}>
+          <Heading3>How the commercials follow</Heading3>
+          <div className="mt-4 border-t" style={{ borderColor: "var(--ab-rule)" }}>
             {terms.map(([model, detail], index) => (
-              <div key={model} className="border-b py-4" style={{ borderColor: "var(--ab-rule)" }}>
+              <div key={model} className="border-b py-3" style={{ borderColor: "var(--ab-rule)" }}>
                 <div className="flex items-baseline gap-3">
                   <Numeral value={index + 1} />
                   <p className="text-sm font-semibold" style={{ color: "var(--st-text)" }}>
                     {model}
                   </p>
                 </div>
-                <Body className="mt-1.5">{detail}</Body>
+                <p
+                  className="mt-1 text-xs leading-relaxed"
+                  style={{ color: "var(--st-text-faint)" }}
+                >
+                  {detail}
+                </p>
               </div>
             ))}
           </div>
+          <Body className="mt-5">
+            Standard editions, blueprints and support boundaries are what stop every customer
+            becoming a bespoke project.
+          </Body>
         </div>
       </div>
     </Section>
@@ -717,36 +622,28 @@ function GetStarted() {
 
 const FAQS: { q: string; a: string }[] = [
   {
-    q: "Does this replace our hyperscaler and cloud partnerships?",
-    a: "No, and it should not be positioned that way internally either. Approved hyperscalers, model providers and local infrastructure suppliers keep providing compute, models and related services. Lyzr adds a deployable product and policy-enforcement layer across those approved environments, which is what turns them into a service you can sell under your own brand.",
+    q: "Does this replace our hyperscaler partnerships?",
+    a: "No. Approved hyperscalers, models and local infrastructure keep running underneath. Lyzr is the product and policy layer across them — the part that makes them sellable under your brand.",
   },
   {
-    q: "Is 'sovereign' just another word for data residency?",
-    a: "No. Residency is one of seven boundaries — data, operational, model, infrastructure, policy, commercial and exit. A proposal should only use the word sovereign once each of those is defined for the specific deployment, because a customer's risk team will test all seven and residency alone will not survive the conversation.",
+    q: "Is 'sovereign' just data residency?",
+    a: "No. Residency is one of seven boundaries — data, operational, model, infrastructure, policy, commercial and exit. A customer's risk team will test all seven.",
   },
   {
-    q: "Can we govern agents our teams already built?",
-    a: "Yes, and that is usually where the first value shows up. Agents built elsewhere are connected and then governed like any other: registered, evaluated, versioned and observable inside the same policy layer, across approved models and clouds.",
+    q: "Can we govern agents we already built?",
+    a: "Yes, and that is usually where value shows first. Agents built elsewhere are registered, evaluated, versioned and observed inside the same policy layer.",
   },
   {
-    q: "Who runs it in production, and who answers the customer?",
-    a: "The operator owns L1 and the customer relationship. Lyzr provides platform engineering, upgrades and L2/L3 behind you, under agreed service levels. The split — SLA, incident, change, backup and disaster recovery — is published in the agreement rather than discovered during the first outage.",
+    q: "Who runs it in production?",
+    a: "You own L1 and the customer. Lyzr provides platform engineering, upgrades and L2/L3 behind you, under agreed SLAs — published in the agreement, not discovered in the first outage.",
   },
   {
-    q: "Will every customer turn into a bespoke engineering project?",
-    a: "Only if the offer is designed that way. Standard editions, blueprints, connectors, deployment patterns and support boundaries are what protect the margin, and they are part of the partnership design in Phase 0 — not something retrofitted after the third custom build.",
+    q: "Will every customer become a bespoke project?",
+    a: "Only if the offer is designed that way. Standard editions, blueprints, connectors and support boundaries are set in Phase 0, not retrofitted after the third custom build.",
   },
   {
-    q: "Do we have the operating capacity to run this?",
-    a: "That is a fair question to answer honestly before signing anything. It needs product sales, solution engineering and managed operations. Where the appetite for a platform launch is not there yet, Model 2 or Model 3 gives the same technology with far less operating surface, and a path to Model 1 once the evidence exists.",
-  },
-  {
-    q: "What happens if we want to leave?",
-    a: "Data, agent configurations, local IP and exit rights are made explicit in the contract. Customer data and agreed artifacts can be exported or moved under those terms. The commercial argument for staying should be that the platform works, never that leaving is impossible.",
-  },
-  {
-    q: "How will we know the partnership is working?",
-    a: "Through a joint steering structure with measures agreed up front: qualified pipeline and lighthouse conversions; active production agents and successful executions; time to deploy and support volume; availability, latency and policy violations; gross margin and attached cloud, network and security revenue; and the sovereignty controls themselves — approved deployment, access, model, logging, retention, audit and portability.",
+    q: "What if we want to leave?",
+    a: "Data, agent configurations, local IP and exit rights are explicit in the contract. The reason to stay should be that it works.",
   },
 ];
 
@@ -756,7 +653,7 @@ function Faq() {
       id="faq"
       eyebrow="FAQ"
       title="The questions we expect you to ask."
-      lede="Most of these come up in the first hour with an operator's strategy, security or commercial team. None of them have a comfortable non-answer."
+      lede="The first hour with a strategy, security or commercial team goes here."
     >
       <div className="border-t" style={{ borderColor: "var(--ab-rule)" }}>
         {FAQS.map((item) => (
@@ -767,7 +664,7 @@ function Faq() {
           >
             <summary className="marker:content-none flex cursor-pointer list-none items-baseline justify-between gap-6 py-5">
               <span
-                className="text-[1.0625rem] leading-snug"
+                className="text-[15px] leading-snug"
                 style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
               >
                 {item.q}
@@ -785,8 +682,8 @@ function Faq() {
         ))}
       </div>
 
-      <div className="mt-16">
-        <Heading3>The four routes an operator is really choosing between</Heading3>
+      <div className="mt-14">
+        <Heading3>The four routes you are choosing between</Heading3>
         <div className="mt-6">
           <ComparisonTable />
         </div>
@@ -796,10 +693,10 @@ function Faq() {
 }
 
 const AGENDA: [string, string][] = [
-  ["Scope", "Target market, deployment boundary, model catalogue and sovereignty requirements."],
-  ["Architecture", "What you keep, what we connect, what we add, and where it deploys."],
-  ["Commercials", "Partnership model, licence mechanism, ownership split, support and SLA."],
-  ["Launch plan", "Two or three lighthouse use cases, success criteria, owners and milestones."],
+  ["Scope", "Target market, boundary, model catalogue"],
+  ["Architecture", "What you keep, what we connect, where it deploys"],
+  ["Commercials", "Model, licence, ownership split, SLA"],
+  ["Launch plan", "Lighthouses, success criteria, owners, dates"],
 ];
 
 function Session() {
@@ -816,13 +713,12 @@ function Session() {
               Next step
             </span>
           </div>
-          <Display className="mt-6 max-w-3xl" onInk>
-            Own the enterprise AI service. Skip the platform build underneath it.
+          <Display className="mt-5 max-w-2xl" onInk>
+            Own the service. Skip the platform build underneath it.
           </Display>
-          <Body className="mt-5 max-w-2xl" onInk>
-            Phase 0 is one working session, not a proposal: what you keep, what Lyzr adds, where it
-            deploys and how you take it to market. Bring your architecture and your two or three
-            candidate accounts; leave with a plan.
+          <Body className="mt-4 max-w-xl" onInk>
+            One working session, not a proposal. Bring your architecture and two or three candidate
+            accounts; leave with a plan.
           </Body>
           <div className="mt-8 flex flex-wrap gap-3">
             <ButtonLink
@@ -890,7 +786,7 @@ function Footer() {
             style={{ color: "var(--st-text-faint)" }}
           >
             Sovereign agent infrastructure for telecom operators. Partner discussion document,
-            non-binding, and to be tailored for each operator.
+            non-binding.
           </p>
         </div>
         <nav className="flex flex-wrap gap-x-6 gap-y-2">

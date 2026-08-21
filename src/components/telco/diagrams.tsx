@@ -103,7 +103,7 @@ function ChainNode({
         {icon}
       </div>
       <p
-        className="mt-4 text-[13px] leading-snug font-semibold tracking-[0.14em] uppercase lg:min-h-[2.5rem]"
+        className="mt-4 text-[13px] leading-snug font-semibold tracking-[0.14em] uppercase lg:min-h-[2.25rem]"
         style={{ color: onInk ? "var(--ab-ink-text)" : "var(--st-text)" }}
       >
         {name}
@@ -113,7 +113,7 @@ function ChainNode({
         style={{ background: onInk ? "var(--ab-ink-border)" : "var(--ab-rule)" }}
       />
       <p
-        className="text-[15px] leading-snug lg:min-h-[3.25rem]"
+        className="text-[15px] leading-snug lg:min-h-[1.5rem]"
         style={{
           fontFamily: "var(--ab-serif)",
           color: onInk ? "var(--ab-accent-on-ink)" : "var(--st-accent-ink)",
@@ -129,10 +129,10 @@ function ChainNode({
 }
 
 const CHAIN_BENEFITS = [
-  { label: "Telco owns the customer", detail: "Brand, contract, pricing, billing" },
-  { label: "Data stays inside the boundary", detail: "Approved locations and access rules" },
-  { label: "New enterprise AI revenue", detail: "Platform, services and attached network" },
-  { label: "Faster time to market", detail: "No nine-to-eighteen-month platform build" },
+  { label: "You own the customer", detail: "Brand, contract, pricing" },
+  { label: "Data stays in boundary", detail: "Approved locations only" },
+  { label: "New AI revenue", detail: "Platform, services, attached network" },
+  { label: "Live in a quarter", detail: "Not an 18-month build" },
 ];
 
 /** The value chain: from telecom provider to sovereign AI agent provider. */
@@ -151,24 +151,24 @@ export function ValueChain() {
           variant="ink"
           icon={<LyzrGlyph size={34} color="var(--ab-accent-on-ink)" />}
           name="Lyzr"
-          role="Agent platform and expertise"
-          detail="Builds, licenses and supports the sovereign agent technology underneath."
+          role="The agent platform"
+          detail="Builds and licenses the technology underneath."
         />
-        <Arrow label="Provides the platform" />
+        <Arrow label="Licenses the platform" />
         <ChainNode
           variant="accent"
           icon={<RadioTower size={32} strokeWidth={1.5} />}
           name="Telco"
-          role="Telco-branded sovereign AI offering"
-          detail="Hosts, brands, prices, sells and operates the service."
+          role="The branded service"
+          detail="Hosts, brands, prices and operates it."
         />
-        <Arrow label="Delivers governed agents" />
+        <Arrow label="Sells governed agents" />
         <ChainNode
           variant="paper"
           icon={<Building2 size={32} strokeWidth={1.5} />}
           name="Enterprise & government"
-          role="Enterprise AI adoption"
-          detail="Deploys production agents through a trusted local provider."
+          role="Enterprise adoption"
+          detail="Buys governed agents from a provider it trusts."
         />
       </div>
 
@@ -180,7 +180,7 @@ export function ValueChain() {
           <div key={benefit.label}>
             <Numeral value={index + 1} />
             <p
-              className="mt-2 text-sm font-semibold lg:min-h-10"
+              className="mt-2 text-sm font-semibold lg:min-h-6"
               style={{ color: "var(--st-text)", fontFamily: "var(--st-font-head)" }}
             >
               {benefit.label}
@@ -213,49 +213,48 @@ const BLUEPRINTS: Blueprint[] = [
     title: "Telco-owned sovereign agent platform",
     standfirst: "The strategic destination",
     couplet: "Your platform. Our technology.",
-    lyzrRole: "Licenses the platform and supports its lifecycle",
-    telcoRole: "Brands, operates and takes the platform to market",
+    lyzrRole: "Licenses and supports the platform",
+    telcoRole: "Brands, operates, sells",
     customer: "Enterprise customers",
-    customerDetail: "Use the telco-branded agent platform",
-    revenue: "Enterprise pays the telco. Lyzr earns an OEM or platform licence with usage upside.",
-    fit: "Operators with enterprise scale, cloud or data-centre capability and the capacity to run a platform business.",
+    customerDetail: "Use your branded platform",
+    revenue: "They pay you. You pay an OEM licence.",
+    fit: "Enterprise scale, cloud capability, appetite to run a platform.",
     why: [
-      "The telco owns the customer relationship and the brand.",
-      "Enterprises get a trusted, sovereign agent platform.",
-      "Lyzr provides the technology that powers it.",
+      "You own the relationship and the brand.",
+      "Enterprises get a sovereign platform they trust.",
+      "Lyzr stays underneath it.",
     ],
   },
   {
     title: "Telco-prime managed agent service",
     standfirst: "The fastest commercial entry",
     couplet: "Your customer. We deliver underneath.",
-    lyzrRole: "Implements, customizes and supports the platform",
-    telcoRole: "Sells, contracts and manages the customer",
+    lyzrRole: "Implements, customizes, supports",
+    telcoRole: "Sells, contracts, manages",
     customer: "Enterprise customers",
-    customerDetail: "Consume a packaged, managed agent service",
-    revenue: "Enterprise pays the telco. The telco pays Lyzr for platform, enablement and usage.",
-    fit: "Operators with strong enterprise sales and managed services, but no appetite for an immediate platform launch.",
+    customerDetail: "Buy a managed agent service",
+    revenue: "They pay you. You pay for platform and delivery.",
+    fit: "Strong enterprise sales, no appetite for a platform launch yet.",
     why: [
-      "The telco owns the customer relationship and the P&L.",
-      "Lyzr delivers, operates and ensures success.",
-      "Enterprises get a turnkey, managed solution.",
+      "You own the relationship and the P&L.",
+      "Lyzr delivers and operates behind you.",
+      "Fastest route to a first reference.",
     ],
   },
   {
     title: "Private agent platform and managed AI distribution",
     standfirst: "For isolated environments",
     couplet: "Your infrastructure. Their boundary.",
-    lyzrRole: "Supplies the dedicated agent platform",
-    telcoRole: "Packages infrastructure, security and operations",
+    lyzrRole: "Supplies the dedicated platform",
+    telcoRole: "Packages hosting, security, ops",
     customer: "Regulated customers",
-    customerDetail: "Run agents in a single-tenant, locally operated environment",
-    revenue:
-      "Dedicated capacity and managed fees to the telco; a private deployment licence to Lyzr.",
-    fit: "Government, financial services, healthcare, defence and critical infrastructure.",
+    customerDetail: "Run agents in their own boundary",
+    revenue: "Capacity and managed fees to you, deployment licence to Lyzr.",
+    fit: "Government, financial services, healthcare, defence.",
     why: [
-      "Meets on-premises and single-tenant isolation rules.",
-      "A focused sovereignty proposition, sold on its own.",
-      "No horizontal platform launch required up front.",
+      "Meets single-tenant and on-premises rules.",
+      "A sovereignty offer that sells on its own.",
+      "No platform launch required up front.",
     ],
   },
 ];
@@ -308,7 +307,7 @@ export function BlueprintCards() {
 
           <div
             className="mt-5 divide-y border-y"
-            style={{ borderColor: "var(--ab-rule)", minHeight: "9.5rem" }}
+            style={{ borderColor: "var(--ab-rule)", minHeight: "8.5rem" }}
           >
             <ActorRow who="Lyzr" role={model.lyzrRole} />
             <ActorRow who="Telco" role={model.telcoRole} />
@@ -322,7 +321,7 @@ export function BlueprintCards() {
             >
               Revenue flow
             </p>
-            <Body className="mt-1.5 lg:min-h-16">{model.revenue}</Body>
+            <Body className="mt-1.5 lg:min-h-10">{model.revenue}</Body>
           </div>
 
           <div className="mt-5">
@@ -332,7 +331,7 @@ export function BlueprintCards() {
             >
               Best fit
             </p>
-            <Body className="mt-1.5 lg:min-h-16">{model.fit}</Body>
+            <Body className="mt-1.5 lg:min-h-10">{model.fit}</Body>
           </div>
 
           <div
@@ -360,19 +359,19 @@ export function BlueprintLegend({ className }: { className?: string }) {
   const entries = [
     {
       label: "Lyzr",
-      detail: "Provides the agent platform technology and the enablement around it.",
+      detail: "The platform technology and the enablement around it.",
     },
     {
       label: "Telco",
-      detail: "Owns the customer relationship, the brand and the commercial offer.",
+      detail: "The customer, the brand, the commercial offer.",
     },
     {
       label: "Enterprise",
-      detail: "Uses the agents to drive business outcomes inside its own systems.",
+      detail: "Runs the agents inside its own systems.",
     },
     {
       label: "Sovereignty",
-      detail: "Every motion can run private and compliant, in telco or customer infrastructure.",
+      detail: "Every model runs private — your infrastructure or theirs.",
     },
   ];
   return (
@@ -403,24 +402,12 @@ export function BlueprintLegend({ className }: { className?: string }) {
  * ------------------------------------------------------------------ */
 
 const BUILD_PIECES: [string, string][] = [
-  ["Per-tenant isolation", "No enterprise customer will share a data boundary with another"],
-  [
-    "In-country and customer-controlled deployment",
-    "Your regulated accounts will insist on where it runs",
-  ],
-  [
-    "Guardrails, evaluation and audit evidence",
-    "Their risk team audits you, not your model vendor",
-  ],
-  [
-    "Model and cloud abstraction",
-    "The approved catalogue changes, and the platform has to absorb it",
-  ],
-  [
-    "Tenant admin, billing and service management",
-    "It has to bill, support and report like the rest of your estate",
-  ],
-  ["Platform lifecycle: upgrades, L2/L3, roadmap", "Someone owns this every week, forever"],
+  ["Per-tenant isolation", "No two customers share a boundary"],
+  ["Customer-controlled deployment", "Regulated accounts dictate where it runs"],
+  ["Guardrails, evaluation, audit evidence", "Their risk team audits you, not the model vendor"],
+  ["Model and cloud abstraction", "The approved catalogue keeps changing"],
+  ["Tenant admin and billing", "It bills and reports like the rest of your estate"],
+  ["Lifecycle: upgrades, L2/L3, roadmap", "Someone owns this every week, forever"],
 ];
 
 /** What an operator would have to build to become the provider itself. */
@@ -444,7 +431,7 @@ export function BuildTable() {
           className="hidden text-[10px] font-semibold tracking-[0.16em] uppercase sm:block"
           style={{ color: "var(--st-text-faint)" }}
         >
-          Why it is unavoidable
+          Why you cannot skip it
         </p>
         <p
           className="text-right text-[10px] font-semibold tracking-[0.16em] uppercase"
@@ -483,7 +470,7 @@ export function BuildTable() {
           Total
         </p>
         <p className="hidden text-xs sm:block" style={{ color: "var(--st-text-faint)" }}>
-          A platform programme no enterprise customer will ever pay you for
+          A programme no customer will pay you for
         </p>
         <p className="text-right text-xs font-semibold" style={{ color: "var(--st-accent-ink)" }}>
           From day one
@@ -498,7 +485,7 @@ const STACK: { band: string; label: string; items: string[]; tone: "telco" | "ly
     band: "Yours alone",
     label: "The service your market buys",
     tone: "telco",
-    items: ["Brand", "Service tiers", "Pricing", "Contracts", "Channel", "Customer success"],
+    items: ["Brand", "Pricing", "Contracts", "Channel", "Customer success"],
   },
   {
     band: "Licensed from Lyzr",
@@ -601,26 +588,26 @@ const COMPARISON: { row: string; cells: [string, string, string, string] }[] = [
   {
     row: "Whose brand the customer buys",
     cells: [
-      "Yours, after you build all of it",
-      "Theirs — their console, their ecosystem",
-      "The integrator's, project by project",
+      "Yours, after you build it all",
+      "Theirs — their console",
+      "The integrator's, per project",
       "Yours, by design",
     ],
   },
   {
     row: "Where it can run",
     cells: [
-      "Wherever you engineer it to",
+      "Wherever you engineer it",
       "Their cloud regions",
-      "Wherever the project is built",
-      "Telco cloud, sovereign cloud or the customer's own",
+      "Wherever it was built",
+      "Your cloud, sovereign cloud or theirs",
     ],
   },
   {
     row: "Governance across models and clouds",
     cells: [
       "You build and maintain it",
-      "Strongest inside their own stack",
+      "Strongest on their own stack",
       "One tool per problem",
       "One policy layer across approved environments",
     ],
@@ -628,9 +615,9 @@ const COMPARISON: { row: string; cells: [string, string, string, string] }[] = [
   {
     row: "Time before a customer sees it",
     cells: [
-      "Nine to eighteen months of platform work",
-      "Fast to pilot, slow to white-label",
-      "Fast per project, never repeatable",
+      "9–18 months of platform work",
+      "Fast to pilot, slow to brand",
+      "Fast once, never repeatable",
       "Lighthouse in weeks, offer in a quarter",
     ],
   },
