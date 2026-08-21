@@ -99,8 +99,8 @@ export const TRUSTED_BY = {
 export const PROBLEM = {
   eyebrow: "The problem",
   title: "The agent is the easy part.",
-  lede: "Most software companies are already building or extending their agent platforms. The challenge isn’t whether they can build the production infrastructure around them.",
-  ledeKicker: "It’s whether they should.",
+  lede: "Most software companies are already building or extending their agent platforms. The challenge isn’t whether you can build the production infrastructure around them.",
+  ledeKicker: "It’s whether you should.",
 
   build: {
     label: "If you build it yourself",
