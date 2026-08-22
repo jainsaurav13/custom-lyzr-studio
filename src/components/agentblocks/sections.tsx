@@ -1,5 +1,32 @@
 import { useState } from "react";
-import { ArrowRight, ArrowUpRight, Check, ChevronDown, Minus } from "lucide-react";
+import {
+  Activity,
+  ArrowRight,
+  ArrowUpRight,
+  Boxes,
+  Check,
+  ChevronDown,
+  Cloud,
+  CloudUpload,
+  Code2,
+  Cpu,
+  Database,
+  FileClock,
+  Gauge,
+  GitBranch,
+  KeyRound,
+  LineChart,
+  Lock,
+  Mic,
+  Minus,
+  Puzzle,
+  ShieldAlert,
+  ShieldCheck,
+  Store,
+  UserCheck,
+  Wrench,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -8,17 +35,15 @@ import {
   BOOKING_URL,
   CTA_LABEL,
   COMPARE,
-  CONNECTED,
   CREDIBILITY,
   FLAGSHIP,
   ENGAGEMENTS,
   FAQS,
-  FOUNDATION,
   PROBLEM,
   REASONS,
   SESSION_AGENDA,
-  YOURS_ALONE,
   TRUSTED_BY,
+  WIRED_IN,
   YOUR_STACK,
 } from "./content";
 import {
@@ -315,186 +340,134 @@ export function ProblemSection() {
  * 4 — The infrastructure
  * ------------------------------------------------------------------ */
 
-/** The connector between two plates of the stack diagram. */
-function Rung({ note }: { note?: string }) {
-  return (
-    <div className="flex items-center justify-center gap-3 py-0.5">
-      <span className="h-4 w-px" style={{ background: "var(--ab-ink-border-strong)" }} />
-      {note ? (
-        <span className="text-[11px]" style={{ color: "var(--ab-ink-faint)" }}>
-          {note}
-        </span>
-      ) : null}
-    </div>
-  );
+/**
+ * Every icon the catalogue draws, resolved by name so the block list stays
+ * plain data in `content.ts`.
+ */
+const ICONS: Record<string, LucideIcon> = {
+  Activity,
+  Boxes,
+  Cloud,
+  Code2,
+  Cpu,
+  CloudUpload,
+  Database,
+  FileClock,
+  Gauge,
+  GitBranch,
+  KeyRound,
+  LineChart,
+  Lock,
+  Mic,
+  Puzzle,
+  ShieldAlert,
+  ShieldCheck,
+  Store,
+  UserCheck,
+  Wrench,
+};
+
+function BlockIcon({ name, className }: { name: string; className?: string }) {
+  const Icon = ICONS[name] ?? Boxes;
+  return <Icon className={className} strokeWidth={1.6} aria-hidden="true" />;
 }
 
+/**
+ * The catalogue: fourteen blocks, each one licensable on its own. It is laid
+ * out as a printed sheet rather than a feature grid, on the page's warmest
+ * ground, because the point of the section is that this is an inventory an ISV
+ * shops from.
+ */
 export function BlocksSection() {
-  const [active, setActive] = useState(BLOCKS[0].key);
-  const block = BLOCKS.find((item) => item.key === active) ?? BLOCKS[0];
-
   return (
-    <Section id="blocks" tone="invert">
+    <Section id="blocks" tone="warm">
       <Reveal>
-        <SectionHead
-          tone="invert"
-          eyebrow="What’s inside"
-          title="What you can OEM"
-          lede="Take the complete lifecycle, or license only the blocks your stack is missing. Your existing architecture stays the foundation. Nothing gets ripped out to make room."
-        />
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <SectionHead
+            eyebrow="What’s inside"
+            title="What you can OEM"
+            lede="Fourteen building blocks to build, run and scale agents with confidence. License the ones your platform is missing, or take the complete set."
+            className="max-w-2xl"
+          />
+          <div
+            className="shrink-0 border-l-2 pl-4 lg:pb-2"
+            style={{ borderColor: "var(--st-accent-ink)" }}
+          >
+            <p
+              className="text-sm font-semibold tracking-[-0.01em]"
+              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+            >
+              {WIRED_IN.title}
+            </p>
+            <p className="mt-1 text-sm" style={{ color: "var(--st-accent-ink)" }}>
+              {WIRED_IN.body}
+            </p>
+          </div>
+        </div>
       </Reveal>
 
-      <div className="mt-12 grid gap-6 lg:grid-cols-[1.35fr_1fr]">
-        <Reveal>
-          <div className="space-y-1">
-            {/* Top plate — the part of the arrangement that is never ours. */}
-            <div
-              className="rounded-[var(--st-radius-lg)] border p-5"
-              style={{
-                borderColor: "var(--ab-ink-border-strong)",
-                background: "var(--ab-ink-raised)",
-              }}
+      <div className="mt-12 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+        {BLOCKS.map((block, index) => (
+          <Reveal key={block.key} delay={Math.min(index, 7) * 0.03} className="h-full">
+            <Panel
+              className="flex h-full flex-col p-5"
+              style={{ background: "var(--st-surface)", borderColor: "var(--ab-warm-rule)" }}
             >
-              <Label tone="invert">Yours alone: the AI products you sell</Label>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {YOURS_ALONE.map((item) => (
-                  <Chip key={item} tone="invert">
-                    {item}
-                  </Chip>
-                ))}
-              </div>
-            </div>
-
-            <Rung />
-
-            {/* Middle plate — the blocks themselves. */}
-            <div
-              className="rounded-[var(--st-radius-lg)] border p-5"
-              style={{
-                borderColor: "var(--ab-accent-on-ink)",
-                background: "color-mix(in srgb, var(--st-accent) 10%, transparent)",
-              }}
-            >
-              <div className="flex items-baseline justify-between gap-3">
+              <div className="flex items-start justify-between gap-3">
                 <span
-                  className="text-sm font-semibold"
-                  style={{ color: "var(--ab-ink-text)", fontFamily: "var(--st-font-head)" }}
+                  className="flex h-10 w-10 items-center justify-center rounded-[10px]"
+                  style={{ background: "var(--st-accent-soft)" }}
                 >
-                  AgentBlocks
-                </span>
-                <span className="text-[11px]" style={{ color: "var(--ab-ink-muted)" }}>
-                  Pick one. Pick several. Pick all seven.
-                </span>
-              </div>
-
-              <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                {BLOCKS.map((item) => {
-                  const on = item.key === active;
-                  return (
-                    <button
-                      key={item.key}
-                      type="button"
-                      onClick={() => setActive(item.key)}
-                      aria-pressed={on}
-                      className={cn(
-                        "rounded-[var(--st-radius-sm)] border px-3.5 py-3 text-left transition-colors",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--st-ring)]",
-                      )}
-                      style={{
-                        borderColor: on ? "transparent" : "var(--ab-ink-border)",
-                        background: on ? "var(--ab-ink-text)" : "var(--ab-ink)",
-                        color: on ? "var(--ab-ink)" : "var(--ab-ink-text)",
-                      }}
-                    >
-                      <span className="block text-[13px] font-semibold leading-tight">
-                        {item.name}
-                      </span>
-                      <span
-                        className="mt-0.5 block text-[11px]"
-                        style={{
-                          color: on ? "var(--ab-ink)" : "var(--ab-ink-muted)",
-                          opacity: on ? 0.7 : 1,
-                        }}
-                      >
-                        {item.tag}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div
-                className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-[var(--st-radius-sm)] border border-dashed px-3.5 py-2.5"
-                style={{ borderColor: "var(--ab-ink-border)" }}
-              >
-                <Label tone="invert">Included with every block</Label>
-                {FOUNDATION.map((item) => (
-                  <span key={item} className="text-[11px]" style={{ color: "var(--ab-ink-muted)" }}>
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <Rung note="connected through supported adapters" />
-
-            {/* Bottom plate — what you already run, untouched. */}
-            <div
-              className="rounded-[var(--st-radius-lg)] border p-5"
-              style={{
-                borderColor: "var(--ab-ink-border-strong)",
-                background: "var(--ab-ink-raised)",
-              }}
-            >
-              <Label tone="invert">Stays in place: your existing platform</Label>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {YOUR_STACK.map((item) => (
-                  <Chip key={item} tone="invert">
-                    {item}
-                  </Chip>
-                ))}
-              </div>
-              <p className="mt-3 text-[11px]" style={{ color: "var(--ab-ink-muted)" }}>
-                Wired in, not rebuilt: {CONNECTED.join(", ").toLowerCase()}.
-              </p>
-            </div>
-          </div>
-        </Reveal>
-
-        <Reveal delay={0.08}>
-          <div
-            className="sticky top-24 rounded-[var(--st-radius-lg)] border p-6"
-            style={{ borderColor: "var(--ab-ink-border)", background: "var(--ab-ink-raised)" }}
-          >
-            <Label tone="invert">{block.tag}</Label>
-            <h3
-              className="mt-2 text-xl font-semibold"
-              style={{ fontFamily: "var(--st-font-head)", color: "var(--ab-ink-text)" }}
-            >
-              {block.name}
-            </h3>
-            <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--ab-ink-muted)" }}>
-              {block.summary}
-            </p>
-
-            <ul className="mt-5 space-y-2.5">
-              {block.bullets.map((bullet) => (
-                <li key={bullet} className="flex gap-2.5 text-sm">
-                  <Check
-                    className="mt-0.5 h-4 w-4 shrink-0"
-                    style={{ color: "var(--ab-accent-on-ink)" }}
+                  <BlockIcon
+                    name={block.icon}
+                    className="h-[1.15rem] w-[1.15rem] text-[var(--st-accent-ink)]"
                   />
-                  <span style={{ color: "var(--ab-ink-muted)" }}>{bullet}</span>
+                </span>
+                <span
+                  className="text-xs font-semibold tabular-nums"
+                  style={{ color: "var(--st-accent-ink)" }}
+                >
+                  {block.num}
+                </span>
+              </div>
+
+              <h3
+                // Two lines' worth, so every blurb in a row starts level.
+                className="mt-5 min-h-[2.35rem] text-[0.9375rem] leading-tight font-semibold"
+                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+              >
+                {block.name}
+              </h3>
+              <p
+                className="mt-1.5 text-[0.8125rem] leading-snug"
+                style={{ color: "var(--st-text-muted)" }}
+              >
+                {block.blurb}
+              </p>
+            </Panel>
+          </Reveal>
+        ))}
+
+        {/* Fills the last two cells of the sheet, and answers the question the
+            catalogue provokes: does any of this displace what we already run. */}
+        <Reveal delay={0.24} className="h-full sm:col-span-2">
+          <div
+            className="flex h-full flex-col justify-center rounded-[var(--st-radius-lg)] border border-dashed p-5"
+            style={{ borderColor: "var(--st-accent-ink)" }}
+          >
+            <Label>Stays in place: your existing platform</Label>
+            <ul className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+              {YOUR_STACK.map((item) => (
+                <li
+                  key={item.label}
+                  className="flex items-center gap-1.5 text-[0.8125rem]"
+                  style={{ color: "var(--st-text-muted)" }}
+                >
+                  <BlockIcon name={item.icon} className="h-3.5 w-3.5 text-[var(--st-text-faint)]" />
+                  {item.label}
                 </li>
               ))}
             </ul>
-
-            <div className="mt-5 border-t pt-4" style={{ borderColor: "var(--ab-ink-border)" }}>
-              <Label tone="invert">What your customer experiences</Label>
-              <p className="mt-1.5 text-sm" style={{ color: "var(--ab-ink-text)" }}>
-                {block.customerSees}
-              </p>
-            </div>
           </div>
         </Reveal>
       </div>

@@ -146,136 +146,131 @@ export const PROBLEM = {
 
 export interface Block {
   key: string;
+  num: string;
   name: string;
-  tag: string;
-  /** One line an executive can repeat in a board meeting. */
-  summary: string;
-  /** What the ISV's own customer experiences because the block is there. */
-  customerSees: string;
-  bullets: string[];
+  /** One line, as an executive would repeat it. */
+  blurb: string;
+  /** Name of the lucide icon the card draws. Resolved in `sections.tsx`. */
+  icon: string;
 }
 
+/** The catalogue: every block that can be licensed, in the order it is sold. */
 export const BLOCKS: Block[] = [
   {
     key: "surfaces",
+    num: "01",
     name: "Workbench & Marketplace",
-    tag: "OEM surfaces",
-    summary:
-      "The screens your customers actually use, shipped in your product’s shell rather than ours.",
-    customerSees: "A workbench and an agent catalogue that feel native to your product.",
-    bullets: [
-      "Branded workbench where your customers configure and run agents",
-      "A marketplace shelf for the agents your team publishes",
-      "Themed to your palette, typography and component language",
-      "Embedded in your app, or served on your own domain",
-    ],
+    blurb: "OEM surfaces to package and deliver agent experiences.",
+    icon: "Store",
   },
   {
     key: "builder",
+    num: "02",
     name: "Agent Builder",
-    tag: "White-labeled creation",
-    summary:
-      "A visual builder your customers, or your own delivery team, use to create agents without writing a platform.",
-    customerSees: "They describe the work; an agent is drafted, tested and published.",
-    bullets: [
-      "Describe-to-build authoring, plus full control for engineers",
-      "Tools, knowledge and memory attached without custom plumbing",
-      "Reusable blueprints so the tenth agent costs less than the first",
-      "Every draft lands in the registry, so nothing ships off the books",
-    ],
+    blurb: "White-labeled tools to design and ship production agents.",
+    icon: "Wrench",
   },
   {
     key: "registry",
+    num: "03",
     name: "Registry & Governance",
-    tag: "Record · policy · audit",
-    summary:
-      "The system of record for every agent your customers run: who owns it, what it may touch, what it did.",
-    customerSees: "An answer to “what is running, on whose authority, against what data”.",
-    bullets: [
-      "One registry across agents you built and agents you inherited",
-      "Policy applied at the agent, not bolted onto each integration",
-      "Immutable audit trail spanning versions, evaluations and rollbacks",
-      "Evidence your customers’ risk and compliance teams will accept",
-    ],
+    blurb: "Record, policy and audit for every agent.",
+    icon: "ShieldCheck",
   },
   {
     key: "evaluation",
+    num: "04",
     name: "Evaluation & Guardrails",
-    tag: "Quality gates",
-    summary: "The gate between a promising prototype and something a customer is exposed to.",
-    customerSees: "Agents that behave the same on the thousandth run as on the demo.",
-    bullets: [
-      "Test suites run on every version, not once before launch",
-      "Guardrails on inputs, outputs, tools and data reach",
-      "Sign-off recorded against a named owner before release",
-      "Regressions caught in the pipeline instead of in production",
-    ],
+    blurb: "Quality gates and safety before launch.",
+    icon: "Gauge",
   },
   {
     key: "runtime",
+    num: "05",
     name: "Runtime & Memory",
-    tag: "Execution · data boundary",
-    summary:
-      "Where the work actually happens: in your cloud, or inside your customer’s own AWS, Azure or GCP.",
-    customerSees: "Their data stays where their policy says it has to stay.",
-    bullets: [
-      "Deploy to your cloud or the customer’s environment",
-      "Durable memory and state, scoped by tenant",
-      "A clear data boundary you can put in front of a procurement team",
-      "Model- and framework-agnostic execution",
-    ],
+    blurb: "Secure execution with data boundary and context.",
+    icon: "Database",
   },
   {
     key: "deployment",
+    num: "06",
     name: "Deployment & Rollback",
-    tag: "Versioned releases",
-    summary: "Agents released like software: versioned, promoted through stages, reversible.",
-    customerSees: "Improvements arrive steadily, and a bad one disappears in minutes.",
-    bullets: [
-      "Versioned releases with staged promotion",
-      "Instant rollback to any previously signed-off version",
-      "Fits your existing release process and CI/CD",
-      "Every promotion and reversal written to the audit trail",
-    ],
+    blurb: "Versioned releases with safe rollback at any time.",
+    icon: "CloudUpload",
   },
   {
     key: "observability",
+    num: "07",
     name: "Observability",
-    tag: "Runs · cost · quality",
-    summary: "What every agent did, what it cost and whether it was any good, per tenant.",
-    customerSees: "Usage and value they can see, which is what renewals are argued from.",
-    bullets: [
-      "Run-level traces: tool calls, reasoning steps, handoffs",
-      "Cost attributed by tenant, agent and workflow",
-      "Quality tracked over time, not sampled by hand",
-      "Feeds your existing telemetry rather than replacing it",
-    ],
+    blurb: "Runs, cost and quality insights in real time.",
+    icon: "LineChart",
+  },
+  {
+    key: "identity",
+    num: "08",
+    name: "Identity & Access",
+    blurb: "Users, roles and trust with SSO support.",
+    icon: "UserCheck",
+  },
+  {
+    key: "permissions",
+    num: "09",
+    name: "Permissions",
+    blurb: "Granular access control across agents and data.",
+    icon: "Lock",
+  },
+  {
+    key: "audit",
+    num: "10",
+    name: "Audit Trail",
+    blurb: "Immutable records for every action and change.",
+    icon: "FileClock",
+  },
+  {
+    key: "integrations",
+    num: "11",
+    name: "Tool Integrations",
+    blurb: "Native connectors to tools, APIs and enterprise systems.",
+    icon: "Puzzle",
+  },
+  {
+    key: "voice",
+    num: "12",
+    name: "Voice AI",
+    blurb: "Conversational agents with voice input and output.",
+    icon: "Mic",
+  },
+  {
+    key: "safety",
+    num: "13",
+    name: "Safety Guardrails",
+    blurb: "Built-in compliance, content filtering and risk controls.",
+    icon: "ShieldAlert",
+  },
+  {
+    key: "scale",
+    num: "14",
+    name: "Scalable Runtime",
+    blurb: "Auto-scale infrastructure built for enterprise demand.",
+    icon: "Boxes",
   },
 ];
 
-/** Ships with every block, whether you take one module or the whole lifecycle. */
-export const FOUNDATION = ["Identity", "Permissions", "Audit trail", "Export path"];
+/** The claim that has to survive the catalogue: nothing here replaces you. */
+export const WIRED_IN = {
+  title: "Wired in. Not rebuilt.",
+  body: "Your data, tools and agents stay yours.",
+};
 
 /** Bottom of the stack: what stays yours, untouched. */
 export const YOUR_STACK = [
-  "Frameworks",
-  "Models",
-  "Cloud",
-  "Data",
-  "IAM & SSO",
-  "CI/CD",
-  "Telemetry",
-];
-
-/** Top of the stack: what the OEM arrangement never touches. */
-export const YOURS_ALONE = ["Your brand", "Your UX", "Your pricing", "Your customer relationship"];
-
-/** The middle ground — neither replaced nor rebuilt, just wired in. */
-export const CONNECTED = [
-  "Data sources",
-  "Existing tools",
-  "Agents already in production",
-  "Your release pipeline",
+  { label: "Frameworks", icon: "Code2" },
+  { label: "Models", icon: "Cpu" },
+  { label: "Cloud", icon: "Cloud" },
+  { label: "Databases", icon: "Database" },
+  { label: "Telemetry", icon: "Activity" },
+  { label: "CI/CD", icon: "GitBranch" },
+  { label: "IAM & SSO", icon: "KeyRound" },
 ];
 
 /* ------------------------------------------------------------------ *

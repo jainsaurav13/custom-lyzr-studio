@@ -40,6 +40,10 @@ export function agentBlocksVars(): Record<string, string> {
     "--st-text-muted": mix(text, bg, 0.26),
     "--st-text-faint": mix(text, bg, 0.42),
     "--ab-paper": mix(bg, accent, 0.035),
+    // A deeper wash of the same copper, for the one section that has to feel
+    // like a printed catalogue rather than a page.
+    "--ab-warm": mix(bg, accent, 0.1),
+    "--ab-warm-rule": alpha(accent, 0.22),
     "--ab-ink": ink,
     "--ab-ink-raised": mix(ink, "#FFFFFF", 0.06),
     "--ab-ink-border": alpha("#FFFFFF", 0.12),

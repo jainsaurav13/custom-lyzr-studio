@@ -116,7 +116,7 @@ export function Section({
   children,
 }: {
   id?: string;
-  tone?: "paper" | "invert" | "plain";
+  tone?: "paper" | "invert" | "plain" | "warm";
   className?: string;
   children: ReactNode;
 }) {
@@ -130,7 +130,9 @@ export function Section({
             ? "var(--ab-ink)"
             : tone === "paper"
               ? "var(--ab-paper)"
-              : "var(--st-bg)",
+              : tone === "warm"
+                ? "var(--ab-warm)"
+                : "var(--st-bg)",
         color: tone === "invert" ? "var(--ab-ink-text)" : "var(--st-text)",
       }}
     >
