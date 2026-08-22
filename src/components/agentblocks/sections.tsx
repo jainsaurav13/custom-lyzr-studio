@@ -386,6 +386,45 @@ const BOX = {
   dy: 28, // depth, upward
 };
 
+/** The carton outline, used to keep the paper grain inside the box. */
+const CARTON_SILHOUETTE = [
+  `0,${BOX.dy}`,
+  `${BOX.dx},0`,
+  `${BOX.w + BOX.dx},0`,
+  `${BOX.w + BOX.dx},${BOX.h}`,
+  `${BOX.w},${BOX.h + BOX.dy}`,
+  `0,${BOX.h + BOX.dy}`,
+].join(" ");
+
+/**
+ * Defined once and referenced by every carton: fractal noise, flattened to a
+ * speckle of translucent ink, which is what gives the faces their printed
+ * tooth instead of a flat fill.
+ */
+function CartonDefs() {
+  return (
+    <svg width="0" height="0" className="absolute" aria-hidden="true">
+      <defs>
+        <filter id="ab-grain" x="0" y="0" width="100%" height="100%">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.9"
+            numOctaves="3"
+            stitchTiles="stitch"
+          />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.42 0.42 0.42 0 -0.34"
+          />
+        </filter>
+        <clipPath id="ab-carton" clipPathUnits="userSpaceOnUse">
+          <polygon points={CARTON_SILHOUETTE} />
+        </clipPath>
+      </defs>
+    </svg>
+  );
+}
+
 function BlockCube({ color, num, icon }: { color: string; num: string; icon: string }) {
   const { w, h, dx, dy } = BOX;
   const top = mix(color, "#FFFFFF", 0.24);
@@ -397,7 +436,7 @@ function BlockCube({ color, num, icon }: { color: string; num: string; icon: str
   const shear = `translate(${w} ${dy}) matrix(1 ${-dy / dx} 0 1 0 0)`;
 
   return (
-    <div className="relative w-full max-w-[10.5rem]">
+    <div className="relative w-full">
       <svg
         viewBox={`0 0 ${w + dx} ${h + dy}`}
         className="w-full"
@@ -407,6 +446,14 @@ function BlockCube({ color, num, icon }: { color: string; num: string; icon: str
         <polygon points={`0,${dy} ${dx},0 ${w + dx},0 ${w},${dy}`} fill={top} />
         <polygon points={`${w},${dy} ${w + dx},0 ${w + dx},${h} ${w},${h + dy}`} fill={side} />
         <rect x="0" y={dy} width={w} height={h} fill={color} />
+
+        <rect
+          width={w + dx}
+          height={h + dy}
+          filter="url(#ab-grain)"
+          clipPath="url(#ab-carton)"
+          opacity="0.38"
+        />
 
         <g transform={shear} fill={stamp}>
           <text
@@ -463,6 +510,7 @@ function BlockCube({ color, num, icon }: { color: string; num: string; icon: str
 export function BlocksSection() {
   return (
     <Section id="blocks" tone="warm">
+      <CartonDefs />
       <Reveal>
         <SectionHead
           eyebrow="What’s inside"
@@ -472,26 +520,26 @@ export function BlocksSection() {
         />
       </Reveal>
 
-      <div className="mt-12 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-12 grid grid-cols-2 gap-x-4 gap-y-9 sm:grid-cols-4 lg:grid-cols-7">
         {BLOCKS.map((block, index) => (
           <Reveal key={block.key} delay={Math.min(index, 7) * 0.03} className="h-full">
             <div className="flex h-full flex-col">
               <BlockCube color={block.color} num={block.num} icon={block.icon} />
               <p
-                className="mt-4 text-sm font-semibold tabular-nums"
-                style={{ color: mix(block.color, "#17120E", 0.34) }}
+                className="mt-3.5 text-xs font-semibold tabular-nums"
+                style={{ color: mix(block.color, "#17120E", 0.46) }}
               >
                 {block.num}
               </p>
               <h3
                 // Two lines' worth, so every blurb in a row starts level.
-                className="mt-1 min-h-[2.35rem] text-[0.9375rem] leading-tight font-semibold"
+                className="mt-1 min-h-[2.05rem] text-[0.8125rem] leading-tight font-semibold"
                 style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
               >
                 {block.name}
               </h3>
               <p
-                className="mt-1.5 text-[0.8125rem] leading-snug"
+                className="mt-1 text-[0.6875rem] leading-snug"
                 style={{ color: "var(--st-text-muted)" }}
               >
                 {block.blurb}

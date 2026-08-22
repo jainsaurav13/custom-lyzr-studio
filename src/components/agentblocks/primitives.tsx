@@ -108,6 +108,13 @@ export function SectionHead({
   );
 }
 
+/** Printed-paper tooth for the warm band, inline so nothing is fetched. */
+const PAPER_GRAIN =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E" +
+  "%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' " +
+  "stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E" +
+  "%3Crect width='180' height='180' filter='url(%23n)' opacity='0.3'/%3E%3C/svg%3E\")";
+
 /** A page section. `tone="invert"` paints the full-bleed ink band. */
 export function Section({
   id,
@@ -131,7 +138,7 @@ export function Section({
             : tone === "paper"
               ? "var(--ab-paper)"
               : tone === "warm"
-                ? "var(--ab-warm)"
+                ? `${PAPER_GRAIN}, var(--ab-warm)`
                 : "var(--st-bg)",
         color: tone === "invert" ? "var(--ab-ink-text)" : "var(--st-text)",
       }}
