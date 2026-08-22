@@ -301,66 +301,54 @@ export const YOUR_STACK = [
  */
 export const OWNERSHIP = {
   eyebrow: "The promise",
-  title: { lead: "You own the product.", accent: "You own the IP." },
-  lede: "Licensing infrastructure should make your product better. It should never make your product ours. This is exactly where the line sits.",
+  title: { lead: "Your product.", accent: "Your IP." },
+  lede: "AgentBlocks powers the infrastructure underneath. Everything that makes the product yours stays yours.",
 
   yours: {
     label: "Yours, outright",
     items: [
+      { item: "Agents, prompts & workflows", note: "Everything you or your customers build." },
       {
-        item: "Agents, prompts and workflows",
-        note: "Everything your team or your customers build is your IP, in an open format you can take out.",
+        item: "Your data & customer data",
+        note: "Never used for training. Never leaves your deployment boundary.",
       },
+      { item: "Domain intelligence", note: "Your models, knowledge and evaluations." },
       {
-        item: "Your data, and your customers’ data",
-        note: "Never used to train a model, ours or anyone else’s, and never leaving the boundary you deploy into.",
+        item: "Brand & customer relationship",
+        note: "Your brand, pricing, contracts and customers.",
       },
-      {
-        item: "Domain models, knowledge and evaluations",
-        note: "The expertise that makes your agents worth paying for is the part we never touch.",
-      },
-      {
-        item: "Brand, pricing and the customer contract",
-        note: "Your name on the product, your invoice, your renewal conversation. Lyzr appears in your contract, not theirs.",
-      },
-      {
-        item: "The deployment, and the keys to it",
-        note: "Your cloud or your customer’s, your model providers, your credentials, your admins.",
-      },
+      { item: "Deployment & credentials", note: "Your cloud, models, credentials and admins." },
     ],
   },
 
   ours: {
-    label: "Ours, licensed to you",
+    label: "Lyzr, licensed to you",
     items: [
+      { item: "AgentBlocks platform", note: "Licensed for the term of the agreement." },
       {
-        item: "The AgentBlocks platform code",
-        note: "Licensed for the life of the agreement, with source escrow available.",
-      },
-      {
-        item: "The improvements we make to it",
-        note: "Ours to build, yours to receive, for as long as you run it.",
+        item: "Platform improvements",
+        note: "Updates and improvements included throughout the agreement.",
       },
     ],
   },
 
-  guarantees: [
-    {
-      title: "No training on your data",
-      body: "Not yours, not your customers’, not to improve our models and not to improve anyone else’s.",
-    },
-    {
-      title: "An export path in every block",
-      body: "Agents, configuration, evaluations and audit history leave in an open format, on demand, not on renewal.",
-    },
-    {
-      title: "Source escrow on request",
-      body: "If Lyzr ever cannot support you, the code your product depends on is released to you.",
-    },
-  ],
-
-  closer:
-    "The commercial argument for staying should be that it works, never that leaving is impossible.",
+  protections: {
+    label: "Your protections",
+    items: [
+      {
+        title: "No training on your data",
+        body: "Your data is never used to train our models or anyone else’s.",
+      },
+      {
+        title: "Open export path",
+        body: "Agents, configurations, evaluations and audit history remain exportable.",
+      },
+      {
+        title: "Source escrow available",
+        body: "Protection for the platform code your product depends on.",
+      },
+    ],
+  },
 };
 
 /* ------------------------------------------------------------------ *

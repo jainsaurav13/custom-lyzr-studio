@@ -538,9 +538,11 @@ export function BlocksSection() {
  * ------------------------------------------------------------------ */
 
 /**
- * The ownership promise. The two columns are deliberately unequal: five things
- * are yours outright and two are licensed, and that asymmetry is the argument,
- * so the "yours" side gets the ink panel and the weight.
+ * The ownership boundary, as one comparison a reader can settle in five
+ * seconds: five things are theirs outright, on the charcoal card that takes
+ * nearly two thirds of the width, and two are licensed, on the smaller card
+ * beside it. The protections sit under the licensed side, deliberately quieter
+ * than the comparison they backstop.
  */
 export function OwnershipSection() {
   return (
@@ -554,22 +556,25 @@ export function OwnershipSection() {
             </>
           }
           lede={OWNERSHIP.lede}
+          className="max-w-xl"
         />
       </Reveal>
 
-      <div className="mt-12 grid items-start gap-4 lg:grid-cols-[1.5fr_1fr]">
+      <div className="mt-16 grid items-stretch gap-4 lg:grid-cols-[62fr_38fr]">
         <Reveal className="h-full">
           <Panel
             tone="invert"
-            className="h-full p-6 sm:p-8"
+            className="flex h-full flex-col p-7 sm:p-9"
             style={{ background: "var(--ab-ink)", borderColor: "var(--ab-ink-border-strong)" }}
           >
             <Label tone="invert">{OWNERSHIP.yours.label}</Label>
-            <dl className="mt-5">
+            {/* The rows share whatever height the licensed column sets, so the
+                two cards start and finish level with no slack at the foot. */}
+            <dl className="mt-6 flex flex-1 flex-col justify-between">
               {OWNERSHIP.yours.items.map((row, index) => (
                 <div
                   key={row.item}
-                  className={cn("py-4", index > 0 && "border-t")}
+                  className={cn("py-3.5", index > 0 && "border-t")}
                   style={{ borderColor: "var(--ab-ink-border)" }}
                 >
                   <dt className="flex items-baseline gap-3">
@@ -579,14 +584,14 @@ export function OwnershipSection() {
                       aria-hidden="true"
                     />
                     <span
-                      className="text-[1.0625rem] leading-snug font-semibold"
+                      className="text-[1.125rem] leading-snug font-semibold"
                       style={{ fontFamily: "var(--st-font-head)", color: "var(--ab-ink-text)" }}
                     >
                       {row.item}
                     </span>
                   </dt>
                   <dd
-                    className="mt-1.5 pl-7 text-sm leading-snug"
+                    className="mt-1 pl-7 text-sm leading-snug"
                     style={{ color: "var(--ab-ink-muted)" }}
                   >
                     {row.note}
@@ -597,65 +602,63 @@ export function OwnershipSection() {
           </Panel>
         </Reveal>
 
-        <div className="flex flex-col gap-4">
-          <Reveal delay={0.08}>
-            <Panel className="p-6 sm:p-8">
-              <Label>{OWNERSHIP.ours.label}</Label>
-              <dl className="mt-5">
-                {OWNERSHIP.ours.items.map((row, index) => (
-                  <div
-                    key={row.item}
-                    className={cn("py-4", index > 0 && "border-t")}
-                    style={{ borderColor: "var(--ab-rule)" }}
+        <Reveal delay={0.08} className="h-full">
+          <Panel className="flex h-full flex-col p-7 sm:p-8">
+            <Label>{OWNERSHIP.ours.label}</Label>
+            <dl className="mt-6">
+              {OWNERSHIP.ours.items.map((row, index) => (
+                <div
+                  key={row.item}
+                  className={cn("py-3.5", index > 0 && "border-t")}
+                  style={{ borderColor: "var(--ab-rule)" }}
+                >
+                  <dt
+                    className="text-[1rem] leading-snug font-semibold"
+                    style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
                   >
-                    <dt
-                      className="text-[1.0625rem] leading-snug font-semibold"
-                      style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
-                    >
-                      {row.item}
-                    </dt>
-                    <dd
-                      className="mt-1.5 text-sm leading-snug"
-                      style={{ color: "var(--st-text-muted)" }}
-                    >
-                      {row.note}
-                    </dd>
-                  </div>
+                    {row.item}
+                  </dt>
+                  <dd
+                    className="mt-1 text-[0.8125rem] leading-snug"
+                    style={{ color: "var(--st-text-muted)" }}
+                  >
+                    {row.note}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+
+            <div className="mt-auto border-t pt-6" style={{ borderColor: "var(--st-text)" }}>
+              <Label>{OWNERSHIP.protections.label}</Label>
+              <ul className="mt-4 space-y-3.5">
+                {OWNERSHIP.protections.items.map((item) => (
+                  <li key={item.title} className="flex gap-2.5">
+                    <Check
+                      className="mt-[3px] h-3.5 w-3.5 shrink-0"
+                      style={{ color: "var(--st-accent-ink)" }}
+                      aria-hidden="true"
+                    />
+                    <span>
+                      <span
+                        className="block text-[0.8125rem] leading-snug font-semibold"
+                        style={{ color: "var(--st-text)" }}
+                      >
+                        {item.title}
+                      </span>
+                      <span
+                        className="mt-0.5 block text-[0.75rem] leading-snug"
+                        style={{ color: "var(--st-text-muted)" }}
+                      >
+                        {item.body}
+                      </span>
+                    </span>
+                  </li>
                 ))}
-              </dl>
-            </Panel>
-          </Reveal>
-
-          {/* The commitments that make the split enforceable rather than nice. */}
-          {OWNERSHIP.guarantees.map((item, index) => (
-            <Reveal key={item.title} delay={0.14 + index * 0.06}>
-              <Panel className="p-5 sm:px-8 sm:py-6">
-                <h3
-                  className="text-[0.9375rem] leading-snug font-semibold"
-                  style={{ fontFamily: "var(--st-font-head)", color: "var(--st-accent-ink)" }}
-                >
-                  {item.title}
-                </h3>
-                <p
-                  className="mt-1.5 text-sm leading-snug"
-                  style={{ color: "var(--st-text-muted)" }}
-                >
-                  {item.body}
-                </p>
-              </Panel>
-            </Reveal>
-          ))}
-        </div>
+              </ul>
+            </div>
+          </Panel>
+        </Reveal>
       </div>
-
-      <Reveal delay={0.3}>
-        <p
-          className="mt-10 max-w-3xl text-xl leading-snug text-balance italic sm:text-[1.5rem]"
-          style={{ fontFamily: "var(--ab-serif)", color: "var(--st-text)" }}
-        >
-          {OWNERSHIP.closer}
-        </p>
-      </Reveal>
     </Section>
   );
 }
