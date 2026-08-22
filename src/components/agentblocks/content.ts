@@ -293,38 +293,75 @@ export const YOUR_STACK = [
  * 5 — Why AgentBlocks
  * ------------------------------------------------------------------ */
 
-export const REASONS = [
-  {
-    key: "brand",
-    title: "It ships as your product, not ours",
-    body: "OEM is the design, not a rebrand toggle. Your customers see your brand, your UX and your pricing. They never learn our name, and the relationship stays yours.",
+/**
+ * The ownership promise, which is the only question an ISV's own lawyers will
+ * ask twice: what, exactly, do we own when we build our product on someone
+ * else's infrastructure. The section answers it as a split rather than a list
+ * of reasons, because the shape of the split is the argument.
+ */
+export const OWNERSHIP = {
+  eyebrow: "The promise",
+  title: { lead: "You own the product.", accent: "You own the IP." },
+  lede: "Licensing infrastructure should make your product better. It should never make your product ours. This is exactly where the line sits.",
+
+  yours: {
+    label: "Yours, outright",
+    items: [
+      {
+        item: "Agents, prompts and workflows",
+        note: "Everything your team or your customers build is your IP, in an open format you can take out.",
+      },
+      {
+        item: "Your data, and your customers’ data",
+        note: "Never used to train a model, ours or anyone else’s, and never leaving the boundary you deploy into.",
+      },
+      {
+        item: "Domain models, knowledge and evaluations",
+        note: "The expertise that makes your agents worth paying for is the part we never touch.",
+      },
+      {
+        item: "Brand, pricing and the customer contract",
+        note: "Your name on the product, your invoice, your renewal conversation. Lyzr appears in your contract, not theirs.",
+      },
+      {
+        item: "The deployment, and the keys to it",
+        note: "Your cloud or your customer’s, your model providers, your credentials, your admins.",
+      },
+    ],
   },
-  {
-    key: "keep",
-    title: "It works with what you already run",
-    body: "Model-, framework- and cloud-agnostic. It governs agents your team built elsewhere just as readily as ones created in the builder. Nothing is ripped out to make room.",
+
+  ours: {
+    label: "Ours, licensed to you",
+    items: [
+      {
+        item: "The AgentBlocks platform code",
+        note: "Licensed for the life of the agreement, with source escrow available.",
+      },
+      {
+        item: "The improvements we make to it",
+        note: "Ours to build, yours to receive, for as long as you run it.",
+      },
+    ],
   },
-  {
-    key: "where",
-    title: "It runs where your customer requires",
-    body: "Your cloud, or inside the customer’s own AWS, Azure or GCP. A data boundary you can put in front of a procurement team without a caveat.",
-  },
-  {
-    key: "modular",
-    title: "You take only what you are missing",
-    body: "Already have a runtime but no evaluation? Take evaluation. Starting from nothing? Take the lot. The blocks are priced and adopted independently.",
-  },
-  {
-    key: "governed",
-    title: "Governance is the default, not a roadmap item",
-    body: "Every agent is registered, evaluated, versioned and audited before it reaches a customer. The evidence exists because the platform produced it, not because someone wrote a document.",
-  },
-  {
-    key: "exit",
-    title: "There is a way out",
-    body: "An export path ships with every block. The commercial argument for staying should be that it works, never that leaving is impossible.",
-  },
-];
+
+  guarantees: [
+    {
+      title: "No training on your data",
+      body: "Not yours, not your customers’, not to improve our models and not to improve anyone else’s.",
+    },
+    {
+      title: "An export path in every block",
+      body: "Agents, configuration, evaluations and audit history leave in an open format, on demand, not on renewal.",
+    },
+    {
+      title: "Source escrow on request",
+      body: "If Lyzr ever cannot support you, the code your product depends on is released to you.",
+    },
+  ],
+
+  closer:
+    "The commercial argument for staying should be that it works, never that leaving is impossible.",
+};
 
 /* ------------------------------------------------------------------ *
  * 6 — How to get started
@@ -494,7 +531,7 @@ export const NAV_LINKS = [
   { href: "#production", label: "In production" },
   { href: "#problem", label: "The problem" },
   { href: "#blocks", label: "What’s inside" },
-  { href: "#why", label: "Why AgentBlocks" },
+  { href: "#ownership", label: "Ownership" },
   { href: "#start", label: "Get started" },
   { href: "#faq", label: "FAQ" },
 ];

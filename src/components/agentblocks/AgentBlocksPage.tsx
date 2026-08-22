@@ -10,7 +10,7 @@ import {
   ProblemSection,
   SessionSection,
   StartSection,
-  WhySection,
+  OwnershipSection,
 } from "./sections";
 import { agentBlocksVars } from "./theme";
 import { WorkbenchPreview } from "./WorkbenchPreview";
@@ -207,7 +207,7 @@ export function AgentBlocksPage() {
         <ProductionSection />
         <ProblemSection />
         <BlocksSection />
-        <WhySection />
+        <OwnershipSection />
         <StartSection />
         <FaqSection />
         <SessionSection />
