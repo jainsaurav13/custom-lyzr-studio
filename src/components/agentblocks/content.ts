@@ -152,7 +152,7 @@ export interface Block {
   blurb: string;
   /** Name of the lucide icon the card draws. Resolved in `sections.tsx`. */
   icon: string;
-  /** The face colour of this block's carton, from the AgentBlocks poster. */
+  /** The block's colour: the poster's hue, deepened so white type clears it. */
   color: string;
 }
 
@@ -172,7 +172,7 @@ export const BLOCKS: Block[] = [
     name: "Agent Builder",
     blurb: "White-labeled tools to design and ship production agents.",
     icon: "Wrench",
-    color: "#D07A2E",
+    color: "#B76D2B",
   },
   {
     key: "registry",
@@ -188,7 +188,7 @@ export const BLOCKS: Block[] = [
     name: "Evaluation & Guardrails",
     blurb: "Quality gates and safety before launch.",
     icon: "Gauge",
-    color: "#CBC3B6",
+    color: "#737A80",
   },
   {
     key: "runtime",
@@ -212,7 +212,7 @@ export const BLOCKS: Block[] = [
     name: "Observability",
     blurb: "Runs, cost and quality insights in real time.",
     icon: "LineChart",
-    color: "#DDA23C",
+    color: "#A47626",
   },
   {
     key: "identity",
@@ -220,7 +220,7 @@ export const BLOCKS: Block[] = [
     name: "Identity & Access",
     blurb: "Users, roles and trust with SSO support.",
     icon: "UserCheck",
-    color: "#8A9C82",
+    color: "#6F8366",
   },
   {
     key: "permissions",
@@ -228,7 +228,7 @@ export const BLOCKS: Block[] = [
     name: "Permissions",
     blurb: "Granular access control across agents and data.",
     icon: "Lock",
-    color: "#B79BC0",
+    color: "#9A6EA8",
   },
   {
     key: "audit",
@@ -236,7 +236,7 @@ export const BLOCKS: Block[] = [
     name: "Audit Trail",
     blurb: "Immutable records for every action and change.",
     icon: "FileClock",
-    color: "#D6C6AC",
+    color: "#9D783D",
   },
   {
     key: "integrations",
@@ -252,7 +252,7 @@ export const BLOCKS: Block[] = [
     name: "Voice AI",
     blurb: "Conversational agents with voice input and output.",
     icon: "Mic",
-    color: "#9BA55C",
+    color: "#7A8344",
   },
   {
     key: "safety",
@@ -260,7 +260,7 @@ export const BLOCKS: Block[] = [
     name: "Safety Guardrails",
     blurb: "Built-in compliance, content filtering and risk controls.",
     icon: "ShieldAlert",
-    color: "#C39A6B",
+    color: "#A7743B",
   },
   {
     key: "scale",
@@ -268,7 +268,7 @@ export const BLOCKS: Block[] = [
     name: "Scalable Runtime",
     blurb: "Auto-scale infrastructure built for enterprise demand.",
     icon: "Boxes",
-    color: "#BFBAB2",
+    color: "#7C7268",
   },
 ];
 

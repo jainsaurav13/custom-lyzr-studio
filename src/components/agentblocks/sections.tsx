@@ -383,8 +383,8 @@ function BlockIcon({ name, className }: { name: string; className?: string }) {
 function BlockTile({ block, linkTo }: { block: (typeof BLOCKS)[number]; linkTo?: string }) {
   const { color } = block;
   const ink = readableInk(color, mix(color, "#140F0B", 0.82), "#FFFFFF");
-  const lit = mix(color, "#FFFFFF", 0.44);
-  const shade = mix(color, "#2A1B12", 0.22);
+  const lit = mix(color, "#FFFFFF", 0.2);
+  const shade = mix(color, "#2A1B12", 0.32);
 
   return (
     <div className="relative">
@@ -424,12 +424,12 @@ function BlockTile({ block, linkTo }: { block: (typeof BLOCKS)[number]; linkTo?:
         />
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute top-[14%] left-[10%] h-[9%] w-[34%] -rotate-[18deg] rounded-full blur-[3px]"
-          style={{ background: alpha("#FFFFFF", 0.5) }}
+          className="pointer-events-none absolute top-[7%] left-[14%] h-[7%] w-[46%] -rotate-[9deg] rounded-full blur-[6px]"
+          style={{ background: alpha("#FFFFFF", 0.34) }}
         />
 
         <div className="relative flex items-start justify-between gap-2">
-          <BlockIcon name={block.icon} className="h-[1.35rem] w-[1.35rem]" />
+          <BlockIcon name={block.icon} className="h-[1.8rem] w-[1.8rem]" />
           <span className="text-[10px] font-semibold tabular-nums" style={{ opacity: 0.6 }}>
             {block.num}
           </span>
