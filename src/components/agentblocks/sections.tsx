@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-import { alpha, mix } from "@/components/studio/brand/color";
+import { alpha, mix, readableInk } from "@/components/studio/brand/color";
 import { cn } from "@/lib/utils";
 
 import {
@@ -374,129 +374,85 @@ function BlockIcon({ name, className }: { name: string; className?: string }) {
 }
 
 /**
- * One block, drawn as the shipping carton from the AgentBlocks poster: a flat
- * front face carrying the icon, a lighter top and a darker right side stamped
- * with the block number. The geometry is a single projection reused fourteen
- * times, so the boxes read as one set rather than fourteen drawings.
+ * One block, as a slab of tinted glass sitting proud of the page. There is no
+ * projection here: the tile faces the reader square-on and gets its depth from
+ * a lit top edge, a shaded bottom one and a coloured glow beneath, so it reads
+ * as raised rather than turned. Every value is derived from the block's own
+ * colour, so the whole set stays one material.
  */
-const BOX = {
-  w: 124, // front face width
-  h: 110, // front face height
-  dx: 34, // depth, to the right
-  dy: 28, // depth, upward
-};
-
-/** The carton outline, used to keep the paper grain inside the box. */
-const CARTON_SILHOUETTE = [
-  `0,${BOX.dy}`,
-  `${BOX.dx},0`,
-  `${BOX.w + BOX.dx},0`,
-  `${BOX.w + BOX.dx},${BOX.h}`,
-  `${BOX.w},${BOX.h + BOX.dy}`,
-  `0,${BOX.h + BOX.dy}`,
-].join(" ");
-
-/**
- * Defined once and referenced by every carton: fractal noise, flattened to a
- * speckle of translucent ink, which is what gives the faces their printed
- * tooth instead of a flat fill.
- */
-function CartonDefs() {
-  return (
-    <svg width="0" height="0" className="absolute" aria-hidden="true">
-      <defs>
-        <filter id="ab-grain" x="0" y="0" width="100%" height="100%">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.9"
-            numOctaves="3"
-            stitchTiles="stitch"
-          />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.42 0.42 0.42 0 -0.34"
-          />
-        </filter>
-        <clipPath id="ab-carton" clipPathUnits="userSpaceOnUse">
-          <polygon points={CARTON_SILHOUETTE} />
-        </clipPath>
-      </defs>
-    </svg>
-  );
-}
-
-function BlockCube({ color, num, icon }: { color: string; num: string; icon: string }) {
-  const { w, h, dx, dy } = BOX;
-  const top = mix(color, "#FFFFFF", 0.24);
-  const side = mix(color, "#241C14", 0.2);
-  const ink = mix(color, "#17120E", 0.76);
-  const stamp = alpha(mix(color, "#17120E", 0.6), 0.75);
-  // The right face is the front face sheared up along its depth vector; the
-  // same shear puts the printed number and barcode flat onto that plane.
-  const shear = `translate(${w} ${dy}) matrix(1 ${-dy / dx} 0 1 0 0)`;
+function BlockTile({ block, linkTo }: { block: (typeof BLOCKS)[number]; linkTo?: string }) {
+  const { color } = block;
+  const ink = readableInk(color, mix(color, "#140F0B", 0.82), "#FFFFFF");
+  const lit = mix(color, "#FFFFFF", 0.44);
+  const shade = mix(color, "#2A1B12", 0.22);
 
   return (
-    <div className="relative w-full">
-      <svg
-        viewBox={`0 0 ${w + dx} ${h + dy}`}
-        className="w-full"
-        style={{ filter: "drop-shadow(0 8px 10px rgba(35, 24, 16, 0.16))" }}
-        aria-hidden="true"
-      >
-        <polygon points={`0,${dy} ${dx},0 ${w + dx},0 ${w},${dy}`} fill={top} />
-        <polygon points={`${w},${dy} ${w + dx},0 ${w + dx},${h} ${w},${h + dy}`} fill={side} />
-        <rect x="0" y={dy} width={w} height={h} fill={color} />
-
-        <rect
-          width={w + dx}
-          height={h + dy}
-          filter="url(#ab-grain)"
-          clipPath="url(#ab-carton)"
-          opacity="0.38"
-        />
-
-        <g transform={shear} fill={stamp}>
-          <text
-            x={dx / 2}
-            y="20"
-            textAnchor="middle"
-            fontSize="13"
-            fontWeight="700"
-            fontFamily="var(--st-font-head)"
-          >
-            {num}
-          </text>
-          <text x={dx / 2} y="34" textAnchor="middle" fontSize="5.5" letterSpacing="0.4">
-            AGENT
-          </text>
-          <text x={dx / 2} y="41" textAnchor="middle" fontSize="5.5" letterSpacing="0.4">
-            BLOCKS
-          </text>
-          {[0, 3, 5, 9, 12, 14, 18, 21, 25, 27].map((offset, index) => (
-            <rect
-              key={offset}
-              x={4 + offset}
-              y={h - 26}
-              width={index % 3 === 0 ? 2 : 1}
-              height="16"
-            />
-          ))}
-        </g>
-      </svg>
-
-      {/* The glyph sits on the front face, which the projection leaves flat. */}
+    <div className="relative">
+      {/* The colour bleeding out from under the slab, which is what makes it
+          read as lit glass sitting above the page rather than printed on it. */}
       <span
-        className="absolute flex items-center justify-center"
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-2 top-4 bottom-0 rounded-[26px] blur-lg"
+        style={{ background: color, opacity: 0.45 }}
+      />
+
+      <div
+        className="relative flex aspect-square flex-col rounded-[24px] p-3.5"
         style={{
-          left: `${(w / 2 / (w + dx)) * 100}%`,
-          top: `${((dy + h / 2) / (h + dy)) * 100}%`,
-          width: `${(46 / (w + dx)) * 100}%`,
-          transform: "translate(-50%, -50%)",
           color: ink,
+          background: `linear-gradient(152deg, ${lit} 0%, ${color} 52%, ${shade} 100%)`,
+          boxShadow: [
+            // The bevel: a lit top edge and a shaded bottom one.
+            `inset 0 2px 0 ${alpha("#FFFFFF", 0.7)}`,
+            `inset 2px 0 0 ${alpha("#FFFFFF", 0.3)}`,
+            `inset -1.5px 0 0 ${alpha("#FFFFFF", 0.14)}`,
+            `inset 0 -3px 4px ${alpha("#2A1B12", 0.24)}`,
+            `inset 0 -14px 20px -12px ${alpha("#FFFFFF", 0.45)}`,
+            // The lift.
+            `0 1px 1px ${alpha("#2A1B12", 0.14)}`,
+            `0 14px 24px -10px ${alpha("#2A1B12", 0.35)}`,
+          ].join(", "),
         }}
       >
-        <BlockIcon name={icon} className="h-full w-full" />
-      </span>
+        {/* Wet sheen across the top, and one glint where the light lands. */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 rounded-[24px]"
+          style={{
+            background: `linear-gradient(163deg, ${alpha("#FFFFFF", 0.62)} 0%, ${alpha("#FFFFFF", 0.2)} 22%, ${alpha("#FFFFFF", 0)} 44%)`,
+          }}
+        />
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute top-[14%] left-[10%] h-[9%] w-[34%] -rotate-[18deg] rounded-full blur-[3px]"
+          style={{ background: alpha("#FFFFFF", 0.5) }}
+        />
+
+        <div className="relative flex items-start justify-between gap-2">
+          <BlockIcon name={block.icon} className="h-[1.35rem] w-[1.35rem]" />
+          <span className="text-[10px] font-semibold tabular-nums" style={{ opacity: 0.6 }}>
+            {block.num}
+          </span>
+        </div>
+
+        <h3
+          className="relative mt-auto text-[0.72rem] leading-tight font-semibold"
+          style={{ fontFamily: "var(--st-font-head)" }}
+        >
+          {block.name}
+        </h3>
+      </div>
+
+      {/* Connective tissue: the blocks are one system, not fourteen products. */}
+      {linkTo ? (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute top-1/2 -right-4 hidden h-[3px] w-4 rounded-full lg:block"
+          style={{
+            background: `linear-gradient(90deg, ${alpha(color, 0.75)}, ${alpha(linkTo, 0.75)})`,
+          }}
+        />
+      ) : null}
     </div>
   );
 }
@@ -510,7 +466,6 @@ function BlockCube({ color, num, icon }: { color: string; num: string; icon: str
 export function BlocksSection() {
   return (
     <Section id="blocks" tone="warm">
-      <CartonDefs />
       <Reveal>
         <SectionHead
           eyebrow="What’s inside"
@@ -524,22 +479,12 @@ export function BlocksSection() {
         {BLOCKS.map((block, index) => (
           <Reveal key={block.key} delay={Math.min(index, 7) * 0.03} className="h-full">
             <div className="flex h-full flex-col">
-              <BlockCube color={block.color} num={block.num} icon={block.icon} />
+              <BlockTile
+                block={block}
+                linkTo={(index + 1) % 7 === 0 ? undefined : BLOCKS[index + 1]?.color}
+              />
               <p
-                className="mt-3.5 text-xs font-semibold tabular-nums"
-                style={{ color: mix(block.color, "#17120E", 0.46) }}
-              >
-                {block.num}
-              </p>
-              <h3
-                // Two lines' worth, so every blurb in a row starts level.
-                className="mt-1 min-h-[2.05rem] text-[0.8125rem] leading-tight font-semibold"
-                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
-              >
-                {block.name}
-              </h3>
-              <p
-                className="mt-1 text-[0.6875rem] leading-snug"
+                className="mt-3 text-[0.6875rem] leading-snug"
                 style={{ color: "var(--st-text-muted)" }}
               >
                 {block.blurb}
