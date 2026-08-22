@@ -152,6 +152,8 @@ export interface Block {
   blurb: string;
   /** Name of the lucide icon the card draws. Resolved in `sections.tsx`. */
   icon: string;
+  /** The face colour of this block's carton, from the AgentBlocks poster. */
+  color: string;
 }
 
 /** The catalogue: every block that can be licensed, in the order it is sold. */
@@ -162,6 +164,7 @@ export const BLOCKS: Block[] = [
     name: "Workbench & Marketplace",
     blurb: "OEM surfaces to package and deliver agent experiences.",
     icon: "Store",
+    color: "#C0503C",
   },
   {
     key: "builder",
@@ -169,6 +172,7 @@ export const BLOCKS: Block[] = [
     name: "Agent Builder",
     blurb: "White-labeled tools to design and ship production agents.",
     icon: "Wrench",
+    color: "#D07A2E",
   },
   {
     key: "registry",
@@ -176,6 +180,7 @@ export const BLOCKS: Block[] = [
     name: "Registry & Governance",
     blurb: "Record, policy and audit for every agent.",
     icon: "ShieldCheck",
+    color: "#4F6F63",
   },
   {
     key: "evaluation",
@@ -183,6 +188,7 @@ export const BLOCKS: Block[] = [
     name: "Evaluation & Guardrails",
     blurb: "Quality gates and safety before launch.",
     icon: "Gauge",
+    color: "#CBC3B6",
   },
   {
     key: "runtime",
@@ -190,6 +196,7 @@ export const BLOCKS: Block[] = [
     name: "Runtime & Memory",
     blurb: "Secure execution with data boundary and context.",
     icon: "Database",
+    color: "#C4544A",
   },
   {
     key: "deployment",
@@ -197,6 +204,7 @@ export const BLOCKS: Block[] = [
     name: "Deployment & Rollback",
     blurb: "Versioned releases with safe rollback at any time.",
     icon: "CloudUpload",
+    color: "#4C7A82",
   },
   {
     key: "observability",
@@ -204,6 +212,7 @@ export const BLOCKS: Block[] = [
     name: "Observability",
     blurb: "Runs, cost and quality insights in real time.",
     icon: "LineChart",
+    color: "#DDA23C",
   },
   {
     key: "identity",
@@ -211,6 +220,7 @@ export const BLOCKS: Block[] = [
     name: "Identity & Access",
     blurb: "Users, roles and trust with SSO support.",
     icon: "UserCheck",
+    color: "#8A9C82",
   },
   {
     key: "permissions",
@@ -218,6 +228,7 @@ export const BLOCKS: Block[] = [
     name: "Permissions",
     blurb: "Granular access control across agents and data.",
     icon: "Lock",
+    color: "#B79BC0",
   },
   {
     key: "audit",
@@ -225,6 +236,7 @@ export const BLOCKS: Block[] = [
     name: "Audit Trail",
     blurb: "Immutable records for every action and change.",
     icon: "FileClock",
+    color: "#D6C6AC",
   },
   {
     key: "integrations",
@@ -232,6 +244,7 @@ export const BLOCKS: Block[] = [
     name: "Tool Integrations",
     blurb: "Native connectors to tools, APIs and enterprise systems.",
     icon: "Puzzle",
+    color: "#5E82A0",
   },
   {
     key: "voice",
@@ -239,6 +252,7 @@ export const BLOCKS: Block[] = [
     name: "Voice AI",
     blurb: "Conversational agents with voice input and output.",
     icon: "Mic",
+    color: "#9BA55C",
   },
   {
     key: "safety",
@@ -246,6 +260,7 @@ export const BLOCKS: Block[] = [
     name: "Safety Guardrails",
     blurb: "Built-in compliance, content filtering and risk controls.",
     icon: "ShieldAlert",
+    color: "#C39A6B",
   },
   {
     key: "scale",
@@ -253,6 +268,7 @@ export const BLOCKS: Block[] = [
     name: "Scalable Runtime",
     blurb: "Auto-scale infrastructure built for enterprise demand.",
     icon: "Boxes",
+    color: "#BFBAB2",
   },
 ];
 

@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import { alpha, mix } from "@/components/studio/brand/color";
 import { cn } from "@/lib/utils";
 
 import {
@@ -373,6 +374,87 @@ function BlockIcon({ name, className }: { name: string; className?: string }) {
 }
 
 /**
+ * One block, drawn as the shipping carton from the AgentBlocks poster: a flat
+ * front face carrying the icon, a lighter top and a darker right side stamped
+ * with the block number. The geometry is a single projection reused fourteen
+ * times, so the boxes read as one set rather than fourteen drawings.
+ */
+const BOX = {
+  w: 124, // front face width
+  h: 110, // front face height
+  dx: 34, // depth, to the right
+  dy: 28, // depth, upward
+};
+
+function BlockCube({ color, num, icon }: { color: string; num: string; icon: string }) {
+  const { w, h, dx, dy } = BOX;
+  const top = mix(color, "#FFFFFF", 0.24);
+  const side = mix(color, "#241C14", 0.2);
+  const ink = mix(color, "#17120E", 0.76);
+  const stamp = alpha(mix(color, "#17120E", 0.6), 0.75);
+  // The right face is the front face sheared up along its depth vector; the
+  // same shear puts the printed number and barcode flat onto that plane.
+  const shear = `translate(${w} ${dy}) matrix(1 ${-dy / dx} 0 1 0 0)`;
+
+  return (
+    <div className="relative w-full max-w-[10.5rem]">
+      <svg
+        viewBox={`0 0 ${w + dx} ${h + dy}`}
+        className="w-full"
+        style={{ filter: "drop-shadow(0 8px 10px rgba(35, 24, 16, 0.16))" }}
+        aria-hidden="true"
+      >
+        <polygon points={`0,${dy} ${dx},0 ${w + dx},0 ${w},${dy}`} fill={top} />
+        <polygon points={`${w},${dy} ${w + dx},0 ${w + dx},${h} ${w},${h + dy}`} fill={side} />
+        <rect x="0" y={dy} width={w} height={h} fill={color} />
+
+        <g transform={shear} fill={stamp}>
+          <text
+            x={dx / 2}
+            y="20"
+            textAnchor="middle"
+            fontSize="13"
+            fontWeight="700"
+            fontFamily="var(--st-font-head)"
+          >
+            {num}
+          </text>
+          <text x={dx / 2} y="34" textAnchor="middle" fontSize="5.5" letterSpacing="0.4">
+            AGENT
+          </text>
+          <text x={dx / 2} y="41" textAnchor="middle" fontSize="5.5" letterSpacing="0.4">
+            BLOCKS
+          </text>
+          {[0, 3, 5, 9, 12, 14, 18, 21, 25, 27].map((offset, index) => (
+            <rect
+              key={offset}
+              x={4 + offset}
+              y={h - 26}
+              width={index % 3 === 0 ? 2 : 1}
+              height="16"
+            />
+          ))}
+        </g>
+      </svg>
+
+      {/* The glyph sits on the front face, which the projection leaves flat. */}
+      <span
+        className="absolute flex items-center justify-center"
+        style={{
+          left: `${(w / 2 / (w + dx)) * 100}%`,
+          top: `${((dy + h / 2) / (h + dy)) * 100}%`,
+          width: `${(46 / (w + dx)) * 100}%`,
+          transform: "translate(-50%, -50%)",
+          color: ink,
+        }}
+      >
+        <BlockIcon name={icon} className="h-full w-full" />
+      </span>
+    </div>
+  );
+}
+
+/**
  * The catalogue: fourteen blocks, each one licensable on its own. It is laid
  * out as a printed sheet rather than a feature grid, on the page's warmest
  * ground, because the point of the section is that this is an inventory an ISV
@@ -382,58 +464,28 @@ export function BlocksSection() {
   return (
     <Section id="blocks" tone="warm">
       <Reveal>
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <SectionHead
-            eyebrow="What’s inside"
-            title="What you can OEM"
-            lede="Fourteen building blocks to build, run and scale agents with confidence. License the ones your platform is missing, or take the complete set."
-            className="max-w-2xl"
-          />
-          <div
-            className="shrink-0 border-l-2 pl-4 lg:pb-2"
-            style={{ borderColor: "var(--st-accent-ink)" }}
-          >
-            <p
-              className="text-sm font-semibold tracking-[-0.01em]"
-              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
-            >
-              {WIRED_IN.title}
-            </p>
-            <p className="mt-1 text-sm" style={{ color: "var(--st-accent-ink)" }}>
-              {WIRED_IN.body}
-            </p>
-          </div>
-        </div>
+        <SectionHead
+          eyebrow="What’s inside"
+          title="What you can OEM"
+          lede="Fourteen building blocks to build, run and scale agents with confidence. License the ones your platform is missing, or take the complete set."
+          className="max-w-2xl"
+        />
       </Reveal>
 
-      <div className="mt-12 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-12 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
         {BLOCKS.map((block, index) => (
           <Reveal key={block.key} delay={Math.min(index, 7) * 0.03} className="h-full">
-            <Panel
-              className="flex h-full flex-col p-5"
-              style={{ background: "var(--st-surface)", borderColor: "var(--ab-warm-rule)" }}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <span
-                  className="flex h-10 w-10 items-center justify-center rounded-[10px]"
-                  style={{ background: "var(--st-accent-soft)" }}
-                >
-                  <BlockIcon
-                    name={block.icon}
-                    className="h-[1.15rem] w-[1.15rem] text-[var(--st-accent-ink)]"
-                  />
-                </span>
-                <span
-                  className="text-xs font-semibold tabular-nums"
-                  style={{ color: "var(--st-accent-ink)" }}
-                >
-                  {block.num}
-                </span>
-              </div>
-
+            <div className="flex h-full flex-col">
+              <BlockCube color={block.color} num={block.num} icon={block.icon} />
+              <p
+                className="mt-4 text-sm font-semibold tabular-nums"
+                style={{ color: mix(block.color, "#17120E", 0.34) }}
+              >
+                {block.num}
+              </p>
               <h3
                 // Two lines' worth, so every blurb in a row starts level.
-                className="mt-5 min-h-[2.35rem] text-[0.9375rem] leading-tight font-semibold"
+                className="mt-1 min-h-[2.35rem] text-[0.9375rem] leading-tight font-semibold"
                 style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
               >
                 {block.name}
@@ -444,19 +496,21 @@ export function BlocksSection() {
               >
                 {block.blurb}
               </p>
-            </Panel>
+            </div>
           </Reveal>
         ))}
+      </div>
 
-        {/* Fills the last two cells of the sheet, and answers the question the
-            catalogue provokes: does any of this displace what we already run. */}
-        <Reveal delay={0.24} className="h-full sm:col-span-2">
-          <div
-            className="flex h-full flex-col justify-center rounded-[var(--st-radius-lg)] border border-dashed p-5"
-            style={{ borderColor: "var(--st-accent-ink)" }}
-          >
+      {/* The poster's footer bar: the claim the catalogue provokes, answered
+          once, across the full width of the sheet. */}
+      <Reveal delay={0.24}>
+        <div
+          className="mt-12 flex flex-col gap-4 rounded-[var(--st-radius-lg)] border border-dashed p-5 lg:flex-row lg:items-center lg:justify-between"
+          style={{ borderColor: "var(--st-accent-ink)" }}
+        >
+          <div>
             <Label>Stays in place: your existing platform</Label>
-            <ul className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+            <ul className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2">
               {YOUR_STACK.map((item) => (
                 <li
                   key={item.label}
@@ -469,8 +523,19 @@ export function BlocksSection() {
               ))}
             </ul>
           </div>
-        </Reveal>
-      </div>
+          <div className="shrink-0 border-l-2 pl-4" style={{ borderColor: "var(--st-accent-ink)" }}>
+            <p
+              className="text-sm font-semibold"
+              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+            >
+              {WIRED_IN.title}
+            </p>
+            <p className="mt-1 text-sm" style={{ color: "var(--st-accent-ink)" }}>
+              {WIRED_IN.body}
+            </p>
+          </div>
+        </div>
+      </Reveal>
     </Section>
   );
 }
