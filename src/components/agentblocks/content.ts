@@ -82,7 +82,7 @@ export const FLAGSHIP = {
 
 /** The logo strip: enterprises whose products already run on Lyzr. */
 export const TRUSTED_BY = {
-  label: "Running on Lyzr underneath",
+  label: "Trusted by",
   names: ["JPMorganChase", "WTW", "USA.gov", "Verifone", "KPMG"],
 };
 
