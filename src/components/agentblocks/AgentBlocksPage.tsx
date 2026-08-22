@@ -72,7 +72,7 @@ function Hero() {
       <Container>
         {/* Headline and screenshot share one row: the h1 is sized to the column
             it sits in, so the preview stays beside it rather than below. */}
-        <div className="grid items-center gap-10 pb-16 sm:pb-20 lg:grid-cols-[1.08fr_1fr] lg:gap-12">
+        <div className="grid items-center gap-10 pb-16 sm:pb-20 lg:grid-cols-[1fr_1.1fr] lg:gap-10">
           <div>
             <Reveal>
               <span
