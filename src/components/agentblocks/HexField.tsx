@@ -104,7 +104,7 @@ const HEX_CLIP = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"
 function LitHex({ item }: { item: Placed }) {
   const { color } = item;
   const lit = mix(color, "#FFFFFF", 0.3);
-  const shade = mix(color, "#2A1B12", 0.36);
+  const shade = mix(color, "#2A1B12", 0.28);
 
   return (
     <>
@@ -129,7 +129,7 @@ function LitHex({ item }: { item: Placed }) {
         className="relative h-full w-full"
         style={{
           clipPath: HEX_CLIP,
-          background: `linear-gradient(163deg, ${mix(color, "#FFFFFF", 0.92)} 0%, ${mix(color, "#FFFFFF", 0.44)} 11%, ${mix(color, "#2A1B12", 0.26)} 52%, ${mix(color, "#2A1B12", 0.64)} 100%)`,
+          background: `linear-gradient(163deg, ${mix(color, "#FFFFFF", 0.92)} 0%, ${mix(color, "#FFFFFF", 0.44)} 11%, ${mix(color, "#2A1B12", 0.2)} 52%, ${mix(color, "#2A1B12", 0.52)} 100%)`,
           filter: `drop-shadow(0 0.4cqw 0.7cqw ${alpha("#2A1B12", 0.3)})`,
         }}
       >
