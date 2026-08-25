@@ -552,19 +552,19 @@ export function BlocksSection() {
           {/* Both states are rendered in full and the divider decides how much
               of the finished one you can see, so nothing reflows as it moves. */}
           <div className="relative px-5 py-6 sm:px-7">
-            <BlockField state="with" />
+            <BlockField state="without" />
 
             <div
               className="pointer-events-none absolute inset-0 px-5 py-6 sm:px-7"
               // Opaque, so the finished platform underneath does not read
               // through the holes this state is meant to show.
               style={{
-                clipPath: "inset(0 var(--ab-reveal) 0 0)",
+                clipPath: "inset(0 calc(100% - var(--ab-reveal)) 0 0)",
                 background: "var(--st-surface)",
               }}
               aria-hidden="true"
             >
-              <BlockField state="without" />
+              <BlockField state="with" />
             </div>
 
             <span
@@ -578,13 +578,13 @@ export function BlocksSection() {
             <span
               aria-hidden="true"
               className="ab-divider pointer-events-none absolute inset-y-0 z-10 w-px"
-              style={{ left: "calc(100% - var(--ab-reveal))", background: "var(--st-accent-ink)" }}
+              style={{ left: "var(--ab-reveal)", background: "var(--st-accent-ink)" }}
             />
             <span
               aria-hidden="true"
               className="ab-divider pointer-events-none absolute top-1/2 z-10 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border"
               style={{
-                left: "calc(100% - var(--ab-reveal))",
+                left: "var(--ab-reveal)",
                 background: "var(--st-surface)",
                 borderColor: "var(--st-accent-ink)",
                 boxShadow: "0 4px 12px -4px rgba(35,24,16,0.35)",
@@ -593,6 +593,20 @@ export function BlocksSection() {
               <ChevronLeft className="h-3 w-3" style={{ color: "var(--st-accent-ink)" }} />
               <ChevronRight className="h-3 w-3" style={{ color: "var(--st-accent-ink)" }} />
             </span>
+
+            {/* Drag the field itself, or the track under it: both write the
+                same value, and the track carries the keyboard focus. */}
+            <input
+              type="range"
+              min={0}
+              max={100}
+              value={reveal}
+              onChange={(event) => setReveal(Number(event.target.value))}
+              data-ab-reveal=""
+              aria-hidden="true"
+              tabIndex={-1}
+              className="absolute inset-0 z-20 h-full w-full cursor-ew-resize opacity-0"
+            />
           </div>
 
           <div
