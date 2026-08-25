@@ -344,8 +344,8 @@ function BlockTile({
   linkDown,
 }: {
   block: (typeof BLOCKS)[number];
-  linkRight?: string;
-  linkDown?: string;
+  linkRight?: boolean;
+  linkDown?: boolean;
 }) {
   const { color } = block;
   const ink = readableInk(color, mix(color, "#140F0B", 0.82), "#FFFFFF");
@@ -409,25 +409,27 @@ function BlockTile({
         </h3>
       </div>
 
-      {/* The tabs that make the set interlock: each one is half this block's
-          colour and half its neighbour's, sitting in the gap between them. */}
+      {/* The joints. Each tab is drawn in its own block's glass, overlaps that
+          block's edge and runs under the neighbour, which the neighbour paints
+          over: a tenon seated in the piece beside it rather than a dot in the
+          gap between them. */}
       {linkRight ? (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute top-1/2 -right-[8px] hidden h-[15px] w-[15px] -translate-y-1/2 rounded-full lg:block"
+          className="pointer-events-none absolute top-1/2 -right-[18px] hidden h-[9px] w-[24px] -translate-y-1/2 rounded-full lg:block"
           style={{
-            background: `linear-gradient(90deg, ${shade}, ${mix(linkRight, "#FFFFFF", 0.2)})`,
-            boxShadow: `inset 0 1px 0 ${alpha("#FFFFFF", 0.5)}, 0 1px 2px ${alpha("#2A1B12", 0.25)}`,
+            background: `linear-gradient(90deg, ${mix(color, "#FFFFFF", 0.1)}, ${shade})`,
+            boxShadow: `inset 0 1px 0 ${alpha("#FFFFFF", 0.55)}, 0 1px 2px ${alpha("#2A1B12", 0.28)}`,
           }}
         />
       ) : null}
       {linkDown ? (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute -bottom-[8px] left-1/2 hidden h-[15px] w-[15px] -translate-x-1/2 rounded-full lg:block"
+          className="pointer-events-none absolute -bottom-[18px] left-1/2 hidden h-[24px] w-[9px] -translate-x-1/2 rounded-full lg:block"
           style={{
-            background: `linear-gradient(180deg, ${shade}, ${mix(linkDown, "#FFFFFF", 0.2)})`,
-            boxShadow: `inset 1px 0 0 ${alpha("#FFFFFF", 0.4)}, 0 1px 2px ${alpha("#2A1B12", 0.25)}`,
+            background: `linear-gradient(180deg, ${mix(color, "#FFFFFF", 0.1)}, ${shade})`,
+            boxShadow: `inset 1px 0 0 ${alpha("#FFFFFF", 0.45)}, 0 1px 2px ${alpha("#2A1B12", 0.28)}`,
           }}
         />
       ) : null}
@@ -471,8 +473,8 @@ function BlockField({ state }: { state: "without" | "with" }) {
             block={block}
             // Only the complete set interlocks. Left of the divider the pieces
             // sit apart, which is the whole of the argument.
-            linkRight={whole && (index + 1) % 7 !== 0 ? BLOCKS[index + 1]?.color : undefined}
-            linkDown={whole && index + 7 < BLOCKS.length ? BLOCKS[index + 7]?.color : undefined}
+            linkRight={whole && (index + 1) % 7 !== 0}
+            linkDown={whole && index + 7 < BLOCKS.length}
           />
         ) : (
           <GapTile key={block.key} block={block} />
