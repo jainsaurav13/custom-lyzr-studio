@@ -36,10 +36,9 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-import { alpha, mix, readableInk } from "@/components/studio/brand/color";
+import { alpha, mix } from "@/components/studio/brand/color";
 import {
   ALREADY_YOURS,
-  BRAND_BLACK,
   BOX_H,
   BOX_W,
   CORE,
@@ -104,14 +103,8 @@ const HEX_CLIP = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"
  */
 function LitHex({ item }: { item: Placed }) {
   const { color } = item;
-  // One ink per family, chosen on the family's own colour rather than each
-  // member's shade, so a family never reads in two inks at once.
-  const ink = readableInk(item.group.color, BRAND_BLACK, "#FFFFFF");
-  const dark = ink === "#FFFFFF";
-  // A narrow gradient. These colours cover a lot of ground, so the lit face and
-  // the shaded foot stay close to the fill, or the type stops clearing one end.
-  const lit = mix(color, "#FFFFFF", 0.18);
-  const shade = mix(color, BRAND_BLACK, 0.22);
+  const lit = mix(color, "#FFFFFF", 0.3);
+  const shade = mix(color, "#2A1B12", 0.36);
 
   return (
     <>
@@ -125,7 +118,7 @@ function LitHex({ item }: { item: Placed }) {
           background: color,
           filter: "blur(0.7cqw)",
           transform: "translateY(6%) scale(0.94)",
-          opacity: 0.34,
+          opacity: 0.45,
         }}
       />
 
@@ -136,8 +129,8 @@ function LitHex({ item }: { item: Placed }) {
         className="relative h-full w-full"
         style={{
           clipPath: HEX_CLIP,
-          background: `linear-gradient(163deg, ${mix(color, "#FFFFFF", 0.86)} 0%, ${mix(color, "#FFFFFF", 0.4)} 11%, ${mix(color, BRAND_BLACK, 0.2)} 52%, ${mix(color, BRAND_BLACK, 0.5)} 100%)`,
-          filter: `drop-shadow(0 0.4cqw 0.7cqw ${alpha(BRAND_BLACK, 0.28)})`,
+          background: `linear-gradient(163deg, ${mix(color, "#FFFFFF", 0.92)} 0%, ${mix(color, "#FFFFFF", 0.44)} 11%, ${mix(color, "#2A1B12", 0.26)} 52%, ${mix(color, "#2A1B12", 0.64)} 100%)`,
+          filter: `drop-shadow(0 0.4cqw 0.7cqw ${alpha("#2A1B12", 0.3)})`,
         }}
       >
         <div
@@ -145,7 +138,7 @@ function LitHex({ item }: { item: Placed }) {
           style={{
             inset: "0.13cqw",
             clipPath: HEX_CLIP,
-            color: ink,
+            color: "#FFFFFF",
             background: `linear-gradient(152deg, ${lit} 0%, ${color} 34%, ${shade} 100%)`,
           }}
         >
@@ -154,29 +147,27 @@ function LitHex({ item }: { item: Placed }) {
             aria-hidden="true"
             className="pointer-events-none absolute inset-0"
             style={{
-              background: `linear-gradient(163deg, ${alpha("#FFFFFF", dark ? 0.6 : 0.4)} 0%, ${alpha("#FFFFFF", dark ? 0.18 : 0.1)} 24%, ${alpha("#FFFFFF", 0)} 46%)`,
+              background: `linear-gradient(163deg, ${alpha("#FFFFFF", 0.6)} 0%, ${alpha("#FFFFFF", 0.18)} 24%, ${alpha("#FFFFFF", 0)} 46%)`,
             }}
           />
           <span
             aria-hidden="true"
             className="pointer-events-none absolute top-[15%] left-[26%] h-[6%] w-[42%] -rotate-[9deg] rounded-full"
-            style={{ background: alpha("#FFFFFF", dark ? 0.38 : 0.26), filter: "blur(0.35cqw)" }}
+            style={{ background: alpha("#FFFFFF", 0.38), filter: "blur(0.35cqw)" }}
           />
           {/* The light that gathers along the foot of a thick piece of glass. */}
           <span
             aria-hidden="true"
             className="pointer-events-none absolute inset-x-[7%] bottom-[4%] h-[20%]"
             style={{
-              background: `linear-gradient(180deg, ${alpha("#FFFFFF", 0)}, ${alpha("#FFFFFF", dark ? 0.44 : 0.3)})`,
+              background: `linear-gradient(180deg, ${alpha("#FFFFFF", 0)}, ${alpha("#FFFFFF", 0.44)})`,
               filter: "blur(0.3cqw)",
             }}
           />
 
           <div
             className="relative flex flex-col items-center"
-            style={{
-              filter: `drop-shadow(0 0.06cqw 0.14cqw ${alpha(dark ? BRAND_BLACK : "#FFFFFF", 0.45)})`,
-            }}
+            style={{ filter: `drop-shadow(0 0.06cqw 0.14cqw ${alpha("#231810", 0.45)})` }}
           >
             <Icon name={item.block.icon} size="2.15cqw" />
             <span
@@ -272,8 +263,8 @@ export function HexField({ state }: { state: "without" | "with" }) {
                 className="absolute inset-0"
                 style={{
                   clipPath: HEX_CLIP,
-                  background: BRAND_BLACK,
-                  boxShadow: `0 ${cq(18)}cqw ${cq(40)}cqw ${alpha(BRAND_BLACK, 0.3)}`,
+                  background: "var(--st-text)",
+                  boxShadow: `0 ${cq(18)}cqw ${cq(40)}cqw ${alpha("#2A1B12", 0.32)}`,
                 }}
               />
               <div
@@ -373,7 +364,7 @@ export function BlockGroupList() {
                 className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.75rem] font-medium"
                 style={{
                   background: item.color,
-                  color: readableInk(group.color, BRAND_BLACK, "#FFFFFF"),
+                  color: "#FFFFFF",
                 }}
               >
                 <Icon name={item.block.icon} size="0.8125rem" />

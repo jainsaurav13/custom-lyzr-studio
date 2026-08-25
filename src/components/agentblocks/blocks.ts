@@ -1,8 +1,5 @@
 import { mix } from "@/components/studio/brand/color";
 
-/** The palette's own black. Every shade and every shadow is mixed toward it. */
-export const BRAND_BLACK = "#191414";
-
 /* ------------------------------------------------------------------ *
  * The catalogue, and the geometry it settles into
  * ------------------------------------------------------------------ */
@@ -28,49 +25,37 @@ export interface Group {
   angle: number;
 }
 
-/**
- * Seven families, spaced evenly around the core, clockwise from top left. The
- * colours are the brand palette: five of the named swatches, plus stand-ins
- * for Yellow and Storm, whose hex values are named on the palette sheet but
- * not printed on it.
- */
+/** Seven families, spaced evenly around the core, clockwise from top left. */
 export const GROUPS: Group[] = [
-  /* Tangerine */
-  { key: "build", label: "Build", note: "Design and ship agents", color: "#FF4632", angle: 244.1 },
-  /* Klein Blue */
+  { key: "build", label: "Build", note: "Design and ship agents", color: "#C0503C", angle: 244.1 },
   {
     key: "govern",
     label: "Govern",
     note: "Every agent on the record",
-    color: "#4100F5",
+    color: "#4F6F63",
     angle: -64.3,
   },
-  /* Fushia */
-  { key: "operate", label: "Operate", note: "Where the work runs", color: "#F037A5", angle: -12.9 },
-  /* Aquamarine */
+  { key: "operate", label: "Operate", note: "Where the work runs", color: "#B76D2B", angle: -12.9 },
   {
     key: "observe",
     label: "Observe",
     note: "Runs, cost and quality",
-    color: "#9BF0E1",
+    color: "#4C7A82",
     angle: 38.5,
   },
-  /* Storm, standing in until the sheet's own value arrives. */
   {
     key: "scale",
     label: "Scale",
     note: "Enterprise load, absorbed",
-    color: "#5B6B7C",
+    color: "#7C7268",
     angle: 89.9,
   },
-  /* Yellow, standing in until the sheet's own value arrives. */
-  { key: "secure", label: "Secure", note: "Who may do what", color: "#FFE500", angle: 141.3 },
-  /* Citric */
+  { key: "secure", label: "Secure", note: "Who may do what", color: "#9A6EA8", angle: 141.3 },
   {
     key: "integrate",
     label: "Integrate",
     note: "Connect what you already run",
-    color: "#CDF564",
+    color: "#5E82A0",
     angle: 192.7,
   },
 ];
@@ -264,7 +249,7 @@ function place(): Placed[] {
 function shade(base: string, index: number, count: number): string {
   if (count < 2) return base;
   const t = (index / (count - 1)) * 2 - 1;
-  return t >= 0 ? mix(base, "#FFFFFF", 0.05 * t) : mix(base, BRAND_BLACK, 0.08 * -t);
+  return t >= 0 ? mix(base, "#FFFFFF", 0.06 * t) : mix(base, "#2A1B12", 0.11 * -t);
 }
 
 export const PLACED: Placed[] = place();
