@@ -91,11 +91,10 @@ export const TRUSTED_BY = {
  * ------------------------------------------------------------------ */
 
 /**
- * The section is a fork in the road, so the data is shaped like one: a ledger
- * of what building it yourself costs, and the alternative, each closing on a
- * "total" line. The six items are deliberately the hard ones: a registry, a
- * guardrail filter, prompt versioning and tracing are all commodity now, and
- * claiming credit for them invites the reader to dismiss the rest.
+ * The problem, stated as a specification rather than a pitch: six layers of
+ * production infrastructure and what each one has to provide before an agent
+ * is something an enterprise will buy. The reader is meant to recognise the
+ * list, not be persuaded by it.
  */
 export const PROBLEM = {
   eyebrow: "The problem",
@@ -103,40 +102,31 @@ export const PROBLEM = {
   lede: "You’re already building or extending your agent platform. The question isn’t whether you can build the production infrastructure it needs.",
   ledeKicker: "It’s whether you should.",
 
-  build: {
-    label: "If you build it yourself",
-    lede: "The six hardest pieces, and not one of them is what your customers buy.",
-    items: [
+  spec: {
+    layerLabel: "Production layer",
+    needLabel: "What you need to ship",
+    rows: [
       {
-        item: "Per-tenant isolation",
-        need: "No enterprise customer will share a data boundary with another",
+        layer: "Isolation",
+        need: ["Tenant boundaries", "Request isolation", "Environment separation"],
+      },
+      { layer: "Deployment", need: ["Customer VPC", "Private cloud", "Kubernetes", "On-prem"] },
+      {
+        layer: "Identity & Access",
+        need: ["RBAC", "Delegated permissions", "Enterprise identity"],
       },
       {
-        item: "Customer-managed deployment",
-        need: "Your largest accounts will want it running in their own cloud",
+        layer: "Reliability",
+        need: ["Durable execution", "Failure isolation", "Regression gating"],
       },
-      {
-        item: "Delegated permissions",
-        need: "The agent inherits what each user is allowed to do, in every system",
-      },
-      {
-        item: "Regression gating",
-        need: "The model changes underneath you, and customers notice first",
-      },
-      { item: "Audit evidence", need: "Their risk team audits you, not your model vendor" },
-      { item: "Per-tenant cost control", need: "Token spend is your cost of goods now" },
+      { layer: "Governance", need: ["Audit logs", "Approvals", "Policy enforcement"] },
+      { layer: "Economics", need: ["Usage metering", "Tenant limits", "Cost controls"] },
     ],
-    total: "Nine to eighteen months, and no customer will ever pay you for it.",
   },
 
-  withLabel: "With AgentBlocks",
-
-  answer: {
-    label: "The better roadmap",
-    title: { lead: "Build what differentiates you.", accent: "License what doesn’t." },
-    body: "AgentBlocks provides the production infrastructure your agent platform needs, so your engineers can focus on the AI products and experiences your customers actually pay for.",
-    total: "All six, from day one.",
-    cta: "See the AgentBlocks layer",
+  footer: {
+    build: { label: "Build it yourself", value: "9–18 months of infrastructure work" },
+    licensed: { label: "With AgentBlocks", value: "Production infrastructure, from day one" },
   },
 };
 

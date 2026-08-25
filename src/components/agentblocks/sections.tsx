@@ -175,24 +175,12 @@ export function ProductionSection() {
  * 3 — The problem
  * ------------------------------------------------------------------ */
 
-/** The green "solved" mark that answers every red-dotted row. */
-function IncludedPill() {
-  return (
-    <span
-      className="inline-flex items-center gap-1.5 rounded-full py-1 pr-3 pl-2.5"
-      style={{ background: "color-mix(in srgb, var(--st-success) 11%, transparent)" }}
-    >
-      <Check className="h-3 w-3" style={{ color: "var(--st-success)" }} aria-hidden="true" />
-      <span
-        className="text-[10px] font-semibold uppercase tracking-[0.12em]"
-        style={{ color: "var(--st-success)" }}
-      >
-        Included
-      </span>
-    </span>
-  );
-}
-
+/**
+ * The production layer, set as a specification sheet: two columns, hairline
+ * rules, no ornament. The capability carries the weight and the requirements
+ * sit beside it as the technical detail they are, so the section reads like
+ * the architecture of a runtime rather than a comparison of features.
+ */
 export function ProblemSection() {
   return (
     <Section id="problem" tone="plain">
@@ -211,127 +199,92 @@ export function ProblemSection() {
         />
       </Reveal>
 
-      {/* One ledger, read left to right: the numbered item, what it costs you
-          (red dot), and the same item already solved (green pill). The status
-          colours are the studio's own, so the signal stays in the house
-          language rather than becoming paint. */}
       <Reveal delay={0.06}>
-        <div className="mt-12">
-          <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 pb-4">
-            <div>
-              <span className="flex items-center gap-2">
-                <StatusDot tone="danger" />
-                <Label>{PROBLEM.build.label}</Label>
-              </span>
-              <p className="mt-1.5 text-sm" style={{ color: "var(--st-text-muted)" }}>
-                {PROBLEM.build.lede}
-              </p>
-            </div>
-            <span className="flex items-center gap-2">
-              <StatusDot tone="success" />
-              <Label>{PROBLEM.withLabel}</Label>
-            </span>
+        <div className="mt-16">
+          <div
+            className="hidden grid-cols-[minmax(0,15rem)_1fr] gap-x-10 border-b pb-3 sm:grid"
+            style={{ borderColor: "var(--st-text)" }}
+          >
+            <Label>{PROBLEM.spec.layerLabel}</Label>
+            <Label>{PROBLEM.spec.needLabel}</Label>
           </div>
 
           <dl>
-            {PROBLEM.build.items.map((row, index) => (
+            {PROBLEM.spec.rows.map((row, index) => (
               <div
-                key={row.item}
-                className="grid items-center gap-x-6 gap-y-2 border-t py-3.5 sm:grid-cols-[14rem_1fr_auto]"
+                key={row.layer}
+                className={cn(
+                  "grid gap-x-10 gap-y-2 py-6 sm:grid-cols-[minmax(0,15rem)_1fr] sm:items-baseline",
+                  index > 0 && "border-t",
+                  index === 0 && "sm:border-t-0 border-t sm:pt-6",
+                )}
                 style={{
-                  borderColor: index === 0 ? "var(--st-border-strong)" : "var(--ab-rule)",
+                  borderColor: index === 0 ? "var(--st-text)" : "var(--ab-rule)",
                 }}
               >
-                <dt className="flex items-baseline gap-2.5">
-                  <span
-                    className="text-xs font-semibold tabular-nums"
-                    style={{ color: "var(--st-text-faint)" }}
-                  >
-                    0{index + 1}
-                  </span>
-                  <span className="text-sm font-medium" style={{ color: "var(--st-text)" }}>
-                    {row.item}
-                  </span>
+                <dt
+                  className="text-[1.25rem] leading-tight font-semibold tracking-[-0.02em]"
+                  style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+                >
+                  {row.layer}
                 </dt>
-                <dd className="flex items-center gap-2.5">
-                  <StatusDot tone="danger" />
-                  <span
-                    className="text-sm leading-relaxed"
-                    style={{ color: "var(--st-text-muted)" }}
-                  >
-                    {row.need}
-                  </span>
-                </dd>
-                <dd className="sm:justify-self-end">
-                  <IncludedPill />
+                <dd className="flex flex-wrap items-baseline gap-y-1.5">
+                  {row.need.map((item, itemIndex) => (
+                    // Item and separator travel together, so a wrapped line
+                    // never opens on a stray middot.
+                    <span key={item} className="flex items-baseline">
+                      <span
+                        className="text-[0.9375rem] leading-snug"
+                        style={{ color: "var(--st-text-muted)" }}
+                      >
+                        {item}
+                      </span>
+                      {itemIndex < row.need.length - 1 ? (
+                        <span
+                          aria-hidden="true"
+                          className="px-3 text-[0.9375rem]"
+                          style={{ color: "var(--st-text-faint)" }}
+                        >
+                          ·
+                        </span>
+                      ) : null}
+                    </span>
+                  ))}
                 </dd>
               </div>
             ))}
           </dl>
 
-          {/* The totals meet on one row, coloured by what they mean. */}
+          {/* The two ways to acquire the layer above, stated and left alone. */}
           <div
-            className="grid items-baseline gap-x-6 gap-y-1 border-t py-5 sm:grid-cols-[14rem_1fr_auto]"
+            className="grid gap-6 border-t pt-6 sm:grid-cols-[minmax(0,15rem)_1fr] sm:gap-x-10"
             style={{ borderColor: "var(--st-text)" }}
           >
-            <span>
-              <Label>Total</Label>
-            </span>
-            <p
-              className="text-lg leading-snug"
-              style={{ fontFamily: "var(--ab-serif)", color: "var(--st-danger)" }}
-            >
-              {PROBLEM.build.total}
-            </p>
-            <p
-              className="text-lg leading-snug sm:text-right"
-              style={{ fontFamily: "var(--ab-serif)", color: "var(--st-success)" }}
-            >
-              {PROBLEM.answer.total}
-            </p>
-          </div>
-        </div>
-      </Reveal>
-
-      {/* The conclusion as a typographic band, matching the closing section's
-          heading-left, detail-right layout rather than sitting in a box. */}
-      <Reveal delay={0.1}>
-        <div
-          className="mt-14 grid gap-x-14 gap-y-6 border-t pt-8 lg:grid-cols-2"
-          style={{ borderColor: "var(--st-border-strong)" }}
-        >
-          <div>
-            <Label>{PROBLEM.answer.label}</Label>
-            <h3
-              className="mt-3 text-2xl font-semibold leading-snug tracking-[-0.02em] sm:text-3xl"
-              style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
-            >
-              {PROBLEM.answer.title.lead}
-              <br />
-              <span
-                className="italic"
-                style={{
-                  fontFamily: "var(--ab-serif)",
-                  fontWeight: 400,
-                  color: "var(--st-accent-ink)",
-                }}
+            <div>
+              <Label>{PROBLEM.footer.build.label}</Label>
+              <p
+                className="mt-2 text-[0.9375rem] leading-snug"
+                style={{ color: "var(--st-text-muted)" }}
               >
-                {PROBLEM.answer.title.accent}
-              </span>
-            </h3>
-          </div>
-          <div className="lg:pt-1">
-            <p className="text-sm leading-relaxed" style={{ color: "var(--st-text-muted)" }}>
-              {PROBLEM.answer.body}
-            </p>
-            <a
-              href="#blocks"
-              className="mt-5 inline-flex items-center gap-2 text-sm font-medium"
-              style={{ color: "var(--st-accent-ink)" }}
-            >
-              {PROBLEM.answer.cta}
-              <ArrowRight className="h-4 w-4" />
-            </a>
+                {PROBLEM.footer.build.value}
+              </p>
+            </div>
+            <div className="flex items-start gap-4">
+              <ArrowRight
+                className="hidden h-4 w-4 shrink-0 translate-y-1 sm:block"
+                style={{ color: "var(--st-text-faint)" }}
+                aria-hidden="true"
+              />
+              <div>
+                <Label>{PROBLEM.footer.licensed.label}</Label>
+                <p
+                  className="mt-2 text-[0.9375rem] leading-snug font-medium"
+                  style={{ color: "var(--st-text)" }}
+                >
+                  {PROBLEM.footer.licensed.value}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </Reveal>
