@@ -106,71 +106,67 @@ function LitHex({ item }: { item: Placed }) {
   // These fills are too light to carry white type, so each family inks its
   // blocks in a very deep version of its own colour instead.
   const ink = mix(item.group.color, "#1A1626", 0.9);
-  const lit = mix(color, "#FFFFFF", 0.34);
-  const shade = mix(color, "#1A1626", 0.16);
 
   return (
     <>
-      {/* The colour bleeding out from under the slab, which is what makes it
-          read as lit glass sitting above the page rather than printed on it. */}
+      {/* Contact shadow, sitting low and tight. A wide coloured bloom here is
+          what makes a field of these read as haze rather than as glass. */}
       <span
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         style={{
           clipPath: HEX_CLIP,
-          background: color,
-          filter: "blur(0.7cqw)",
-          transform: "translateY(6%) scale(0.94)",
-          opacity: 0.4,
+          background: mix(color, "#1A1626", 0.42),
+          filter: "blur(0.45cqw)",
+          transform: "translateY(9%) scale(0.93)",
+          opacity: 0.26,
         }}
       />
 
-      {/* The bevel. A clip path cannot carry an inset shadow, so the lit top
-          edge and the shaded foot are a rim of glass in their own right, with
-          the face seated a couple of pixels inside it. */}
+      {/* The rim is the thickness of the glass, and it does nearly all the
+          work. Being clipped to the hexagon, one gradient lights the two roof
+          edges white and lights the two foot edges again where light that has
+          crossed the block gathers on its way out. */}
       <div
         className="relative h-full w-full"
         style={{
           clipPath: HEX_CLIP,
-          background: `linear-gradient(163deg, ${mix(color, "#FFFFFF", 0.96)} 0%, ${mix(color, "#FFFFFF", 0.6)} 11%, ${mix(color, "#1A1626", 0.12)} 52%, ${mix(color, "#1A1626", 0.34)} 100%)`,
-          filter: `drop-shadow(0 0.4cqw 0.7cqw ${alpha("#1A1626", 0.22)})`,
+          background: `linear-gradient(170deg, ${alpha("#FFFFFF", 0.99)} 0%, ${mix(color, "#FFFFFF", 0.74)} 5%, ${mix(color, "#FFFFFF", 0.2)} 26%, ${mix(color, "#1A1626", 0.24)} 72%, ${mix(color, "#FFFFFF", 0.5)} 93%, ${mix(color, "#FFFFFF", 0.92)} 100%)`,
+          filter: `drop-shadow(0 0.07cqw 0.1cqw ${alpha("#1A1626", 0.24)}) drop-shadow(0 0.5cqw 0.8cqw ${alpha("#1A1626", 0.14)})`,
         }}
       >
         <div
-          className="absolute flex flex-col items-center justify-center px-[14%] text-center"
+          className="absolute flex flex-col items-center justify-center px-[15%] text-center"
           style={{
-            inset: "0.13cqw",
+            inset: "0.3cqw",
             clipPath: HEX_CLIP,
             color: ink,
-            background: `linear-gradient(152deg, ${lit} 0%, ${color} 34%, ${shade} 100%)`,
+            background: `linear-gradient(176deg, ${mix(color, "#FFFFFF", 0.24)} 0%, ${color} 54%, ${mix(color, "#1A1626", 0.26)} 95%, ${mix(color, "#1A1626", 0.16)} 100%)`,
           }}
         >
-          {/* Wet sheen across the top face, and one glint where the light lands. */}
+          {/* The dome: a bright upper face falling away quickly, which is what
+              makes a block read as curved rather than as a tinted panel. */}
           <span
             aria-hidden="true"
             className="pointer-events-none absolute inset-0"
             style={{
-              background: `linear-gradient(163deg, ${alpha("#FFFFFF", 0.6)} 0%, ${alpha("#FFFFFF", 0.18)} 24%, ${alpha("#FFFFFF", 0)} 46%)`,
+              background: `linear-gradient(180deg, ${alpha("#FFFFFF", 0.5)} 4%, ${alpha("#FFFFFF", 0.78)} 11%, ${alpha("#FFFFFF", 0.36)} 22%, ${alpha("#FFFFFF", 0.12)} 33%, ${alpha("#FFFFFF", 0)} 44%)`,
             }}
           />
+          {/* The seam. One dark line under the roof and one above the foot, so
+              the rim reads as an edge with thickness rather than a soft ramp.
+              This is the difference between glass and a tinted panel. */}
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute top-[15%] left-[26%] h-[6%] w-[42%] -rotate-[9deg] rounded-full"
-            style={{ background: alpha("#FFFFFF", 0.38), filter: "blur(0.35cqw)" }}
-          />
-          {/* The light that gathers along the foot of a thick piece of glass. */}
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-[7%] bottom-[4%] h-[20%]"
+            className="pointer-events-none absolute inset-0"
             style={{
-              background: `linear-gradient(180deg, ${alpha("#FFFFFF", 0)}, ${alpha("#FFFFFF", 0.44)})`,
-              filter: "blur(0.3cqw)",
+              background: `linear-gradient(180deg, ${alpha("#1A1626", 0.26)} 0%, ${alpha("#1A1626", 0)} 6%), linear-gradient(0deg, ${alpha("#1A1626", 0.22)} 0%, ${alpha("#1A1626", 0)} 7%)`,
             }}
           />
 
           <div
             className="relative flex flex-col items-center"
-            style={{ filter: `drop-shadow(0 0.06cqw 0.14cqw ${alpha("#FFFFFF", 0.5)})` }}
+            style={{ filter: `drop-shadow(0 0.05cqw 0.09cqw ${alpha("#FFFFFF", 0.5)})` }}
           >
             <Icon name={item.block.icon} size="2.15cqw" />
             <span
