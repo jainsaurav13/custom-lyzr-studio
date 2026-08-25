@@ -403,12 +403,18 @@ function BlockTile({
           </span>
         </div>
 
-        <h3
-          className="relative mt-auto text-[0.72rem] leading-tight font-semibold"
-          style={{ fontFamily: "var(--st-font-head)" }}
-        >
-          {block.name}
-        </h3>
+        <div className="relative mt-auto">
+          <h3
+            className="text-[0.72rem] leading-tight font-semibold"
+            style={{ fontFamily: "var(--st-font-head)" }}
+          >
+            {block.name}
+          </h3>
+          {/* A few words, not a sentence: what the block is for, on the block. */}
+          <p className="mt-1 text-[0.625rem] leading-tight" style={{ opacity: 0.75 }}>
+            {block.tagline}
+          </p>
+        </div>
       </div>
 
       {/* The joints. Each tab is drawn in its own block's glass, overlaps that
@@ -453,12 +459,15 @@ function GapTile({ block }: { block: (typeof BLOCKS)[number] }) {
         <BlockIcon name={block.icon} className="h-[1.8rem] w-[1.8rem] opacity-40" />
         <span className="text-[10px] font-semibold tabular-nums opacity-50">{block.num}</span>
       </div>
-      <p
-        className="mt-auto text-[0.72rem] leading-tight font-semibold opacity-70"
-        style={{ fontFamily: "var(--st-font-head)" }}
-      >
-        {block.name}
-      </p>
+      <div className="mt-auto">
+        <p
+          className="text-[0.72rem] leading-tight font-semibold opacity-70"
+          style={{ fontFamily: "var(--st-font-head)" }}
+        >
+          {block.name}
+        </p>
+        <p className="mt-1 text-[0.625rem] leading-tight opacity-50">{block.tagline}</p>
+      </div>
     </div>
   );
 }
