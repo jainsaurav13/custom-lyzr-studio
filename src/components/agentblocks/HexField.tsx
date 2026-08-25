@@ -103,70 +103,69 @@ const HEX_CLIP = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"
  */
 function LitHex({ item }: { item: Placed }) {
   const { color } = item;
-  // These fills are too light to carry white type, so each family inks its
-  // blocks in a very deep version of its own colour instead.
-  const ink = mix(item.group.color, "#1A1626", 0.9);
+  // Deep enough to clear the lit face, but mixed from the family's own colour
+  // rather than from black, so the type belongs to the block it sits on.
+  const ink = mix(item.group.color, "#171226", 0.93);
+  const crown = mix(color, "#FFFFFF", 0.46);
+  // The foot deepens toward a blue-violet rather than toward black, which is
+  // what keeps a saturated colour looking like a gem instead of a bruise.
+  const foot = mix(color, "#2A1F3D", 0.3);
 
   return (
     <>
-      {/* Contact shadow, sitting low and tight. A wide coloured bloom here is
-          what makes a field of these read as haze rather than as glass. */}
+      {/* The block's own light, spilling onto the slab. On a dark ground this
+          does the work a drop shadow does on a light one, and it is the reason
+          the field reads as lit rather than printed. */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute -inset-[14%] rounded-full"
         style={{
-          clipPath: HEX_CLIP,
-          background: mix(color, "#1A1626", 0.42),
-          filter: "blur(0.45cqw)",
-          transform: "translateY(9%) scale(0.93)",
-          opacity: 0.26,
+          background: `radial-gradient(closest-side, ${alpha(color, 0.34)}, ${alpha(color, 0.1)} 54%, transparent 76%)`,
         }}
       />
 
-      {/* The rim is the thickness of the glass, and it does nearly all the
-          work. Being clipped to the hexagon, one gradient lights the two roof
-          edges white and lights the two foot edges again where light that has
-          crossed the block gathers on its way out. */}
+      {/* The rim is the thickness of the glass. One gradient lights the two
+          roof edges near-white and lights the two foot edges again in the
+          block's own colour, where light that has crossed it leaves. */}
       <div
         className="relative h-full w-full"
         style={{
           clipPath: HEX_CLIP,
-          background: `linear-gradient(170deg, ${alpha("#FFFFFF", 0.99)} 0%, ${mix(color, "#FFFFFF", 0.74)} 5%, ${mix(color, "#FFFFFF", 0.2)} 26%, ${mix(color, "#1A1626", 0.24)} 72%, ${mix(color, "#FFFFFF", 0.5)} 93%, ${mix(color, "#FFFFFF", 0.92)} 100%)`,
-          filter: `drop-shadow(0 0.07cqw 0.1cqw ${alpha("#1A1626", 0.24)}) drop-shadow(0 0.5cqw 0.8cqw ${alpha("#1A1626", 0.14)})`,
+          background: `linear-gradient(168deg, ${alpha("#FFFFFF", 0.99)} 0%, ${mix(color, "#FFFFFF", 0.8)} 6%, ${mix(color, "#241C38", 0.22)} 62%, ${mix(color, "#FFFFFF", 0.6)} 93%, ${mix(color, "#FFFFFF", 0.9)} 100%)`,
+          filter: `drop-shadow(0 0.07cqw 0.1cqw ${alpha("#0B0813", 0.4)}) drop-shadow(0 0.5cqw 0.8cqw ${alpha("#0B0813", 0.3)})`,
         }}
       >
         <div
           className="absolute flex flex-col items-center justify-center px-[15%] text-center"
           style={{
-            inset: "0.3cqw",
+            inset: "0.28cqw",
             clipPath: HEX_CLIP,
             color: ink,
-            background: `linear-gradient(176deg, ${mix(color, "#FFFFFF", 0.24)} 0%, ${color} 54%, ${mix(color, "#1A1626", 0.26)} 95%, ${mix(color, "#1A1626", 0.16)} 100%)`,
+            background: `linear-gradient(176deg, ${crown} 0%, ${color} 52%, ${foot} 94%, ${mix(color, "#FFFFFF", 0.2)} 100%)`,
           }}
         >
-          {/* The dome: a bright upper face falling away quickly, which is what
-              makes a block read as curved rather than as a tinted panel. */}
+          {/* Lit from inside, not from above. A source sitting behind the upper
+              face is what separates a gem from a painted panel. */}
           <span
             aria-hidden="true"
             className="pointer-events-none absolute inset-0"
             style={{
-              background: `linear-gradient(180deg, ${alpha("#FFFFFF", 0.5)} 4%, ${alpha("#FFFFFF", 0.78)} 11%, ${alpha("#FFFFFF", 0.36)} 22%, ${alpha("#FFFFFF", 0.12)} 33%, ${alpha("#FFFFFF", 0)} 44%)`,
+              background: `radial-gradient(70% 46% at 50% 20%, ${alpha("#FFFFFF", 0.62)}, ${alpha("#FFFFFF", 0.18)} 46%, ${alpha("#FFFFFF", 0)} 74%)`,
             }}
           />
           {/* The seam. One dark line under the roof and one above the foot, so
-              the rim reads as an edge with thickness rather than a soft ramp.
-              This is the difference between glass and a tinted panel. */}
+              the rim reads as an edge with thickness rather than a soft ramp. */}
           <span
             aria-hidden="true"
             className="pointer-events-none absolute inset-0"
             style={{
-              background: `linear-gradient(180deg, ${alpha("#1A1626", 0.26)} 0%, ${alpha("#1A1626", 0)} 6%), linear-gradient(0deg, ${alpha("#1A1626", 0.22)} 0%, ${alpha("#1A1626", 0)} 7%)`,
+              background: `linear-gradient(180deg, ${alpha("#171226", 0.28)} 0%, ${alpha("#171226", 0)} 6%), linear-gradient(0deg, ${alpha("#171226", 0.2)} 0%, ${alpha("#171226", 0)} 7%)`,
             }}
           />
 
           <div
             className="relative flex flex-col items-center"
-            style={{ filter: `drop-shadow(0 0.05cqw 0.09cqw ${alpha("#FFFFFF", 0.5)})` }}
+            style={{ filter: `drop-shadow(0 0.05cqw 0.09cqw ${alpha("#FFFFFF", 0.45)})` }}
           >
             <Icon name={item.block.icon} size="2.15cqw" />
             <span
@@ -258,7 +257,7 @@ export function HexField({ state }: { state: "without" | "with" }) {
                   top: `${cq(cy)}cqw`,
                   width: `${cq(430)}cqw`,
                   height: `${cq(380)}cqw`,
-                  background: `radial-gradient(closest-side, ${alpha(group.color, 0.32)}, ${alpha(group.color, 0.1)} 52%, transparent 78%)`,
+                  background: `radial-gradient(closest-side, ${alpha(group.color, 0.24)}, ${alpha(group.color, 0.08)} 52%, transparent 78%)`,
                 }}
               />
             ))}
@@ -321,7 +320,7 @@ export function HexField({ state }: { state: "without" | "with" }) {
               >
                 <span
                   className="block leading-none font-semibold tracking-[0.24em] uppercase"
-                  style={{ fontSize: "1.05cqw", color: mix(group.color, "#FFFFFF", 0.32) }}
+                  style={{ fontSize: "1.05cqw", color: mix(group.color, "#FFFFFF", 0.12) }}
                 >
                   {group.label}
                 </span>
@@ -375,7 +374,7 @@ export function BlockGroupList() {
           <div className="flex items-baseline gap-2">
             <span
               className="text-[0.6875rem] font-semibold tracking-[0.22em] uppercase"
-              style={{ color: mix(group.color, "#FFFFFF", 0.32) }}
+              style={{ color: mix(group.color, "#FFFFFF", 0.12) }}
             >
               {group.label}
             </span>
@@ -390,7 +389,7 @@ export function BlockGroupList() {
                 className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.75rem] font-medium"
                 style={{
                   background: item.color,
-                  color: mix(group.color, "#1A1626", 0.9),
+                  color: mix(group.color, "#171226", 0.93),
                 }}
               >
                 <Icon name={item.block.icon} size="0.8125rem" />
