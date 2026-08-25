@@ -528,17 +528,6 @@ export function BlocksSection() {
             <div>
               <p
                 className="text-sm font-semibold"
-                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
-              >
-                {COMPARISON.with.label}
-              </p>
-              <p className="mt-0.5 text-xs" style={{ color: "var(--st-accent-ink)" }}>
-                {COMPARISON.with.note}
-              </p>
-            </div>
-            <div className="text-right">
-              <p
-                className="text-sm font-semibold"
                 style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text-muted)" }}
               >
                 {COMPARISON.without.label}
@@ -547,18 +536,35 @@ export function BlocksSection() {
                 {COMPARISON.without.note}
               </p>
             </div>
+            <div className="text-right">
+              <p
+                className="text-sm font-semibold"
+                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+              >
+                {COMPARISON.with.label}
+              </p>
+              <p className="mt-0.5 text-xs" style={{ color: "var(--st-accent-ink)" }}>
+                {COMPARISON.with.note}
+              </p>
+            </div>
           </div>
 
           {/* Both states are rendered in full and the divider decides how much
               of the finished one you can see, so nothing reflows as it moves. */}
           <div className="relative px-5 py-6 sm:px-7">
-            <BlockField state="without" />
+            <BlockField state="with" />
 
             <div
               className="pointer-events-none absolute inset-0 px-5 py-6 sm:px-7"
-              style={{ clipPath: "inset(0 calc(100% - var(--ab-reveal)) 0 0)" }}
+              // Opaque, so the finished platform underneath does not read
+              // through the holes this state is meant to show.
+              style={{
+                clipPath: "inset(0 var(--ab-reveal) 0 0)",
+                background: "var(--st-surface)",
+              }}
+              aria-hidden="true"
             >
-              <BlockField state="with" />
+              <BlockField state="without" />
             </div>
 
             <span
@@ -571,14 +577,14 @@ export function BlocksSection() {
 
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute inset-y-0 z-10 w-px"
-              style={{ left: "var(--ab-reveal)", background: "var(--st-accent-ink)" }}
+              className="ab-divider pointer-events-none absolute inset-y-0 z-10 w-px"
+              style={{ left: "calc(100% - var(--ab-reveal))", background: "var(--st-accent-ink)" }}
             />
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute top-1/2 z-10 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border"
+              className="ab-divider pointer-events-none absolute top-1/2 z-10 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border"
               style={{
-                left: "var(--ab-reveal)",
+                left: "calc(100% - var(--ab-reveal))",
                 background: "var(--st-surface)",
                 borderColor: "var(--st-accent-ink)",
                 boxShadow: "0 4px 12px -4px rgba(35,24,16,0.35)",
@@ -587,7 +593,12 @@ export function BlocksSection() {
               <ChevronLeft className="h-3 w-3" style={{ color: "var(--st-accent-ink)" }} />
               <ChevronRight className="h-3 w-3" style={{ color: "var(--st-accent-ink)" }} />
             </span>
+          </div>
 
+          <div
+            className="border-t px-5 pt-5 pb-1 sm:px-7"
+            style={{ borderColor: "var(--ab-rule)" }}
+          >
             <input
               type="range"
               min={0}
@@ -596,7 +607,7 @@ export function BlocksSection() {
               onChange={(event) => setReveal(Number(event.target.value))}
               data-ab-reveal=""
               aria-label={COMPARISON.hint}
-              className="absolute inset-0 z-20 h-full w-full cursor-ew-resize opacity-0"
+              className="ab-track w-full"
             />
           </div>
 

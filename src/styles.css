@@ -110,3 +110,69 @@
     animation: ab-rise 420ms ease-out 440ms both;
   }
 }
+
+/* The platform track. The fill follows --ab-reveal, which is the same property
+   the field's clip reads, so the control and the picture cannot disagree. */
+.ab-track {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 18px;
+  background: transparent;
+  cursor: ew-resize;
+}
+
+.ab-track::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--st-accent-ink) var(--ab-reveal, 0%),
+    var(--st-border-strong) var(--ab-reveal, 0%)
+  );
+}
+
+.ab-track::-moz-range-track {
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--st-accent-ink) var(--ab-reveal, 0%),
+    var(--st-border-strong) var(--ab-reveal, 0%)
+  );
+}
+
+.ab-track::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 17px;
+  height: 17px;
+  margin-top: -7px;
+  border-radius: 999px;
+  border: 2px solid var(--st-accent-ink);
+  background: var(--st-surface);
+  box-shadow: 0 2px 6px rgba(35, 24, 16, 0.3);
+}
+
+.ab-track::-moz-range-thumb {
+  width: 17px;
+  height: 17px;
+  border-radius: 999px;
+  border: 2px solid var(--st-accent-ink);
+  background: var(--st-surface);
+  box-shadow: 0 2px 6px rgba(35, 24, 16, 0.3);
+}
+
+.ab-track:focus-visible {
+  outline: 2px solid var(--st-ring);
+  outline-offset: 4px;
+  border-radius: 999px;
+}
+
+/* Once the platform is whole there is nothing left to divide. */
+[data-ab-platform] .ab-divider {
+  transition: opacity 240ms ease-out;
+}
+
+[data-ab-platform][data-complete="true"] .ab-divider {
+  opacity: 0;
+}
