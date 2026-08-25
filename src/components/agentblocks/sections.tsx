@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { ReactNode } from "react";
 import {
   Activity,
   ArrowRight,
@@ -42,7 +43,8 @@ import {
   FAQS,
   PROBLEM,
   OWNERSHIP,
-  SESSION_AGENDA,
+  FORM_ENDPOINT,
+  SESSION,
   TRUSTED_BY,
   WIRED_IN,
   YOUR_STACK,
@@ -972,64 +974,183 @@ export function FaqSection() {
  * 8 — Call to action
  * ------------------------------------------------------------------ */
 
+/** One field of the demo request, styled for the ink band it sits on. */
+function Field({
+  label,
+  name,
+  type = "text",
+  autoComplete,
+  placeholder,
+  children,
+}: {
+  label: string;
+  name: string;
+  type?: string;
+  autoComplete?: string;
+  placeholder?: string;
+  children?: ReactNode;
+}) {
+  const style = {
+    background: "var(--ab-ink)",
+    borderColor: "var(--ab-ink-border-strong)",
+    color: "var(--ab-ink-text)",
+  };
+  return (
+    <label className="block">
+      <span
+        className="text-[11px] font-semibold tracking-[0.1em] uppercase"
+        style={{ color: "var(--ab-ink-faint)" }}
+      >
+        {label}
+      </span>
+      {children ? (
+        <select
+          name={name}
+          required
+          defaultValue=""
+          className="mt-1.5 w-full appearance-none rounded-[10px] border px-3 py-2.5 text-sm focus-visible:ring-2 focus-visible:ring-[var(--ab-accent-on-ink)] focus-visible:outline-none"
+          style={style}
+        >
+          {children}
+        </select>
+      ) : (
+        <input
+          type={type}
+          name={name}
+          required
+          autoComplete={autoComplete}
+          placeholder={placeholder}
+          className="mt-1.5 w-full rounded-[10px] border px-3 py-2.5 text-sm focus-visible:ring-2 focus-visible:ring-[var(--ab-accent-on-ink)] focus-visible:outline-none"
+          style={style}
+        />
+      )}
+    </label>
+  );
+}
+
+/**
+ * The closing section, and the only conversion path on the page: the form is
+ * here rather than behind a link, and it asks for a session with an architect
+ * rather than a call with sales.
+ */
 export function SessionSection() {
   return (
     <Section id="session" tone="invert">
-      <div className="grid gap-12 lg:grid-cols-[1.1fr_1fr]">
+      <div className="grid gap-12 lg:grid-cols-[1fr_1fr] lg:gap-16">
         <Reveal>
           <div>
-            <Eyebrow tone="invert">Next step</Eyebrow>
+            <Eyebrow tone="invert">{SESSION.eyebrow}</Eyebrow>
             <h2
-              className="mt-3 text-[2rem] font-semibold leading-[1.1] tracking-[-0.03em] sm:text-[2.6rem]"
+              className="mt-3 text-[2rem] leading-[1.1] font-semibold tracking-[-0.03em] sm:text-[2.6rem]"
               style={{ fontFamily: "var(--st-font-head)", color: "var(--ab-ink-text)" }}
             >
-              Own the product.
+              {SESSION.title.lead}
               <br />
               <span className="italic" style={{ fontFamily: "var(--ab-serif)", fontWeight: 400 }}>
-                Skip the agent infrastructure build.
+                {SESSION.title.accent}
               </span>
             </h2>
             <p className="mt-4 max-w-xl text-base" style={{ color: "var(--ab-ink-muted)" }}>
-              One working session: what you keep, what AgentBlocks adds, and how you launch under
-              your brand. Bring your architecture, leave with a plan.
+              {SESSION.lede}
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Cta href={BOOKING_URL} variant="invert">
-                {CTA_LABEL}
-                <ArrowUpRight className="h-4 w-4" />
-              </Cta>
+
+            <div className="mt-10">
+              <Label tone="invert">{SESSION.agendaLabel}</Label>
+              <ol className="mt-4">
+                {SESSION.agenda.map((item) => (
+                  <li
+                    key={item.step}
+                    className="flex gap-4 border-t py-3.5"
+                    style={{ borderColor: "var(--ab-ink-border)" }}
+                  >
+                    <span
+                      className="text-xs font-semibold tracking-[0.14em]"
+                      style={{ color: "var(--ab-accent-on-ink)" }}
+                    >
+                      {item.step}
+                    </span>
+                    <div>
+                      <p
+                        className="text-sm font-semibold"
+                        style={{ color: "var(--ab-ink-text)", fontFamily: "var(--st-font-head)" }}
+                      >
+                        {item.title}
+                      </p>
+                      <p className="mt-0.5 text-sm" style={{ color: "var(--ab-ink-muted)" }}>
+                        {item.body}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
             </div>
           </div>
         </Reveal>
 
         <Reveal delay={0.08}>
-          <ol className="space-y-5">
-            {SESSION_AGENDA.map((item) => (
-              <li
-                key={item.step}
-                className="flex gap-4 border-t pt-5"
-                style={{ borderColor: "var(--ab-ink-border)" }}
+          <div
+            className="rounded-[var(--st-radius-lg)] border p-6 sm:p-8"
+            style={{
+              background: "var(--ab-ink-raised)",
+              borderColor: "var(--ab-ink-border-strong)",
+            }}
+          >
+            <h3
+              className="text-xl leading-snug font-semibold"
+              style={{ fontFamily: "var(--st-font-head)", color: "var(--ab-ink-text)" }}
+            >
+              {SESSION.form.title}
+            </h3>
+            <p className="mt-2 text-sm" style={{ color: "var(--ab-accent-on-ink)" }}>
+              {SESSION.form.note}
+            </p>
+
+            <form action={FORM_ENDPOINT} method="post" className="mt-6 space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field label="Name" name="name" autoComplete="name" placeholder="Jane Okafor" />
+                <Field
+                  label="Company"
+                  name="company"
+                  autoComplete="organization"
+                  placeholder="Acme Corp"
+                />
+              </div>
+              <Field
+                label="Work email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                placeholder="jane@acme.com"
+              />
+              <Field label={SESSION.form.stageLabel} name="stage">
+                <option value="" disabled>
+                  Select one
+                </option>
+                {SESSION.form.stages.map((stage) => (
+                  <option key={stage} value={stage}>
+                    {stage}
+                  </option>
+                ))}
+              </Field>
+
+              <button
+                type="submit"
+                className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full border px-5 py-3 text-sm font-medium transition-transform duration-200 hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-[var(--ab-accent-on-ink)] focus-visible:outline-none"
+                style={{
+                  background: "var(--ab-ink-text)",
+                  color: "var(--ab-ink)",
+                  borderColor: "transparent",
+                }}
               >
-                <span
-                  className="text-xs font-semibold tracking-[0.14em]"
-                  style={{ color: "var(--ab-accent-on-ink)" }}
-                >
-                  {item.step}
-                </span>
-                <div>
-                  <p
-                    className="text-sm font-semibold"
-                    style={{ color: "var(--ab-ink-text)", fontFamily: "var(--st-font-head)" }}
-                  >
-                    {item.title}
-                  </p>
-                  <p className="mt-1 text-sm" style={{ color: "var(--ab-ink-muted)" }}>
-                    {item.body}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
+                {SESSION.form.submit}
+                <ArrowRight className="h-4 w-4" />
+              </button>
+
+              <p className="text-xs" style={{ color: "var(--ab-ink-faint)" }}>
+                {SESSION.form.privacy}
+              </p>
+            </form>
+          </div>
         </Reveal>
       </div>
     </Section>

@@ -504,16 +504,40 @@ export const COMPARE: CompareRow[] = [
  * 8 — Call to action
  * ------------------------------------------------------------------ */
 
-export const SESSION_AGENDA = [
-  { step: "01", title: "Scope", body: "Full platform, or the specific blocks you are missing." },
-  {
-    step: "02",
-    title: "Architecture",
-    body: "What you keep, what we connect, what we add, and where it deploys.",
+/**
+ * The last section is the conversion path, so the form lives in it rather than
+ * behind a link. The agenda stays beside the form: it is what the reader is
+ * agreeing to spend an hour on.
+ */
+export const SESSION = {
+  eyebrow: "Next step",
+  title: { lead: "Own the product.", accent: "Skip the agent infrastructure build." },
+  lede: "Book a working session with one of our technical architects. Bring your architecture; leave with a plan for what you keep, what AgentBlocks adds, and how you launch under your brand.",
+  agendaLabel: "What we cover, in about an hour",
+  agenda: [
+    { step: "01", title: "Scope", body: "Full platform, or the specific blocks you are missing." },
+    {
+      step: "02",
+      title: "Architecture",
+      body: "What you keep, what we connect, what we add, and where it deploys.",
+    },
+    { step: "03", title: "Commercials", body: "OEM rights, pricing, ownership, support and SLA." },
+    { step: "04", title: "Launch plan", body: "Engagement model, owners and milestones." },
+  ],
+  form: {
+    title: "Book a demo with a technical architect",
+    note: "An architect, not a sales engineer. We reply within one business day.",
+    stageLabel: "Where are you today?",
+    stages: [
+      "Exploring, nothing built yet",
+      "Prototypes in progress",
+      "Agent platform in production",
+      "Extending an existing platform",
+    ],
+    submit: "Book my session",
+    privacy: "We use these details to prepare for the session and nothing else.",
   },
-  { step: "03", title: "Commercials", body: "OEM rights, pricing, ownership, support and SLA." },
-  { step: "04", title: "Launch plan", body: "Engagement model, owners and milestones." },
-];
+};
 
 export const NAV_LINKS = [
   { href: "#production", label: "In production" },
@@ -527,12 +551,14 @@ export const NAV_LINKS = [
 /** The words on every call to action. Kept here so all four stay in step. */
 export const CTA_LABEL = "Accelerate your agent roadmap";
 
+/** Every CTA on the page scrolls to the form in the closing section. */
+export const BOOKING_URL = "#session";
+
 /**
- * Every CTA on the page points here.
+ * Where the demo request is POSTed.
  *
- * NOT YET WIRED. This must become a dedicated scheduler or a short
- * qualification form before the page goes out — a homepage link is not a
- * conversion path. It is the only value on the page that lives outside the
- * repo, so it is the only thing to change.
+ * NOT YET WIRED. This must become a real endpoint before the page goes out: a
+ * HubSpot/Marketo form URL, or an internal route that writes to the CRM. It is
+ * the only value on the page that lives outside the repo.
  */
-export const BOOKING_URL = "https://www.lyzr.ai/";
+export const FORM_ENDPOINT = "https://example.com/agentblocks-demo-request";
