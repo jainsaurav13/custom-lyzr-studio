@@ -516,7 +516,7 @@ export function BlocksSection() {
           className="max-w-2xl"
         />
         <p
-          className="mt-6 max-w-2xl border-l-2 pl-4 text-[1.0625rem] leading-snug"
+          className="mt-6 border-l-2 pl-4 text-[1rem] leading-snug xl:text-[1.0625rem]"
           style={{ borderColor: "var(--st-accent-ink)", color: "var(--st-text)" }}
         >
           {COMPARISON.stakes}

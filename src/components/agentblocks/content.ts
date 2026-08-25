@@ -278,7 +278,7 @@ export const COMPARISON = {
   },
   /** What a gap actually costs, said once, before the field is shown. */
   stakes:
-    "Each gap becomes a production incident: a hallucinated answer, a crossed tenant boundary, an unexplained bill.",
+    "Each missing block becomes a production incident: a hallucination, a crossed tenant boundary, an unexplained bill.",
   hint: "Drag right to complete the platform",
   complete: "Every gap filled. Your platform, complete.",
 };
