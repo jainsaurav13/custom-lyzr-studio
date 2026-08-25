@@ -276,7 +276,7 @@ export const COMPARISON = {
     label: "With AgentBlocks",
     note: "Keep what works. AgentBlocks supplies the rest.",
   },
-  hint: "Drag to compare",
+  hint: "Drag right to complete the platform",
 };
 
 /** The claim that has to survive the catalogue: nothing here replaces you. */

@@ -338,7 +338,15 @@ function BlockIcon({ name, className }: { name: string; className?: string }) {
  * as raised rather than turned. Every value is derived from the block's own
  * colour, so the whole set stays one material.
  */
-function BlockTile({ block, linkTo }: { block: (typeof BLOCKS)[number]; linkTo?: string }) {
+function BlockTile({
+  block,
+  linkRight,
+  linkDown,
+}: {
+  block: (typeof BLOCKS)[number];
+  linkRight?: string;
+  linkDown?: string;
+}) {
   const { color } = block;
   const ink = readableInk(color, mix(color, "#140F0B", 0.82), "#FFFFFF");
   const lit = mix(color, "#FFFFFF", 0.2);
@@ -401,13 +409,25 @@ function BlockTile({ block, linkTo }: { block: (typeof BLOCKS)[number]; linkTo?:
         </h3>
       </div>
 
-      {/* Connective tissue: the blocks are one system, not fourteen products. */}
-      {linkTo ? (
+      {/* The tabs that make the set interlock: each one is half this block's
+          colour and half its neighbour's, sitting in the gap between them. */}
+      {linkRight ? (
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute top-1/2 -right-4 hidden h-[3px] w-4 rounded-full lg:block"
+          className="pointer-events-none absolute top-1/2 -right-[8px] hidden h-[15px] w-[15px] -translate-y-1/2 rounded-full lg:block"
           style={{
-            background: `linear-gradient(90deg, ${alpha(color, 0.75)}, ${alpha(linkTo, 0.75)})`,
+            background: `linear-gradient(90deg, ${shade}, ${mix(linkRight, "#FFFFFF", 0.2)})`,
+            boxShadow: `inset 0 1px 0 ${alpha("#FFFFFF", 0.5)}, 0 1px 2px ${alpha("#2A1B12", 0.25)}`,
+          }}
+        />
+      ) : null}
+      {linkDown ? (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute -bottom-[8px] left-1/2 hidden h-[15px] w-[15px] -translate-x-1/2 rounded-full lg:block"
+          style={{
+            background: `linear-gradient(180deg, ${shade}, ${mix(linkDown, "#FFFFFF", 0.2)})`,
+            boxShadow: `inset 1px 0 0 ${alpha("#FFFFFF", 0.4)}, 0 1px 2px ${alpha("#2A1B12", 0.25)}`,
           }}
         />
       ) : null}
@@ -441,16 +461,18 @@ function GapTile({ block }: { block: (typeof BLOCKS)[number] }) {
 
 /** The fourteen tiles, in the state the given side of the divider shows. */
 function BlockField({ state }: { state: "without" | "with" }) {
+  const whole = state === "with";
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
       {BLOCKS.map((block, index) =>
-        state === "with" || ALREADY_YOURS.has(block.key) ? (
+        whole || ALREADY_YOURS.has(block.key) ? (
           <BlockTile
             key={block.key}
             block={block}
-            linkTo={
-              state === "with" && (index + 1) % 7 !== 0 ? BLOCKS[index + 1]?.color : undefined
-            }
+            // Only the complete set interlocks. Left of the divider the pieces
+            // sit apart, which is the whole of the argument.
+            linkRight={whole && (index + 1) % 7 !== 0 ? BLOCKS[index + 1]?.color : undefined}
+            linkDown={whole && index + 7 < BLOCKS.length ? BLOCKS[index + 7]?.color : undefined}
           />
         ) : (
           <GapTile key={block.key} block={block} />
@@ -492,23 +514,23 @@ export function BlocksSection() {
             <div>
               <p
                 className="text-sm font-semibold"
-                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text-muted)" }}
-              >
-                {COMPARISON.without.label}
-              </p>
-              <p className="mt-0.5 text-xs" style={{ color: "var(--st-text-faint)" }}>
-                {COMPARISON.without.note}
-              </p>
-            </div>
-            <div className="text-right">
-              <p
-                className="text-sm font-semibold"
                 style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
               >
                 {COMPARISON.with.label}
               </p>
               <p className="mt-0.5 text-xs" style={{ color: "var(--st-accent-ink)" }}>
                 {COMPARISON.with.note}
+              </p>
+            </div>
+            <div className="text-right">
+              <p
+                className="text-sm font-semibold"
+                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text-muted)" }}
+              >
+                {COMPARISON.without.label}
+              </p>
+              <p className="mt-0.5 text-xs" style={{ color: "var(--st-text-faint)" }}>
+                {COMPARISON.without.note}
               </p>
             </div>
           </div>
@@ -523,7 +545,7 @@ export function BlocksSection() {
 
             <div
               className="pointer-events-none absolute inset-0 px-5 py-6 sm:px-7"
-              style={{ clipPath: "inset(0 0 0 var(--ab-reveal))" }}
+              style={{ clipPath: "inset(0 calc(100% - var(--ab-reveal)) 0 0)" }}
             >
               <BlockField state="with" />
             </div>
@@ -549,8 +571,8 @@ export function BlocksSection() {
 
             <input
               type="range"
-              min={4}
-              max={96}
+              min={0}
+              max={100}
               value={reveal}
               onChange={(event) => setReveal(Number(event.target.value))}
               data-ab-reveal=""
