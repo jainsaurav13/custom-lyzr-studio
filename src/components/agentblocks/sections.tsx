@@ -515,6 +515,12 @@ export function BlocksSection() {
           lede="License the blocks your platform is missing, or take the complete set."
           className="max-w-2xl"
         />
+        <p
+          className="mt-6 max-w-2xl border-l-2 pl-4 text-[1.0625rem] leading-snug"
+          style={{ borderColor: "var(--st-accent-ink)", color: "var(--st-text)" }}
+        >
+          {COMPARISON.stakes}
+        </p>
       </Reveal>
 
       <Reveal delay={0.06}>
