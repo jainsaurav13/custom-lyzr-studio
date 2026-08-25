@@ -34,8 +34,8 @@ import type { LucideIcon } from "lucide-react";
 import { alpha, mix, readableInk } from "@/components/studio/brand/color";
 import { cn } from "@/lib/utils";
 
+import { BlockGroupList, HexField } from "./HexField";
 import {
-  BLOCKS,
   BOOKING_URL,
   CTA_LABEL,
   COMPARE,
@@ -303,197 +303,20 @@ export function ProblemSection() {
  * Every icon the catalogue draws, resolved by name so the block list stays
  * plain data in `content.ts`.
  */
+/** Icons for the stack a customer keeps: named in `content.ts`, drawn here. */
 const ICONS: Record<string, LucideIcon> = {
   Activity,
-  Boxes,
   Cloud,
   Code2,
   Cpu,
-  CloudUpload,
   Database,
-  FileClock,
-  Gauge,
   GitBranch,
   KeyRound,
-  LineChart,
-  Lock,
-  Mic,
-  Puzzle,
-  ShieldAlert,
-  ShieldCheck,
-  Store,
-  UserCheck,
-  Wrench,
 };
 
 function BlockIcon({ name, className }: { name: string; className?: string }) {
   const Icon = ICONS[name] ?? Boxes;
   return <Icon className={className} strokeWidth={1.6} aria-hidden="true" />;
-}
-
-/**
- * One block, as a slab of tinted glass sitting proud of the page. There is no
- * projection here: the tile faces the reader square-on and gets its depth from
- * a lit top edge, a shaded bottom one and a coloured glow beneath, so it reads
- * as raised rather than turned. Every value is derived from the block's own
- * colour, so the whole set stays one material.
- */
-function BlockTile({
-  block,
-  index,
-  linkRight,
-  linkDown,
-}: {
-  block: (typeof BLOCKS)[number];
-  index: number;
-  linkRight?: boolean;
-  linkDown?: boolean;
-}) {
-  const { color } = block;
-  const ink = readableInk(color, mix(color, "#140F0B", 0.82), "#FFFFFF");
-  const lit = mix(color, "#FFFFFF", 0.2);
-  const shade = mix(color, "#2A1B12", 0.32);
-
-  return (
-    <div className="ab-piece relative" style={{ ["--ab-i" as string]: index } as CSSProperties}>
-      {/* The colour bleeding out from under the slab, which is what makes it
-          read as lit glass sitting above the page rather than printed on it. */}
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-2 top-4 bottom-0 rounded-[26px] blur-lg"
-        style={{ background: color, opacity: 0.45 }}
-      />
-
-      <div
-        className="relative flex aspect-square flex-col rounded-[24px] p-3.5"
-        style={{
-          color: ink,
-          background: `linear-gradient(152deg, ${lit} 0%, ${color} 52%, ${shade} 100%)`,
-          boxShadow: [
-            // The bevel: a lit top edge and a shaded bottom one.
-            `inset 0 2px 0 ${alpha("#FFFFFF", 0.7)}`,
-            `inset 2px 0 0 ${alpha("#FFFFFF", 0.3)}`,
-            `inset -1.5px 0 0 ${alpha("#FFFFFF", 0.14)}`,
-            `inset 0 -3px 4px ${alpha("#2A1B12", 0.24)}`,
-            `inset 0 -14px 20px -12px ${alpha("#FFFFFF", 0.45)}`,
-            // The lift.
-            `0 1px 1px ${alpha("#2A1B12", 0.14)}`,
-            `0 14px 24px -10px ${alpha("#2A1B12", 0.35)}`,
-          ].join(", "),
-        }}
-      >
-        {/* Wet sheen across the top, and one glint where the light lands. */}
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 rounded-[24px]"
-          style={{
-            background: `linear-gradient(163deg, ${alpha("#FFFFFF", 0.62)} 0%, ${alpha("#FFFFFF", 0.2)} 22%, ${alpha("#FFFFFF", 0)} 44%)`,
-          }}
-        />
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute top-[7%] left-[14%] h-[7%] w-[46%] -rotate-[9deg] rounded-full blur-[6px]"
-          style={{ background: alpha("#FFFFFF", 0.34) }}
-        />
-
-        <div className="relative flex items-start justify-between gap-2">
-          <BlockIcon name={block.icon} className="h-[1.8rem] w-[1.8rem]" />
-          <span className="text-[10px] font-semibold tabular-nums" style={{ opacity: 0.6 }}>
-            {block.num}
-          </span>
-        </div>
-
-        <div className="relative mt-auto">
-          <h3
-            className="text-[0.72rem] leading-tight font-semibold"
-            style={{ fontFamily: "var(--st-font-head)" }}
-          >
-            {block.name}
-          </h3>
-          {/* A few words, not a sentence: what the block is for, on the block. */}
-          <p className="mt-1 text-[0.625rem] leading-tight" style={{ opacity: 0.75 }}>
-            {block.tagline}
-          </p>
-        </div>
-      </div>
-
-      {/* The joints. Each tab is drawn in its own block's glass, overlaps that
-          block's edge and runs under the neighbour, which the neighbour paints
-          over: a tenon seated in the piece beside it rather than a dot in the
-          gap between them. */}
-      {linkRight ? (
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute top-1/2 -right-[18px] hidden h-[9px] w-[24px] -translate-y-1/2 rounded-full lg:block"
-          style={{
-            background: `linear-gradient(90deg, ${mix(color, "#FFFFFF", 0.1)}, ${shade})`,
-            boxShadow: `inset 0 1px 0 ${alpha("#FFFFFF", 0.55)}, 0 1px 2px ${alpha("#2A1B12", 0.28)}`,
-          }}
-        />
-      ) : null}
-      {linkDown ? (
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute -bottom-[18px] left-1/2 hidden h-[24px] w-[9px] -translate-x-1/2 rounded-full lg:block"
-          style={{
-            background: `linear-gradient(180deg, ${mix(color, "#FFFFFF", 0.1)}, ${shade})`,
-            boxShadow: `inset 1px 0 0 ${alpha("#FFFFFF", 0.45)}, 0 1px 2px ${alpha("#2A1B12", 0.28)}`,
-          }}
-        />
-      ) : null}
-    </div>
-  );
-}
-
-/** The blocks a platform team has usually built for itself already. */
-const ALREADY_YOURS = new Set(["builder", "runtime", "integrations"]);
-
-/** The same footprint as a block, drawn as the hole where one is missing. */
-function GapTile({ block }: { block: (typeof BLOCKS)[number] }) {
-  return (
-    <div
-      className="flex aspect-square flex-col rounded-[24px] border border-dashed p-3.5"
-      style={{ borderColor: "var(--st-border-strong)", color: "var(--st-text-faint)" }}
-    >
-      <div className="flex items-start justify-between gap-2">
-        <BlockIcon name={block.icon} className="h-[1.8rem] w-[1.8rem] opacity-40" />
-        <span className="text-[10px] font-semibold tabular-nums opacity-50">{block.num}</span>
-      </div>
-      <div className="mt-auto">
-        <p
-          className="text-[0.72rem] leading-tight font-semibold opacity-70"
-          style={{ fontFamily: "var(--st-font-head)" }}
-        >
-          {block.name}
-        </p>
-        <p className="mt-1 text-[0.625rem] leading-tight opacity-50">{block.tagline}</p>
-      </div>
-    </div>
-  );
-}
-
-/** The fourteen tiles, in the state the given side of the divider shows. */
-function BlockField({ state }: { state: "without" | "with" }) {
-  const whole = state === "with";
-  return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
-      {BLOCKS.map((block, index) =>
-        whole || ALREADY_YOURS.has(block.key) ? (
-          <BlockTile
-            key={block.key}
-            block={block}
-            index={index}
-            // Only the complete set interlocks. Left of the divider the pieces
-            // sit apart, which is the whole of the argument.
-            linkRight={whole && (index + 1) % 7 !== 0}
-            linkDown={whole && index + 7 < BLOCKS.length}
-          />
-        ) : (
-          <GapTile key={block.key} block={block} />
-        ),
-      )}
-    </div>
-  );
 }
 
 /**
@@ -537,7 +360,7 @@ export function BlocksSection() {
           }
         >
           <div
-            className="flex flex-wrap items-start justify-between gap-4 border-b px-5 py-4 sm:px-7"
+            className="hidden flex-wrap items-start justify-between gap-4 border-b px-5 py-4 sm:px-7 lg:flex"
             style={{ borderColor: "var(--ab-rule)" }}
           >
             <div>
@@ -566,8 +389,8 @@ export function BlocksSection() {
 
           {/* Both states are rendered in full and the divider decides how much
               of the finished one you can see, so nothing reflows as it moves. */}
-          <div className="relative px-5 py-6 sm:px-7">
-            <BlockField state="without" />
+          <div className="relative hidden px-5 py-6 sm:px-7 lg:block">
+            <HexField state="without" />
 
             <div
               className="pointer-events-none absolute inset-0 px-5 py-6 sm:px-7"
@@ -579,7 +402,7 @@ export function BlocksSection() {
               }}
               aria-hidden="true"
             >
-              <BlockField state="with" />
+              <HexField state="with" />
             </div>
 
             <span
@@ -624,8 +447,14 @@ export function BlocksSection() {
             />
           </div>
 
+          {/* Below the width the field needs, the same catalogue as a list:
+              seven families, named, with their blocks under them. */}
+          <div className="px-5 py-6 sm:px-7 lg:hidden">
+            <BlockGroupList />
+          </div>
+
           <div
-            className="border-t px-5 pt-5 pb-1 sm:px-7"
+            className="hidden border-t px-5 pt-5 pb-1 sm:px-7 lg:block"
             style={{ borderColor: "var(--ab-rule)" }}
           >
             <input
@@ -641,7 +470,7 @@ export function BlocksSection() {
           </div>
 
           <p
-            className="relative border-t px-5 py-3 text-center text-[11px] font-semibold tracking-[0.14em] uppercase sm:px-7"
+            className="relative hidden border-t px-5 py-3 text-center text-[11px] font-semibold tracking-[0.14em] uppercase sm:px-7 lg:block"
             style={{ borderColor: "var(--ab-rule)", color: "var(--st-text-faint)" }}
           >
             <span className="ab-when-open">{COMPARISON.hint}</span>
