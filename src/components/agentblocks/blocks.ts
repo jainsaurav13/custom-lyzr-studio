@@ -35,7 +35,7 @@ export const GROUPS: Group[] = [
     color: "#4F6F63",
     angle: -64.3,
   },
-  { key: "operate", label: "Operate", note: "Where the work runs", color: "#B76D2B", angle: -12.9 },
+  { key: "operate", label: "Operate", note: "Where the work runs", color: "#A96324", angle: -12.9 },
   {
     key: "observe",
     label: "Observe",
@@ -47,15 +47,15 @@ export const GROUPS: Group[] = [
     key: "scale",
     label: "Scale",
     note: "Enterprise load, absorbed",
-    color: "#7C7268",
+    color: "#73695F",
     angle: 89.9,
   },
-  { key: "secure", label: "Secure", note: "Who may do what", color: "#9A6EA8", angle: 141.3 },
+  { key: "secure", label: "Secure", note: "Who may do what", color: "#8E5F9C", angle: 141.3 },
   {
     key: "integrate",
     label: "Integrate",
     note: "Connect what you already run",
-    color: "#5E82A0",
+    color: "#547693",
     angle: 192.7,
   },
 ];
