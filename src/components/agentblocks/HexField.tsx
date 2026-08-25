@@ -36,7 +36,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-import { alpha, mix, readableInk } from "@/components/studio/brand/color";
+import { alpha, mix } from "@/components/studio/brand/color";
 import {
   ALREADY_YOURS,
   BOX_H,
@@ -103,7 +103,6 @@ const HEX_CLIP = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"
  */
 function LitHex({ item }: { item: Placed }) {
   const { color } = item;
-  const ink = readableInk(color, mix(color, "#140F0B", 0.82), "#FFFFFF");
   const lit = mix(color, "#FFFFFF", 0.3);
   const shade = mix(color, "#2A1B12", 0.36);
 
@@ -139,7 +138,7 @@ function LitHex({ item }: { item: Placed }) {
           style={{
             inset: "0.13cqw",
             clipPath: HEX_CLIP,
-            color: ink,
+            color: "#FFFFFF",
             background: `linear-gradient(152deg, ${lit} 0%, ${color} 34%, ${shade} 100%)`,
           }}
         >
@@ -296,7 +295,7 @@ export function HexField({ state }: { state: "without" | "with" }) {
               >
                 <span
                   className="block leading-none font-semibold tracking-[0.24em] uppercase"
-                  style={{ fontSize: "1.05cqw", color: mix(group.color, "#2A1B12", 0.22) }}
+                  style={{ fontSize: "1.05cqw", color: "var(--st-text)" }}
                 >
                   {group.label}
                 </span>
@@ -350,7 +349,7 @@ export function BlockGroupList() {
           <div className="flex items-baseline gap-2">
             <span
               className="text-[0.6875rem] font-semibold tracking-[0.22em] uppercase"
-              style={{ color: mix(group.color, "#2A1B12", 0.22) }}
+              style={{ color: "var(--st-text)" }}
             >
               {group.label}
             </span>
@@ -365,7 +364,7 @@ export function BlockGroupList() {
                 className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.75rem] font-medium"
                 style={{
                   background: item.color,
-                  color: readableInk(item.color, mix(item.color, "#140F0B", 0.82), "#FFFFFF"),
+                  color: "#FFFFFF",
                 }}
               >
                 <Icon name={item.block.icon} size="0.8125rem" />
