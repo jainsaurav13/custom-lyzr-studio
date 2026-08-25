@@ -55,7 +55,7 @@
 }
 
 [data-ab-platform][data-complete="true"] .ab-when-complete {
-  display: inline;
+  display: inline-flex;
 }
 
 @media (prefers-reduced-motion: no-preference) {

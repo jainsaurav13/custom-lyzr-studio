@@ -9,6 +9,8 @@ import {
   ChevronLeft,
   ChevronDown,
   ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
   Cloud,
   CloudUpload,
   Code2,
@@ -454,7 +456,7 @@ export function BlocksSection() {
           </div>
 
           <div
-            className="hidden border-t px-5 pt-5 pb-1 sm:px-7 lg:block"
+            className="hidden items-center gap-5 border-t px-5 pt-5 pb-4 sm:px-7 lg:flex"
             style={{ borderColor: "var(--ab-rule)" }}
           >
             <input
@@ -467,6 +469,28 @@ export function BlocksSection() {
               aria-label={COMPARISON.hint}
               className="ab-track w-full"
             />
+            {/* For readers who would rather not drag: one click to the closed
+                platform, and one back out of it. */}
+            <button
+              type="button"
+              data-ab-complete=""
+              onClick={() => setReveal(complete ? 0 : 100)}
+              className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[0.8125rem] font-semibold whitespace-nowrap transition-colors"
+              style={{
+                fontFamily: "var(--st-font-head)",
+                borderColor: "var(--st-accent-ink)",
+                color: "var(--st-accent-ink)",
+              }}
+            >
+              <span className="ab-when-open inline-flex items-center gap-1.5">
+                {COMPARISON.with.label}
+                <ChevronsRight className="h-3.5 w-3.5" />
+              </span>
+              <span className="ab-when-complete inline-flex items-center gap-1.5">
+                <ChevronsLeft className="h-3.5 w-3.5" />
+                {COMPARISON.without.label}
+              </span>
+            </button>
           </div>
 
           <p
