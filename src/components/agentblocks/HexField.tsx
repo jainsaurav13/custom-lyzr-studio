@@ -104,11 +104,13 @@ const HEX_CLIP = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"
 function LitHex({ item }: { item: Placed }) {
   const { color } = item;
   const ink = readableInk(color, mix(color, "#140F0B", 0.82), "#FFFFFF");
-  const lit = mix(color, "#FFFFFF", 0.22);
-  const shade = mix(color, "#2A1B12", 0.34);
+  const lit = mix(color, "#FFFFFF", 0.3);
+  const shade = mix(color, "#2A1B12", 0.36);
 
   return (
     <>
+      {/* The colour bleeding out from under the slab, which is what makes it
+          read as lit glass sitting above the page rather than printed on it. */}
       <span
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
@@ -117,46 +119,66 @@ function LitHex({ item }: { item: Placed }) {
           background: color,
           filter: "blur(0.7cqw)",
           transform: "translateY(6%) scale(0.94)",
-          opacity: 0.42,
+          opacity: 0.45,
         }}
       />
+
+      {/* The bevel. A clip path cannot carry an inset shadow, so the lit top
+          edge and the shaded foot are a rim of glass in their own right, with
+          the face seated a couple of pixels inside it. */}
       <div
-        className="relative flex h-full w-full flex-col items-center justify-center px-[14%] text-center"
+        className="relative h-full w-full"
         style={{
           clipPath: HEX_CLIP,
-          color: ink,
-          background: `linear-gradient(152deg, ${lit} 0%, ${color} 34%, ${shade} 100%)`,
+          background: `linear-gradient(163deg, ${mix(color, "#FFFFFF", 0.92)} 0%, ${mix(color, "#FFFFFF", 0.44)} 11%, ${mix(color, "#2A1B12", 0.26)} 52%, ${mix(color, "#2A1B12", 0.64)} 100%)`,
+          filter: `drop-shadow(0 0.4cqw 0.7cqw ${alpha("#2A1B12", 0.3)})`,
         }}
       >
-        {/* Wet sheen across the top face, and one glint where the light lands. */}
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
+        <div
+          className="absolute flex flex-col items-center justify-center px-[14%] text-center"
           style={{
-            background: `linear-gradient(163deg, ${alpha("#FFFFFF", 0.58)} 0%, ${alpha("#FFFFFF", 0.16)} 26%, ${alpha("#FFFFFF", 0)} 48%)`,
+            inset: "0.13cqw",
+            clipPath: HEX_CLIP,
+            color: ink,
+            background: `linear-gradient(152deg, ${lit} 0%, ${color} 34%, ${shade} 100%)`,
           }}
-        />
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute top-[16%] left-[26%] h-[6%] w-[42%] -rotate-[9deg] rounded-full"
-          style={{ background: alpha("#FFFFFF", 0.36), filter: "blur(0.35cqw)" }}
-        />
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-[8%] bottom-[6%] h-[14%]"
-          style={{
-            background: `linear-gradient(180deg, ${alpha("#FFFFFF", 0)}, ${alpha("#FFFFFF", 0.3)})`,
-            filter: "blur(0.3cqw)",
-          }}
-        />
-
-        <Icon name={item.block.icon} size="2.15cqw" />
-        <span
-          className="relative mt-[0.3cqw] leading-[1.15] font-semibold"
-          style={{ fontFamily: "var(--st-font-head)", fontSize: "1.02cqw" }}
         >
-          {item.block.name}
-        </span>
+          {/* Wet sheen across the top face, and one glint where the light lands. */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background: `linear-gradient(163deg, ${alpha("#FFFFFF", 0.6)} 0%, ${alpha("#FFFFFF", 0.18)} 24%, ${alpha("#FFFFFF", 0)} 46%)`,
+            }}
+          />
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute top-[15%] left-[26%] h-[6%] w-[42%] -rotate-[9deg] rounded-full"
+            style={{ background: alpha("#FFFFFF", 0.38), filter: "blur(0.35cqw)" }}
+          />
+          {/* The light that gathers along the foot of a thick piece of glass. */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-[7%] bottom-[4%] h-[20%]"
+            style={{
+              background: `linear-gradient(180deg, ${alpha("#FFFFFF", 0)}, ${alpha("#FFFFFF", 0.44)})`,
+              filter: "blur(0.3cqw)",
+            }}
+          />
+
+          <div
+            className="relative flex flex-col items-center"
+            style={{ filter: `drop-shadow(0 0.06cqw 0.14cqw ${alpha("#231810", 0.45)})` }}
+          >
+            <Icon name={item.block.icon} size="2.15cqw" />
+            <span
+              className="mt-[0.3cqw] leading-[1.15] font-semibold"
+              style={{ fontFamily: "var(--st-font-head)", fontSize: "1.02cqw" }}
+            >
+              {item.block.name}
+            </span>
+          </div>
+        </div>
       </div>
     </>
   );
@@ -274,7 +296,7 @@ export function HexField({ state }: { state: "without" | "with" }) {
               >
                 <span
                   className="block leading-none font-semibold tracking-[0.24em] uppercase"
-                  style={{ fontSize: "1.05cqw", color: group.color }}
+                  style={{ fontSize: "1.05cqw", color: mix(group.color, "#2A1B12", 0.22) }}
                 >
                   {group.label}
                 </span>
@@ -328,7 +350,7 @@ export function BlockGroupList() {
           <div className="flex items-baseline gap-2">
             <span
               className="text-[0.6875rem] font-semibold tracking-[0.22em] uppercase"
-              style={{ color: group.color }}
+              style={{ color: mix(group.color, "#2A1B12", 0.22) }}
             >
               {group.label}
             </span>
