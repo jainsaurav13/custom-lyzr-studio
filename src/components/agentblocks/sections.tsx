@@ -340,10 +340,12 @@ function BlockIcon({ name, className }: { name: string; className?: string }) {
  */
 function BlockTile({
   block,
+  index,
   linkRight,
   linkDown,
 }: {
   block: (typeof BLOCKS)[number];
+  index: number;
   linkRight?: boolean;
   linkDown?: boolean;
 }) {
@@ -353,7 +355,7 @@ function BlockTile({
   const shade = mix(color, "#2A1B12", 0.32);
 
   return (
-    <div className="relative">
+    <div className="ab-piece relative" style={{ ["--ab-i" as string]: index } as CSSProperties}>
       {/* The colour bleeding out from under the slab, which is what makes it
           read as lit glass sitting above the page rather than printed on it. */}
       <span
@@ -471,6 +473,7 @@ function BlockField({ state }: { state: "without" | "with" }) {
           <BlockTile
             key={block.key}
             block={block}
+            index={index}
             // Only the complete set interlocks. Left of the divider the pieces
             // sit apart, which is the whole of the argument.
             linkRight={whole && (index + 1) % 7 !== 0}
@@ -492,6 +495,7 @@ function BlockField({ state }: { state: "without" | "with" }) {
  */
 export function BlocksSection() {
   const [reveal, setReveal] = useState(50);
+  const complete = reveal >= 99;
 
   return (
     <Section id="blocks" tone="warm">
@@ -506,8 +510,16 @@ export function BlocksSection() {
 
       <Reveal delay={0.06}>
         <div
+          data-ab-platform=""
+          data-complete={complete ? "true" : undefined}
           className="mt-12 overflow-hidden rounded-[var(--st-radius-lg)] border"
-          style={{ background: "var(--st-surface)", borderColor: "var(--ab-warm-rule)" }}
+          style={
+            {
+              background: "var(--st-surface)",
+              borderColor: "var(--ab-warm-rule)",
+              ["--ab-reveal" as string]: `${reveal}%`,
+            } as CSSProperties
+          }
         >
           <div
             className="flex flex-wrap items-start justify-between gap-4 border-b px-5 py-4 sm:px-7"
@@ -539,10 +551,7 @@ export function BlocksSection() {
 
           {/* Both states are rendered in full and the divider decides how much
               of the finished one you can see, so nothing reflows as it moves. */}
-          <div
-            className="relative px-5 py-6 sm:px-7"
-            style={{ ["--ab-reveal" as string]: `${reveal}%` } as CSSProperties}
-          >
+          <div className="relative px-5 py-6 sm:px-7">
             <BlockField state="without" />
 
             <div
@@ -551,6 +560,14 @@ export function BlocksSection() {
             >
               <BlockField state="with" />
             </div>
+
+            <span
+              aria-hidden="true"
+              className="ab-sweep pointer-events-none absolute inset-y-0 left-0 z-10 w-1/3 opacity-0"
+              style={{
+                background: `linear-gradient(90deg, transparent, ${alpha("#FFFFFF", 0.6)}, transparent)`,
+              }}
+            />
 
             <span
               aria-hidden="true"
@@ -584,10 +601,13 @@ export function BlocksSection() {
           </div>
 
           <p
-            className="border-t px-5 py-3 text-center text-[11px] font-semibold tracking-[0.14em] uppercase sm:px-7"
+            className="relative border-t px-5 py-3 text-center text-[11px] font-semibold tracking-[0.14em] uppercase sm:px-7"
             style={{ borderColor: "var(--ab-rule)", color: "var(--st-text-faint)" }}
           >
-            {COMPARISON.hint}
+            <span className="ab-when-open">{COMPARISON.hint}</span>
+            <span className="ab-when-complete" style={{ color: "var(--st-accent-ink)" }}>
+              {COMPARISON.complete}
+            </span>
           </p>
         </div>
       </Reveal>

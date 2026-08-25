@@ -277,6 +277,7 @@ export const COMPARISON = {
     note: "Keep what works. AgentBlocks supplies the rest.",
   },
   hint: "Drag right to complete the platform",
+  complete: "One platform. Fourteen blocks, seated together.",
 };
 
 /** The claim that has to survive the catalogue: nothing here replaces you. */
