@@ -45,10 +45,10 @@ import {
   GROUPS,
   GROUP_LABELS,
   HEX_W,
+  OPEN_H,
   PLACED,
+  RING,
   cq,
-  px,
-  py,
 } from "./blocks";
 import type { Placed } from "./blocks";
 
@@ -204,104 +204,114 @@ export function HexField({ state }: { state: "without" | "with" }) {
   const whole = state === "with";
 
   return (
-    <div
-      className="ab-hexbox relative w-full"
-      style={{ aspectRatio: `${BOX_W} / ${BOX_H}`, containerType: "inline-size" }}
-    >
-      {/* The core the families close around, and the ring they close on. */}
-      {whole ? (
-        <>
-          <span
-            aria-hidden="true"
-            className="ab-ring pointer-events-none absolute rounded-[50%] border border-dashed"
-            style={{
-              left: "8%",
-              right: "8%",
-              top: "10%",
-              bottom: "10%",
-              borderColor: "var(--ab-warm-rule)",
-            }}
-          />
-          <div
-            className="ab-core absolute flex flex-col items-center justify-center"
-            style={{
-              left: `${px(CORE.x)}%`,
-              top: `${py(CORE.y)}%`,
-              width: `${(CORE.w / BOX_W) * 100}%`,
-              aspectRatio: "1 / 1.1547",
-            }}
-          >
+    <div className="w-full" style={{ containerType: "inline-size" }}>
+      <div
+        className="ab-hexbox relative w-full"
+        style={
+          {
+            ["--ab-h-open" as string]: `${cq(OPEN_H)}cqw`,
+            ["--ab-h-done" as string]: `${cq(BOX_H)}cqw`,
+          } as CSSProperties
+        }
+      >
+        {/* The core the families close around, and the ring they close on. */}
+        {whole ? (
+          <>
             <span
               aria-hidden="true"
-              className="absolute inset-0"
+              className="ab-ring pointer-events-none absolute rounded-[50%] border border-dashed"
               style={{
-                clipPath: HEX_CLIP,
-                background: "var(--st-text)",
-                boxShadow: `0 ${cq(18)}cqw ${cq(40)}cqw ${alpha("#2A1B12", 0.32)}`,
+                left: `${cq(RING.x)}cqw`,
+                top: `${cq(RING.y)}cqw`,
+                width: `${cq(RING.w)}cqw`,
+                height: `${cq(RING.h)}cqw`,
+                borderColor: "var(--ab-warm-rule)",
               }}
             />
-            <div className="relative flex flex-col items-center" style={{ color: "var(--st-bg)" }}>
-              <Icon name="Boxes" size="4cqw" />
-              <span
-                className="mt-[0.6cqw] leading-none font-semibold"
-                style={{ fontFamily: "var(--st-font-head)", fontSize: "1.9cqw" }}
-              >
-                AgentBlocks
-              </span>
-              <span
-                className="mt-[0.35cqw] leading-none font-semibold tracking-[0.26em] uppercase"
-                style={{ fontSize: "0.85cqw", opacity: 0.62 }}
-              >
-                Platform
-              </span>
-            </div>
-          </div>
-
-          {GROUP_LABELS.map(({ group, x, y }) => (
             <div
-              key={group.key}
-              className="ab-group absolute -translate-x-1/2 -translate-y-1/2 text-center whitespace-nowrap"
-              style={{ left: `${px(x)}%`, top: `${py(y)}%` }}
+              className="ab-core absolute flex flex-col items-center justify-center"
+              style={{
+                left: `${cq(CORE.x)}cqw`,
+                top: `${cq(CORE.y)}cqw`,
+                width: `${cq(CORE.w)}cqw`,
+                aspectRatio: "1 / 1.1547",
+              }}
             >
               <span
-                className="block leading-none font-semibold tracking-[0.24em] uppercase"
-                style={{ fontSize: "1.05cqw", color: group.color }}
+                aria-hidden="true"
+                className="absolute inset-0"
+                style={{
+                  clipPath: HEX_CLIP,
+                  background: "var(--st-text)",
+                  boxShadow: `0 ${cq(18)}cqw ${cq(40)}cqw ${alpha("#2A1B12", 0.32)}`,
+                }}
+              />
+              <div
+                className="relative flex flex-col items-center"
+                style={{ color: "var(--st-bg)" }}
               >
-                {group.label}
-              </span>
-              <span
-                className="mt-[0.35cqw] block leading-none"
-                style={{ fontSize: "0.88cqw", color: "var(--st-text-faint)" }}
-              >
-                {group.note}
-              </span>
+                <Icon name="Boxes" size="4cqw" />
+                <span
+                  className="mt-[0.6cqw] leading-none font-semibold"
+                  style={{ fontFamily: "var(--st-font-head)", fontSize: "1.9cqw" }}
+                >
+                  AgentBlocks
+                </span>
+                <span
+                  className="mt-[0.35cqw] leading-none font-semibold tracking-[0.26em] uppercase"
+                  style={{ fontSize: "0.85cqw", opacity: 0.62 }}
+                >
+                  Platform
+                </span>
+              </div>
             </div>
-          ))}
-        </>
-      ) : null}
 
-      {PLACED.map((item, index) => (
-        <div
-          key={item.block.key}
-          className="ab-hex absolute"
-          style={
-            {
-              left: `${px(item.from.x)}%`,
-              top: `${py(item.from.y)}%`,
-              width: `${(HEX_W / BOX_W) * 100}%`,
-              ["--ab-dx" as string]: `${cq(item.to.x - item.from.x)}cqw`,
-              ["--ab-dy" as string]: `${cq(item.to.y - item.from.y)}cqw`,
-              ["--ab-i" as string]: index,
-            } as CSSProperties
-          }
-        >
-          {whole || ALREADY_YOURS.has(item.block.key) ? (
-            <LitHex item={item} />
-          ) : (
-            <EmptyHex item={item} />
-          )}
-        </div>
-      ))}
+            {GROUP_LABELS.map(({ group, x, y }) => (
+              <div
+                key={group.key}
+                className="ab-group absolute -translate-x-1/2 -translate-y-1/2 text-center whitespace-nowrap"
+                style={{ left: `${cq(x)}cqw`, top: `${cq(y)}cqw` }}
+              >
+                <span
+                  className="block leading-none font-semibold tracking-[0.24em] uppercase"
+                  style={{ fontSize: "1.05cqw", color: group.color }}
+                >
+                  {group.label}
+                </span>
+                <span
+                  className="mt-[0.35cqw] block leading-none"
+                  style={{ fontSize: "0.88cqw", color: "var(--st-text-faint)" }}
+                >
+                  {group.note}
+                </span>
+              </div>
+            ))}
+          </>
+        ) : null}
+
+        {PLACED.map((item, index) => (
+          <div
+            key={item.block.key}
+            className="ab-hex absolute"
+            style={
+              {
+                left: `${cq(item.from.x)}cqw`,
+                top: `${cq(item.from.y)}cqw`,
+                width: `${cq(HEX_W)}cqw`,
+                ["--ab-dx" as string]: `${cq(item.to.x - item.from.x)}cqw`,
+                ["--ab-dy" as string]: `${cq(item.to.y - item.from.y)}cqw`,
+                ["--ab-i" as string]: index,
+              } as CSSProperties
+            }
+          >
+            {whole || ALREADY_YOURS.has(item.block.key) ? (
+              <LitHex item={item} />
+            ) : (
+              <EmptyHex item={item} />
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

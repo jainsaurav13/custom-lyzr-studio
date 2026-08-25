@@ -119,30 +119,38 @@ export const ALREADY_YOURS = new Set(["builder", "runtime", "tooling", "logging"
  * ------------------------------------------------------------------ */
 
 /** The box every coordinate below is expressed in, before it becomes a %. */
-export const BOX_W = 1200;
-export const BOX_H = 900;
+export const BOX_W = 1240;
+export const BOX_H = 870;
+
+/**
+ * The height the box needs while it is still a parts list, which is a good
+ * deal less than the closed platform needs. The box grows into the second as
+ * the families draw together, so the scattered state does not sit in a frame
+ * sized for something else.
+ */
+export const OPEN_H = 660;
 
 /** Pointy-top hexagon: height over width. */
 const RATIO = 1.1547;
 
 /** One hexagon, wide enough that a two-word name still reads inside it. */
-export const HEX_W = 90;
+export const HEX_W = 94;
 const HEX_H = HEX_W * RATIO;
 
 /** Scattered: a loose honeycomb with the air still in it. */
 const SCATTER_ROWS = [7, 6, 7, 6, 7];
-const SCATTER_STEP_X = 152;
-const SCATTER_STEP_Y = 165;
-const SCATTER_TOP = 120;
+const SCATTER_STEP_X = 132;
+const SCATTER_STEP_Y = 122;
+const SCATTER_TOP = 86;
 
 /** Drawn together: seven clumps packed tight on an ellipse round the core. */
-const CLUMP_STEP_X = 98;
-const CLUMP_STEP_Y = 83;
-const RING_RX = 400;
-const RING_RY = 300;
+const CLUMP_STEP_X = 96;
+const CLUMP_STEP_Y = 81;
+const RING_RX = 450;
+const RING_RY = 292;
 
 /** The core the families close around. */
-export const CORE = { x: BOX_W / 2, y: BOX_H / 2, w: 220 };
+export const CORE = { x: BOX_W / 2, y: 435, w: 210 };
 
 export interface Placed {
   block: Block;
@@ -257,7 +265,7 @@ export const GROUP_LABELS = GROUPS.map((group) => {
   const cy = CORE.y + RING_RY * Math.sin(radians);
   const above = Math.sin(radians) < 0;
   const rows = clumpRows(BLOCKS.filter((block) => block.group === group.key).length).length;
-  const reach = ((rows - 1) / 2) * CLUMP_STEP_Y + HEX_H / 2 + 28;
+  const reach = ((rows - 1) / 2) * CLUMP_STEP_Y + HEX_H / 2 + 26;
   return {
     group,
     x: cx + Math.cos(radians) * 82,
@@ -266,8 +274,17 @@ export const GROUP_LABELS = GROUPS.map((group) => {
   };
 });
 
-/** A point in the design box, as a percentage of the box. */
-export const px = (x: number) => (x / BOX_W) * 100;
-export const py = (y: number) => (y / BOX_H) * 100;
-/** A distance, as container-width units, so it scales with the field. */
+/**
+ * Any coordinate or distance in the design box, as container-width units. The
+ * box's height changes as the platform closes, so nothing vertical can be a
+ * percentage: everything is measured against the one dimension that holds.
+ */
 export const cq = (d: number) => (d / BOX_W) * 100;
+
+/** The ring the families close on, as a box: left, top, width, height. */
+export const RING = {
+  x: CORE.x - RING_RX - 44,
+  y: CORE.y - RING_RY - 44,
+  w: (RING_RX + 44) * 2,
+  h: (RING_RY + 44) * 2,
+};

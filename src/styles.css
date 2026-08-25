@@ -93,6 +93,10 @@
     transition-delay: calc(var(--ab-i, 0) * 13ms);
   }
 
+  .ab-hexbox {
+    transition: height 760ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
   [data-ab-platform][data-complete="true"] .ab-sweep {
     animation: ab-sweep 1100ms cubic-bezier(0.3, 0.7, 0.3, 1) 120ms both;
   }
@@ -160,6 +164,18 @@
 }
 
 /* Once the platform is whole there is nothing left to divide. */
+/* The field's own box. It is only as tall as the parts list needs while the
+   platform is still open, and grows into the height the closed platform needs
+   as the families draw together. Every coordinate inside is a container-width
+   unit, so nothing shifts when the height changes. */
+.ab-hexbox {
+  height: var(--ab-h-open);
+}
+
+[data-ab-platform][data-complete="true"] .ab-hexbox {
+  height: var(--ab-h-done);
+}
+
 /* One block, at its scattered address. --ab-dx/--ab-dy carry the vector to the
    place it settles, in container-width units, so the whole field scales with
    its box and the motion is a single translation per hexagon. */
