@@ -34,8 +34,6 @@ import type { LucideIcon } from "lucide-react";
 import { alpha, mix, readableInk } from "@/components/studio/brand/color";
 import { cn } from "@/lib/utils";
 
-import { COLS, PIECES, ROWS } from "./puzzle";
-
 import {
   BLOCKS,
   BOOKING_URL,
@@ -333,123 +331,167 @@ function BlockIcon({ name, className }: { name: string; className?: string }) {
   return <Icon className={className} strokeWidth={1.6} aria-hidden="true" />;
 }
 
-/** The blocks a platform team has usually built for itself already. */
-const ALREADY_YOURS = new Set(["builder", "runtime", "integrations"]);
-
 /**
- * One block, cut as a jigsaw piece. The silhouette comes from `puzzle.ts`, so
- * the knobs on this piece are the exact sockets of the ones beside it, and the
- * glass is the same material the rest of the page uses: lit along the top,
- * deepening to the shaded tone, with the colour bleeding out underneath.
+ * One block, as a slab of tinted glass sitting proud of the page. There is no
+ * projection here: the tile faces the reader square-on and gets its depth from
+ * a lit top edge, a shaded bottom one and a coloured glow beneath, so it reads
+ * as raised rather than turned. Every value is derived from the block's own
+ * colour, so the whole set stays one material.
  */
-function PuzzlePiece({
+function BlockTile({
   block,
-  piece,
-  index,
-  state,
+  linkRight,
+  linkDown,
 }: {
   block: (typeof BLOCKS)[number];
-  piece: (typeof PIECES)[number];
-  index: number;
-  state: "without" | "with";
+  linkRight?: boolean;
+  linkDown?: boolean;
 }) {
-  const missing = state === "without" && !ALREADY_YOURS.has(block.key);
   const { color } = block;
   const ink = readableInk(color, mix(color, "#140F0B", 0.82), "#FFFFFF");
   const lit = mix(color, "#FFFFFF", 0.2);
   const shade = mix(color, "#2A1B12", 0.32);
-  const gradientId = `ab-glass-${state}-${block.key}`;
 
   return (
-    <div
-      className="ab-piece absolute"
-      style={{
-        left: `${(piece.col / COLS) * 100}%`,
-        top: `${(piece.row / ROWS) * 100}%`,
-        width: `${100 / COLS}%`,
-        height: `${100 / ROWS}%`,
-        color: missing ? "var(--st-text-faint)" : ink,
-        ["--ab-i" as string]: index,
-      }}
-    >
-      <svg
-        viewBox="0 0 1 1"
-        preserveAspectRatio="none"
-        className="absolute inset-0 h-full w-full overflow-visible"
-        style={{
-          filter: missing ? undefined : `drop-shadow(0 10px 14px ${alpha("#2A1B12", 0.28)})`,
-        }}
+    <div className="relative">
+      {/* The colour bleeding out from under the slab, which is what makes it
+          read as lit glass sitting above the page rather than printed on it. */}
+      <span
         aria-hidden="true"
-      >
-        {missing ? null : (
-          <defs>
-            <linearGradient id={gradientId} x1="0" y1="0" x2="0.85" y2="1">
-              <stop offset="0%" stopColor={lit} />
-              <stop offset="52%" stopColor={color} />
-              <stop offset="100%" stopColor={shade} />
-            </linearGradient>
-          </defs>
-        )}
-        <path
-          d={piece.path}
-          fill={missing ? "transparent" : `url(#${gradientId})`}
-          stroke={missing ? "var(--st-border-strong)" : alpha("#FFFFFF", 0.34)}
-          strokeWidth={missing ? 1.25 : 1}
-          strokeDasharray={missing ? "6 5" : undefined}
-          vectorEffect="non-scaling-stroke"
-        />
-      </svg>
+        className="pointer-events-none absolute inset-x-2 top-4 bottom-0 rounded-[26px] blur-lg"
+        style={{ background: color, opacity: 0.45 }}
+      />
 
-      <div className="absolute inset-0 flex flex-col px-[9%] pt-[8%] pb-[13%]">
-        <div className="flex items-start justify-between gap-2">
-          <BlockIcon
-            name={block.icon}
-            className={cn("h-[1.7rem] w-[1.7rem]", missing && "opacity-40")}
-          />
-          <span className={cn("text-[11px] font-semibold tabular-nums", missing && "opacity-50")}>
+      <div
+        className="relative flex aspect-square flex-col rounded-[24px] p-3.5"
+        style={{
+          color: ink,
+          background: `linear-gradient(152deg, ${lit} 0%, ${color} 52%, ${shade} 100%)`,
+          boxShadow: [
+            // The bevel: a lit top edge and a shaded bottom one.
+            `inset 0 2px 0 ${alpha("#FFFFFF", 0.7)}`,
+            `inset 2px 0 0 ${alpha("#FFFFFF", 0.3)}`,
+            `inset -1.5px 0 0 ${alpha("#FFFFFF", 0.14)}`,
+            `inset 0 -3px 4px ${alpha("#2A1B12", 0.24)}`,
+            `inset 0 -14px 20px -12px ${alpha("#FFFFFF", 0.45)}`,
+            // The lift.
+            `0 1px 1px ${alpha("#2A1B12", 0.14)}`,
+            `0 14px 24px -10px ${alpha("#2A1B12", 0.35)}`,
+          ].join(", "),
+        }}
+      >
+        {/* Wet sheen across the top, and one glint where the light lands. */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 rounded-[24px]"
+          style={{
+            background: `linear-gradient(163deg, ${alpha("#FFFFFF", 0.62)} 0%, ${alpha("#FFFFFF", 0.2)} 22%, ${alpha("#FFFFFF", 0)} 44%)`,
+          }}
+        />
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute top-[7%] left-[14%] h-[7%] w-[46%] -rotate-[9deg] rounded-full blur-[6px]"
+          style={{ background: alpha("#FFFFFF", 0.34) }}
+        />
+
+        <div className="relative flex items-start justify-between gap-2">
+          <BlockIcon name={block.icon} className="h-[1.8rem] w-[1.8rem]" />
+          <span className="text-[10px] font-semibold tabular-nums" style={{ opacity: 0.6 }}>
             {block.num}
           </span>
         </div>
+
         <h3
-          className={cn(
-            "mt-auto text-[0.78rem] leading-tight font-semibold",
-            missing && "opacity-70",
-          )}
+          className="relative mt-auto text-[0.72rem] leading-tight font-semibold"
           style={{ fontFamily: "var(--st-font-head)" }}
         >
           {block.name}
         </h3>
       </div>
+
+      {/* The joints. Each tab is drawn in its own block's glass, overlaps that
+          block's edge and runs under the neighbour, which the neighbour paints
+          over: a tenon seated in the piece beside it rather than a dot in the
+          gap between them. */}
+      {linkRight ? (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute top-1/2 -right-[18px] hidden h-[9px] w-[24px] -translate-y-1/2 rounded-full lg:block"
+          style={{
+            background: `linear-gradient(90deg, ${mix(color, "#FFFFFF", 0.1)}, ${shade})`,
+            boxShadow: `inset 0 1px 0 ${alpha("#FFFFFF", 0.55)}, 0 1px 2px ${alpha("#2A1B12", 0.28)}`,
+          }}
+        />
+      ) : null}
+      {linkDown ? (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute -bottom-[18px] left-1/2 hidden h-[24px] w-[9px] -translate-x-1/2 rounded-full lg:block"
+          style={{
+            background: `linear-gradient(180deg, ${mix(color, "#FFFFFF", 0.1)}, ${shade})`,
+            boxShadow: `inset 1px 0 0 ${alpha("#FFFFFF", 0.45)}, 0 1px 2px ${alpha("#2A1B12", 0.28)}`,
+          }}
+        />
+      ) : null}
     </div>
   );
 }
 
-/** The fourteen pieces, in the state the given side of the divider shows. */
-function BlockField({ state }: { state: "without" | "with" }) {
+/** The blocks a platform team has usually built for itself already. */
+const ALREADY_YOURS = new Set(["builder", "runtime", "integrations"]);
+
+/** The same footprint as a block, drawn as the hole where one is missing. */
+function GapTile({ block }: { block: (typeof BLOCKS)[number] }) {
   return (
-    <div className="relative aspect-[5/3] w-full">
-      {BLOCKS.map((block, index) => (
-        <PuzzlePiece
-          key={block.key}
-          block={block}
-          piece={PIECES[index]}
-          index={index}
-          state={state}
-        />
-      ))}
+    <div
+      className="flex aspect-square flex-col rounded-[24px] border border-dashed p-3.5"
+      style={{ borderColor: "var(--st-border-strong)", color: "var(--st-text-faint)" }}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <BlockIcon name={block.icon} className="h-[1.8rem] w-[1.8rem] opacity-40" />
+        <span className="text-[10px] font-semibold tabular-nums opacity-50">{block.num}</span>
+      </div>
+      <p
+        className="mt-auto text-[0.72rem] leading-tight font-semibold opacity-70"
+        style={{ fontFamily: "var(--st-font-head)" }}
+      >
+        {block.name}
+      </p>
+    </div>
+  );
+}
+
+/** The fourteen tiles, in the state the given side of the divider shows. */
+function BlockField({ state }: { state: "without" | "with" }) {
+  const whole = state === "with";
+  return (
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+      {BLOCKS.map((block, index) =>
+        whole || ALREADY_YOURS.has(block.key) ? (
+          <BlockTile
+            key={block.key}
+            block={block}
+            // Only the complete set interlocks. Left of the divider the pieces
+            // sit apart, which is the whole of the argument.
+            linkRight={whole && (index + 1) % 7 !== 0}
+            linkDown={whole && index + 7 < BLOCKS.length}
+          />
+        ) : (
+          <GapTile key={block.key} block={block} />
+        ),
+      )}
     </div>
   );
 }
 
 /**
- * The catalogue, as one platform the reader assembles by dragging: to the left
- * of the divider the pieces a team has already cut for itself and the holes
- * where the rest belong; to the right, all fourteen seated together. Reaching
- * the end of the track completes the platform, and it says so.
+ * The catalogue, as one field the reader drags a divider across: to the left of
+ * it, the three or four blocks a platform team has already built and the holes
+ * where the rest should be; to the right, the complete set. The blocks, the
+ * colours and the glass are the same on both sides, which is the point.
  */
 export function BlocksSection() {
   const [reveal, setReveal] = useState(50);
-  const complete = reveal >= 99;
 
   return (
     <Section id="blocks" tone="warm">
@@ -464,16 +506,8 @@ export function BlocksSection() {
 
       <Reveal delay={0.06}>
         <div
-          data-ab-platform=""
-          data-complete={complete ? "true" : undefined}
           className="mt-12 overflow-hidden rounded-[var(--st-radius-lg)] border"
-          style={
-            {
-              background: "var(--st-surface)",
-              borderColor: "var(--ab-warm-rule)",
-              ["--ab-reveal" as string]: `${reveal}%`,
-            } as CSSProperties
-          }
+          style={{ background: "var(--st-surface)", borderColor: "var(--ab-warm-rule)" }}
         >
           <div
             className="flex flex-wrap items-start justify-between gap-4 border-b px-5 py-4 sm:px-7"
@@ -503,40 +537,29 @@ export function BlocksSection() {
             </div>
           </div>
 
-          {/* Both states are drawn in full and a clip decides how much of the
-              assembled platform shows, so nothing reflows as the divider moves. */}
-          <div className="relative overflow-x-auto px-5 py-6 sm:px-7">
-            <div className="min-w-[44rem]">
-              <BlockField state="without" />
-            </div>
+          {/* Both states are rendered in full and the divider decides how much
+              of the finished one you can see, so nothing reflows as it moves. */}
+          <div
+            className="relative px-5 py-6 sm:px-7"
+            style={{ ["--ab-reveal" as string]: `${reveal}%` } as CSSProperties}
+          >
+            <BlockField state="without" />
 
             <div
               className="pointer-events-none absolute inset-0 px-5 py-6 sm:px-7"
               style={{ clipPath: "inset(0 calc(100% - var(--ab-reveal)) 0 0)" }}
-              aria-hidden="true"
             >
-              <div className="min-w-[44rem]">
-                <BlockField state="with" />
-              </div>
+              <BlockField state="with" />
             </div>
 
-            {/* The light that runs across the platform the moment it closes. */}
             <span
               aria-hidden="true"
-              className="ab-sweep pointer-events-none absolute inset-y-0 left-0 z-10 w-1/3 opacity-0"
-              style={{
-                background: `linear-gradient(90deg, transparent, ${alpha("#FFFFFF", 0.55)}, transparent)`,
-              }}
-            />
-
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute hidden lg:block inset-y-0 z-10 w-px"
+              className="pointer-events-none absolute inset-y-0 z-10 w-px"
               style={{ left: "var(--ab-reveal)", background: "var(--st-accent-ink)" }}
             />
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute hidden lg:block top-1/2 z-10 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border"
+              className="pointer-events-none absolute top-1/2 z-10 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border"
               style={{
                 left: "var(--ab-reveal)",
                 background: "var(--st-surface)",
@@ -556,18 +579,15 @@ export function BlocksSection() {
               onChange={(event) => setReveal(Number(event.target.value))}
               data-ab-reveal=""
               aria-label={COMPARISON.hint}
-              className="absolute inset-0 z-20 hidden h-full w-full cursor-ew-resize opacity-0 lg:block"
+              className="absolute inset-0 z-20 h-full w-full cursor-ew-resize opacity-0"
             />
           </div>
 
           <p
-            className="relative border-t px-5 py-3 text-center text-[11px] font-semibold tracking-[0.14em] uppercase sm:px-7"
+            className="border-t px-5 py-3 text-center text-[11px] font-semibold tracking-[0.14em] uppercase sm:px-7"
             style={{ borderColor: "var(--ab-rule)", color: "var(--st-text-faint)" }}
           >
-            <span className="ab-when-open">{COMPARISON.hint}</span>
-            <span className="ab-when-complete" style={{ color: "var(--st-accent-ink)" }}>
-              {COMPARISON.complete}
-            </span>
+            {COMPARISON.hint}
           </p>
         </div>
       </Reveal>
