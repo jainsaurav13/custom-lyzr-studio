@@ -355,35 +355,42 @@ export function BlocksSection() {
           className="mt-12 overflow-hidden rounded-[var(--st-radius-lg)] border"
           style={
             {
-              background: "var(--st-surface)",
-              borderColor: "var(--ab-warm-rule)",
+              // Cool glass on warm paper reads as mud. The field gets its own
+              // ground: a dark slab the colours can actually sit on.
+              background:
+                "radial-gradient(118% 76% at 50% 26%, #241F38 0%, #171325 46%, #0F0C18 100%)",
+              borderColor: "rgba(255,255,255,0.10)",
+              boxShadow: "0 34px 70px -34px rgba(24,18,40,0.55)",
               ["--ab-reveal" as string]: `${reveal}%`,
+              ["--ab-track-fill" as string]: "rgba(255,255,255,0.88)",
+              ["--ab-track-rail" as string]: "rgba(255,255,255,0.18)",
+              ["--ab-track-knob" as string]: "#241F38",
             } as CSSProperties
           }
         >
           <div
             className="hidden flex-wrap items-start justify-between gap-4 border-b px-5 py-4 sm:px-7 lg:flex"
-            style={{ borderColor: "var(--ab-rule)" }}
+            style={{ borderColor: "rgba(255,255,255,0.09)" }}
           >
             <div>
               <p
                 className="text-sm font-semibold"
-                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text-muted)" }}
+                style={{ fontFamily: "var(--st-font-head)", color: "rgba(255,255,255,0.62)" }}
               >
                 {COMPARISON.without.label}
               </p>
-              <p className="mt-0.5 text-xs" style={{ color: "var(--st-text-faint)" }}>
+              <p className="mt-0.5 text-xs" style={{ color: "rgba(255,255,255,0.34)" }}>
                 {COMPARISON.without.note}
               </p>
             </div>
             <div className="text-right">
               <p
                 className="text-sm font-semibold"
-                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+                style={{ fontFamily: "var(--st-font-head)", color: "#FFFFFF" }}
               >
                 {COMPARISON.with.label}
               </p>
-              <p className="mt-0.5 text-xs" style={{ color: "var(--st-accent-ink)" }}>
+              <p className="mt-0.5 text-xs" style={{ color: "#C9B6F5" }}>
                 {COMPARISON.with.note}
               </p>
             </div>
@@ -400,7 +407,8 @@ export function BlocksSection() {
               // through the holes this state is meant to show.
               style={{
                 clipPath: "inset(0 calc(100% - var(--ab-reveal)) 0 0)",
-                background: "var(--st-surface)",
+                background:
+                  "radial-gradient(118% 76% at 50% 26%, #241F38 0%, #171325 46%, #0F0C18 100%)",
               }}
               aria-hidden="true"
             >
@@ -418,20 +426,20 @@ export function BlocksSection() {
             <span
               aria-hidden="true"
               className="ab-divider pointer-events-none absolute inset-y-0 z-10 w-px"
-              style={{ left: "var(--ab-reveal)", background: "var(--st-accent-ink)" }}
+              style={{ left: "var(--ab-reveal)", background: "rgba(255,255,255,0.72)" }}
             />
             <span
               aria-hidden="true"
               className="ab-divider pointer-events-none absolute top-1/2 z-10 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border"
               style={{
                 left: "var(--ab-reveal)",
-                background: "var(--st-surface)",
-                borderColor: "var(--st-accent-ink)",
-                boxShadow: "0 4px 12px -4px rgba(35,24,16,0.35)",
+                background: "#241F38",
+                borderColor: "rgba(255,255,255,0.7)",
+                boxShadow: "0 4px 14px -4px rgba(10,8,18,0.6)",
               }}
             >
-              <ChevronLeft className="h-3 w-3" style={{ color: "var(--st-accent-ink)" }} />
-              <ChevronRight className="h-3 w-3" style={{ color: "var(--st-accent-ink)" }} />
+              <ChevronLeft className="h-3 w-3" style={{ color: "rgba(255,255,255,0.85)" }} />
+              <ChevronRight className="h-3 w-3" style={{ color: "rgba(255,255,255,0.85)" }} />
             </span>
 
             {/* Drag the field itself, or the track under it: both write the
@@ -457,7 +465,7 @@ export function BlocksSection() {
 
           <div
             className="hidden items-center gap-5 border-t px-5 pt-5 pb-4 sm:px-7 lg:flex"
-            style={{ borderColor: "var(--ab-rule)" }}
+            style={{ borderColor: "rgba(255,255,255,0.09)" }}
           >
             <input
               type="range"
@@ -478,8 +486,9 @@ export function BlocksSection() {
               className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[0.8125rem] font-semibold whitespace-nowrap transition-colors"
               style={{
                 fontFamily: "var(--st-font-head)",
-                borderColor: "var(--st-accent-ink)",
-                color: "var(--st-accent-ink)",
+                borderColor: "rgba(255,255,255,0.26)",
+                background: "rgba(255,255,255,0.06)",
+                color: "#FFFFFF",
               }}
             >
               <span className="ab-when-open inline-flex items-center gap-1.5">
@@ -495,10 +504,10 @@ export function BlocksSection() {
 
           <p
             className="relative hidden border-t px-5 py-3 text-center text-[11px] font-semibold tracking-[0.14em] uppercase sm:px-7 lg:block"
-            style={{ borderColor: "var(--ab-rule)", color: "var(--st-text-faint)" }}
+            style={{ borderColor: "rgba(255,255,255,0.09)", color: "rgba(255,255,255,0.4)" }}
           >
             <span className="ab-when-open">{COMPARISON.hint}</span>
-            <span className="ab-when-complete" style={{ color: "var(--st-accent-ink)" }}>
+            <span className="ab-when-complete" style={{ color: "#C9B6F5" }}>
               {COMPARISON.complete}
             </span>
           </p>
@@ -509,8 +518,12 @@ export function BlocksSection() {
           once, across the full width of the sheet. */}
       <Reveal delay={0.24}>
         <div
-          className="mt-12 flex flex-col gap-4 rounded-[var(--st-radius-lg)] border border-dashed p-5 lg:flex-row lg:items-center lg:justify-between"
-          style={{ borderColor: "var(--st-accent-ink)" }}
+          className="mt-10 flex flex-col gap-5 rounded-[var(--st-radius-lg)] border p-6 lg:flex-row lg:items-center lg:justify-between"
+          style={{
+            background: "var(--st-surface)",
+            borderColor: "var(--ab-warm-rule)",
+            boxShadow: "0 1px 2px rgba(35,24,16,0.04)",
+          }}
         >
           <div>
             <Label>Stays in place: your existing platform</Label>

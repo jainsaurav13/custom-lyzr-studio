@@ -268,6 +268,9 @@ export const GROUP_LABELS = GROUPS.map((group) => {
   const reach = ((rows - 1) / 2) * CLUMP_STEP_Y + HEX_H / 2 + 26;
   return {
     group,
+    /** The clump's own centre, which is also where its light falls. */
+    cx,
+    cy,
     x: cx + Math.cos(radians) * 82,
     y: above ? cy - reach : cy + reach,
     above,

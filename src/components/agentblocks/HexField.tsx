@@ -189,17 +189,15 @@ function EmptyHex({ item }: { item: Placed }) {
       <span
         aria-hidden="true"
         className="absolute inset-0"
-        style={{
-          clipPath: HEX_CLIP,
-          background: "color-mix(in srgb, var(--st-text) 20%, var(--st-surface))",
-        }}
+        style={{ clipPath: HEX_CLIP, background: alpha("#FFFFFF", 0.16) }}
       />
       <div
-        className="absolute inset-[0.14cqw] flex flex-col items-center justify-center px-[14%] text-center"
+        className="absolute flex flex-col items-center justify-center px-[15%] text-center"
         style={{
+          inset: "0.13cqw",
           clipPath: HEX_CLIP,
-          background: "color-mix(in srgb, var(--st-text) 5%, var(--st-surface))",
-          color: "var(--st-text-faint)",
+          background: alpha("#FFFFFF", 0.045),
+          color: alpha("#FFFFFF", 0.44),
         }}
       >
         <Icon name={item.block.icon} size="2.15cqw" />
@@ -245,9 +243,25 @@ export function HexField({ state }: { state: "without" | "with" }) {
                 top: `${cq(RING.y)}cqw`,
                 width: `${cq(RING.w)}cqw`,
                 height: `${cq(RING.h)}cqw`,
-                borderColor: "var(--ab-warm-rule)",
+                borderColor: alpha("#FFFFFF", 0.11),
               }}
             />
+
+            {/* The light each family throws onto the ground once it settles. */}
+            {GROUP_LABELS.map(({ group, cx, cy }) => (
+              <span
+                key={`${group.key}-glow`}
+                aria-hidden="true"
+                className="ab-glow pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
+                style={{
+                  left: `${cq(cx)}cqw`,
+                  top: `${cq(cy)}cqw`,
+                  width: `${cq(430)}cqw`,
+                  height: `${cq(380)}cqw`,
+                  background: `radial-gradient(closest-side, ${alpha(group.color, 0.32)}, ${alpha(group.color, 0.1)} 52%, transparent 78%)`,
+                }}
+              />
+            ))}
             <div
               className="ab-core absolute flex flex-col items-center justify-center"
               style={{
@@ -259,17 +273,30 @@ export function HexField({ state }: { state: "without" | "with" }) {
             >
               <span
                 aria-hidden="true"
+                className="absolute -inset-[20%] rounded-full"
+                style={{
+                  background: `radial-gradient(closest-side, ${alpha("#FFFFFF", 0.2)}, transparent 72%)`,
+                }}
+              />
+              <span
+                aria-hidden="true"
                 className="absolute inset-0"
                 style={{
                   clipPath: HEX_CLIP,
-                  background: "var(--st-text)",
-                  boxShadow: `0 ${cq(18)}cqw ${cq(40)}cqw ${alpha("#2A1B12", 0.32)}`,
+                  background: `linear-gradient(168deg, ${alpha("#FFFFFF", 0.99)} 0%, #F4F1FB 8%, #D9D0EC 62%, #FFFFFF 100%)`,
                 }}
               />
-              <div
-                className="relative flex flex-col items-center"
-                style={{ color: "var(--st-bg)" }}
-              >
+              <span
+                aria-hidden="true"
+                className="absolute"
+                style={{
+                  inset: "0.55cqw",
+                  clipPath: HEX_CLIP,
+                  background:
+                    "linear-gradient(176deg, #FFFFFF 0%, #F7F4FD 46%, #E2DBF1 93%, #F1ECFA 100%)",
+                }}
+              />
+              <div className="relative flex flex-col items-center" style={{ color: "#15121F" }}>
                 <Icon name="Boxes" size="4cqw" />
                 <span
                   className="mt-[0.6cqw] leading-none font-semibold"
@@ -294,13 +321,13 @@ export function HexField({ state }: { state: "without" | "with" }) {
               >
                 <span
                   className="block leading-none font-semibold tracking-[0.24em] uppercase"
-                  style={{ fontSize: "1.05cqw", color: "var(--st-text)" }}
+                  style={{ fontSize: "1.05cqw", color: mix(group.color, "#FFFFFF", 0.32) }}
                 >
                   {group.label}
                 </span>
                 <span
                   className="mt-[0.35cqw] block leading-none"
-                  style={{ fontSize: "0.88cqw", color: "var(--st-text-faint)" }}
+                  style={{ fontSize: "0.88cqw", color: alpha("#FFFFFF", 0.42) }}
                 >
                   {group.note}
                 </span>
@@ -348,11 +375,11 @@ export function BlockGroupList() {
           <div className="flex items-baseline gap-2">
             <span
               className="text-[0.6875rem] font-semibold tracking-[0.22em] uppercase"
-              style={{ color: "var(--st-text)" }}
+              style={{ color: mix(group.color, "#FFFFFF", 0.32) }}
             >
               {group.label}
             </span>
-            <span className="text-[0.75rem]" style={{ color: "var(--st-text-faint)" }}>
+            <span className="text-[0.75rem]" style={{ color: alpha("#FFFFFF", 0.42) }}>
               {group.note}
             </span>
           </div>
