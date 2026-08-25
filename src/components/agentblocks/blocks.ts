@@ -27,35 +27,35 @@ export interface Group {
 
 /** Seven families, spaced evenly around the core, clockwise from top left. */
 export const GROUPS: Group[] = [
-  { key: "build", label: "Build", note: "Design and ship agents", color: "#D83218", angle: 244.1 },
+  { key: "build", label: "Build", note: "Design and ship agents", color: "#FCA98D", angle: 244.1 },
   {
     key: "govern",
     label: "Govern",
     note: "Every agent on the record",
-    color: "#107F4B",
+    color: "#9CE3CF",
     angle: -64.3,
   },
-  { key: "operate", label: "Operate", note: "Where the work runs", color: "#BE4C00", angle: -12.9 },
+  { key: "operate", label: "Operate", note: "Where the work runs", color: "#F4A2C2", angle: -12.9 },
   {
     key: "observe",
     label: "Observe",
     note: "Runs, cost and quality",
-    color: "#0E7992",
+    color: "#55C8CA",
     angle: 38.5,
   },
   {
     key: "scale",
     label: "Scale",
     note: "Enterprise load, absorbed",
-    color: "#D4257D",
+    color: "#E290DF",
     angle: 89.9,
   },
-  { key: "secure", label: "Secure", note: "Who may do what", color: "#A043D3", angle: 141.3 },
+  { key: "secure", label: "Secure", note: "Who may do what", color: "#BCA4EC", angle: 141.3 },
   {
     key: "integrate",
     label: "Integrate",
     note: "Connect what you already run",
-    color: "#3167E6",
+    color: "#85BFEE",
     angle: 192.7,
   },
 ];

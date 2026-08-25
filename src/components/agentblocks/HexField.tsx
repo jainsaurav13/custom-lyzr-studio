@@ -103,8 +103,11 @@ const HEX_CLIP = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)"
  */
 function LitHex({ item }: { item: Placed }) {
   const { color } = item;
-  const lit = mix(color, "#FFFFFF", 0.3);
-  const shade = mix(color, "#2A1B12", 0.28);
+  // These fills are too light to carry white type, so each family inks its
+  // blocks in a very deep version of its own colour instead.
+  const ink = mix(item.group.color, "#1A1626", 0.9);
+  const lit = mix(color, "#FFFFFF", 0.34);
+  const shade = mix(color, "#1A1626", 0.16);
 
   return (
     <>
@@ -118,7 +121,7 @@ function LitHex({ item }: { item: Placed }) {
           background: color,
           filter: "blur(0.7cqw)",
           transform: "translateY(6%) scale(0.94)",
-          opacity: 0.45,
+          opacity: 0.4,
         }}
       />
 
@@ -129,8 +132,8 @@ function LitHex({ item }: { item: Placed }) {
         className="relative h-full w-full"
         style={{
           clipPath: HEX_CLIP,
-          background: `linear-gradient(163deg, ${mix(color, "#FFFFFF", 0.92)} 0%, ${mix(color, "#FFFFFF", 0.44)} 11%, ${mix(color, "#2A1B12", 0.2)} 52%, ${mix(color, "#2A1B12", 0.52)} 100%)`,
-          filter: `drop-shadow(0 0.4cqw 0.7cqw ${alpha("#2A1B12", 0.3)})`,
+          background: `linear-gradient(163deg, ${mix(color, "#FFFFFF", 0.96)} 0%, ${mix(color, "#FFFFFF", 0.6)} 11%, ${mix(color, "#1A1626", 0.12)} 52%, ${mix(color, "#1A1626", 0.34)} 100%)`,
+          filter: `drop-shadow(0 0.4cqw 0.7cqw ${alpha("#1A1626", 0.22)})`,
         }}
       >
         <div
@@ -138,7 +141,7 @@ function LitHex({ item }: { item: Placed }) {
           style={{
             inset: "0.13cqw",
             clipPath: HEX_CLIP,
-            color: "#FFFFFF",
+            color: ink,
             background: `linear-gradient(152deg, ${lit} 0%, ${color} 34%, ${shade} 100%)`,
           }}
         >
@@ -167,7 +170,7 @@ function LitHex({ item }: { item: Placed }) {
 
           <div
             className="relative flex flex-col items-center"
-            style={{ filter: `drop-shadow(0 0.06cqw 0.14cqw ${alpha("#231810", 0.45)})` }}
+            style={{ filter: `drop-shadow(0 0.06cqw 0.14cqw ${alpha("#FFFFFF", 0.5)})` }}
           >
             <Icon name={item.block.icon} size="2.15cqw" />
             <span
@@ -364,7 +367,7 @@ export function BlockGroupList() {
                 className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.75rem] font-medium"
                 style={{
                   background: item.color,
-                  color: "#FFFFFF",
+                  color: mix(group.color, "#1A1626", 0.9),
                 }}
               >
                 <Icon name={item.block.icon} size="0.8125rem" />
