@@ -1,12 +1,14 @@
 import { useState } from "react";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import {
   Activity,
   ArrowRight,
   ArrowUpRight,
   Boxes,
   Check,
+  ChevronLeft,
   ChevronDown,
+  ChevronRight,
   Cloud,
   CloudUpload,
   Code2,
@@ -37,6 +39,7 @@ import {
   BOOKING_URL,
   CTA_LABEL,
   COMPARE,
+  COMPARISON,
   CREDIBILITY,
   FLAGSHIP,
   ENGAGEMENTS,
@@ -412,42 +415,158 @@ function BlockTile({ block, linkTo }: { block: (typeof BLOCKS)[number]; linkTo?:
   );
 }
 
+/** The blocks a platform team has usually built for itself already. */
+const ALREADY_YOURS = new Set(["builder", "runtime", "integrations"]);
+
+/** The same footprint as a block, drawn as the hole where one is missing. */
+function GapTile({ block }: { block: (typeof BLOCKS)[number] }) {
+  return (
+    <div
+      className="flex aspect-square flex-col rounded-[24px] border border-dashed p-3.5"
+      style={{ borderColor: "var(--st-border-strong)", color: "var(--st-text-faint)" }}
+    >
+      <div className="flex items-start justify-between gap-2">
+        <BlockIcon name={block.icon} className="h-[1.8rem] w-[1.8rem] opacity-40" />
+        <span className="text-[10px] font-semibold tabular-nums opacity-50">{block.num}</span>
+      </div>
+      <p
+        className="mt-auto text-[0.72rem] leading-tight font-semibold opacity-70"
+        style={{ fontFamily: "var(--st-font-head)" }}
+      >
+        {block.name}
+      </p>
+    </div>
+  );
+}
+
+/** The fourteen tiles, in the state the given side of the divider shows. */
+function BlockField({ state }: { state: "without" | "with" }) {
+  return (
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+      {BLOCKS.map((block, index) =>
+        state === "with" || ALREADY_YOURS.has(block.key) ? (
+          <BlockTile
+            key={block.key}
+            block={block}
+            linkTo={
+              state === "with" && (index + 1) % 7 !== 0 ? BLOCKS[index + 1]?.color : undefined
+            }
+          />
+        ) : (
+          <GapTile key={block.key} block={block} />
+        ),
+      )}
+    </div>
+  );
+}
+
 /**
- * The catalogue: fourteen blocks, each one licensable on its own. It is laid
- * out as a printed sheet rather than a feature grid, on the page's warmest
- * ground, because the point of the section is that this is an inventory an ISV
- * shops from.
+ * The catalogue, as one field the reader drags a divider across: to the left of
+ * it, the three or four blocks a platform team has already built and the holes
+ * where the rest should be; to the right, the complete set. The blocks, the
+ * colours and the glass are the same on both sides, which is the point.
  */
 export function BlocksSection() {
+  const [reveal, setReveal] = useState(50);
+
   return (
     <Section id="blocks" tone="warm">
       <Reveal>
         <SectionHead
           eyebrow="What’s inside"
           title="What you can OEM"
-          lede="Fourteen building blocks to build, run and scale agents with confidence. License the ones your platform is missing, or take the complete set."
+          lede="License the blocks your platform is missing, or take the complete set."
           className="max-w-2xl"
         />
       </Reveal>
 
-      <div className="mt-12 grid grid-cols-2 gap-x-4 gap-y-9 sm:grid-cols-4 lg:grid-cols-7">
-        {BLOCKS.map((block, index) => (
-          <Reveal key={block.key} delay={Math.min(index, 7) * 0.03} className="h-full">
-            <div className="flex h-full flex-col">
-              <BlockTile
-                block={block}
-                linkTo={(index + 1) % 7 === 0 ? undefined : BLOCKS[index + 1]?.color}
-              />
+      <Reveal delay={0.06}>
+        <div
+          className="mt-12 overflow-hidden rounded-[var(--st-radius-lg)] border"
+          style={{ background: "var(--st-surface)", borderColor: "var(--ab-warm-rule)" }}
+        >
+          <div
+            className="flex flex-wrap items-start justify-between gap-4 border-b px-5 py-4 sm:px-7"
+            style={{ borderColor: "var(--ab-rule)" }}
+          >
+            <div>
               <p
-                className="mt-3 text-[0.6875rem] leading-snug"
-                style={{ color: "var(--st-text-muted)" }}
+                className="text-sm font-semibold"
+                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text-muted)" }}
               >
-                {block.blurb}
+                {COMPARISON.without.label}
+              </p>
+              <p className="mt-0.5 text-xs" style={{ color: "var(--st-text-faint)" }}>
+                {COMPARISON.without.note}
               </p>
             </div>
-          </Reveal>
-        ))}
-      </div>
+            <div className="text-right">
+              <p
+                className="text-sm font-semibold"
+                style={{ fontFamily: "var(--st-font-head)", color: "var(--st-text)" }}
+              >
+                {COMPARISON.with.label}
+              </p>
+              <p className="mt-0.5 text-xs" style={{ color: "var(--st-accent-ink)" }}>
+                {COMPARISON.with.note}
+              </p>
+            </div>
+          </div>
+
+          {/* Both states are rendered in full and the divider decides how much
+              of the finished one you can see, so nothing reflows as it moves. */}
+          <div
+            className="relative px-5 py-6 sm:px-7"
+            style={{ ["--ab-reveal" as string]: `${reveal}%` } as CSSProperties}
+          >
+            <BlockField state="without" />
+
+            <div
+              className="pointer-events-none absolute inset-0 px-5 py-6 sm:px-7"
+              style={{ clipPath: "inset(0 0 0 var(--ab-reveal))" }}
+            >
+              <BlockField state="with" />
+            </div>
+
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 z-10 w-px"
+              style={{ left: "var(--ab-reveal)", background: "var(--st-accent-ink)" }}
+            />
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute top-1/2 z-10 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border"
+              style={{
+                left: "var(--ab-reveal)",
+                background: "var(--st-surface)",
+                borderColor: "var(--st-accent-ink)",
+                boxShadow: "0 4px 12px -4px rgba(35,24,16,0.35)",
+              }}
+            >
+              <ChevronLeft className="h-3 w-3" style={{ color: "var(--st-accent-ink)" }} />
+              <ChevronRight className="h-3 w-3" style={{ color: "var(--st-accent-ink)" }} />
+            </span>
+
+            <input
+              type="range"
+              min={4}
+              max={96}
+              value={reveal}
+              onChange={(event) => setReveal(Number(event.target.value))}
+              data-ab-reveal=""
+              aria-label={COMPARISON.hint}
+              className="absolute inset-0 z-20 h-full w-full cursor-ew-resize opacity-0"
+            />
+          </div>
+
+          <p
+            className="border-t px-5 py-3 text-center text-[11px] font-semibold tracking-[0.14em] uppercase sm:px-7"
+            style={{ borderColor: "var(--ab-rule)", color: "var(--st-text-faint)" }}
+          >
+            {COMPARISON.hint}
+          </p>
+        </div>
+      </Reveal>
 
       {/* The poster's footer bar: the claim the catalogue provokes, answered
           once, across the full width of the sheet. */}

@@ -262,6 +262,23 @@ export const BLOCKS: Block[] = [
   },
 ];
 
+/**
+ * The two states the catalogue exists to contrast, put either side of a divider
+ * the reader drags: the same fourteen blocks, stitched together in part on one
+ * side and complete on the other.
+ */
+export const COMPARISON = {
+  without: {
+    label: "Without AgentBlocks",
+    note: "Stitched from parts. The gaps stay open.",
+  },
+  with: {
+    label: "With AgentBlocks",
+    note: "Keep what works. AgentBlocks supplies the rest.",
+  },
+  hint: "Drag to compare",
+};
+
 /** The claim that has to survive the catalogue: nothing here replaces you. */
 export const WIRED_IN = {
   title: "Wired in. Not rebuilt.",
