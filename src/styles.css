@@ -39,3 +39,90 @@
     border-radius: 4px;
   }
 }
+
+/*
+ * The AgentBlocks platform field: what happens the moment the last piece is
+ * seated. The state lives on a data attribute so both the app and the static
+ * snapshot of the page can drive it, and nothing moves for a reader who has
+ * asked for less motion.
+ */
+[data-ab-platform] .ab-when-complete {
+  display: none;
+}
+
+[data-ab-platform][data-complete="true"] .ab-when-open {
+  display: none;
+}
+
+[data-ab-platform][data-complete="true"] .ab-when-complete {
+  display: inline;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes ab-seat {
+    0% {
+      transform: scale(1);
+    }
+    45% {
+      transform: scale(1.04);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes ab-sweep {
+    0% {
+      opacity: 0;
+      transform: translateX(-40%) skewX(-8deg);
+    }
+    30% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(320%) skewX(-8deg);
+    }
+  }
+
+  @keyframes ab-rise {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Pieces settle in reading order, so the platform closes left to right. */
+  [data-ab-platform][data-complete="true"] .ab-piece {
+    animation: ab-seat 560ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    animation-delay: calc(var(--ab-i, 0) * 26ms);
+  }
+
+  [data-ab-platform][data-complete="true"] .ab-sweep {
+    animation: ab-sweep 1100ms cubic-bezier(0.3, 0.7, 0.3, 1) 120ms both;
+  }
+
+  [data-ab-platform][data-complete="true"] .ab-when-complete {
+    animation: ab-rise 420ms ease-out 420ms both;
+  }
+}
+
+/* Below the wide breakpoint there is no divider to drag, so the platform is
+   shown whole and the field pans instead. */
+@media (max-width: 1023px) {
+  [data-ab-platform] {
+    --ab-reveal: 100% !important;
+  }
+
+  [data-ab-platform] .ab-when-open {
+    display: none;
+  }
+
+  [data-ab-platform] .ab-when-complete {
+    display: inline;
+  }
+}
