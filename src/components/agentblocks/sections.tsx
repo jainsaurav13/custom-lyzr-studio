@@ -36,7 +36,7 @@ import type { LucideIcon } from "lucide-react";
 import { alpha, mix, readableInk } from "@/components/studio/brand/color";
 import { cn } from "@/lib/utils";
 
-import { BlockGroupList, HexField } from "./HexField";
+import { BlockGroupList, HexField, PressDefs } from "./HexField";
 import {
   BOOKING_URL,
   CTA_LABEL,
@@ -403,6 +403,8 @@ export function BlocksSection() {
 
           {/* Both states are rendered in full and the divider decides how much
               of the finished one you can see, so nothing reflows as it moves. */}
+          <PressDefs />
+
           <div className="relative hidden px-5 py-6 sm:px-7 lg:block">
             <HexField state="without" />
 

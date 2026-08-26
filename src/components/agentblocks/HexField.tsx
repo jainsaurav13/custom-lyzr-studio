@@ -96,13 +96,61 @@ function Icon({ name, size }: { name: string; size: string }) {
 /** The hexagon's own silhouette, pointy top, used by every layer that draws one. */
 const HEX_CLIP = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)";
 
-/**
- * Print grain. Flat ink laid on paper is never quite even, and that unevenness
- * is most of what separates a printed mark from a filled rectangle. Generated
- * rather than fetched, so the frozen snapshot carries it.
+/* ------------------------------------------------------------------ *
+ * The press
+ * ------------------------------------------------------------------ *
+ * Six layers, none of them loud. Ink laid on paper is uneven in ways that
+ * are individually invisible and collectively the whole difference between a
+ * printed mark and a filled polygon: the paper's own tooth, blotches where it
+ * drank more ink than elsewhere, sparse flecks where it took none, the fibre
+ * running through the sheet, a plate that landed a hair off register, and the
+ * wick of ink a fraction past the edge it was meant to stop at.
  */
-const GRAIN =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E\")";
+
+/**
+ * The filter definitions the press layers reference. Rendered once, above both
+ * states of the field, because an id has to be unique to be referable.
+ */
+export function PressDefs() {
+  return (
+    <svg
+      aria-hidden="true"
+      width="0"
+      height="0"
+      className="pointer-events-none absolute"
+      style={{ position: "absolute" }}
+    >
+      <defs>
+        {/* A cut edge is never quite true. This displaces the printed shape by
+            a pixel or two, which is what keeps the hexagons from looking laser
+            cut, and it sits on a wrapper so the type above stays straight. */}
+        <filter
+          id="ab-rough"
+          x="-16%"
+          y="-16%"
+          width="132%"
+          height="132%"
+          colorInterpolationFilters="sRGB"
+        >
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.11"
+            numOctaves="3"
+            seed="7"
+            result="n"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="n"
+            scale="1.5"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </defs>
+    </svg>
+  );
+}
 
 /**
  * One block, as a slab of tinted glass cut to a hexagon. Depth comes from a lit
@@ -113,21 +161,39 @@ function LitHex({ item }: { item: Placed }) {
   const { color } = item;
 
   return (
-    <div className="relative h-full w-full" style={{ clipPath: HEX_CLIP, background: color }}>
-      {/* The ink, unevenly taken. */}
+    <div className="relative h-full w-full">
+      {/* Ink wicks a fraction past the edge it was meant to stop at. */}
+      <span
+        aria-hidden="true"
+        className="ab-hexclip pointer-events-none absolute inset-0 scale-[1.035]"
+        style={{ background: color, filter: "blur(0.22cqw)", opacity: 0.3 }}
+      />
+
+      {/* Everything printed sits inside the rough filter, so the edge of the
+          impression is ragged. The type is a sibling, and stays true. */}
       <span
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
-        style={{ backgroundImage: GRAIN, mixBlendMode: "overlay", opacity: 0.22 }}
-      />
-      {/* A press leaves its edges a shade heavier than its middle. */}
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background: `radial-gradient(closest-side, ${alpha("#FFFFFF", 0.07)}, ${alpha("#241A12", 0)} 62%, ${alpha("#241A12", 0.16)} 100%)`,
-        }}
-      />
+        style={{ filter: "url(#ab-rough)", isolation: "isolate" }}
+      >
+        <span className="ab-hexclip absolute inset-0" style={{ background: color }} />
+        {/* The second plate, a hair off register. */}
+        <span
+          className="ab-hexclip absolute inset-0 translate-x-[0.9%] translate-y-[0.7%]"
+          style={{ background: color, mixBlendMode: "multiply", opacity: 0.3 }}
+        />
+        <span className="ab-hexclip ab-ink-mottle" />
+        <span className="ab-hexclip ab-ink-fibre" />
+        <span className="ab-hexclip ab-ink-grain" />
+        <span className="ab-hexclip ab-ink-speckle" />
+        {/* A press lays its edges a shade heavier than its middle. */}
+        <span
+          className="ab-hexclip absolute inset-0"
+          style={{
+            background: `radial-gradient(closest-side, ${alpha("#FFFFFF", 0.06)}, ${alpha("#241A12", 0)} 60%, ${alpha("#241A12", 0.17)} 100%)`,
+          }}
+        />
+      </span>
 
       <div
         className="relative flex h-full w-full flex-col items-center justify-center px-[15%] text-center"
@@ -152,8 +218,13 @@ function EmptyHex({ item }: { item: Placed }) {
       <span
         aria-hidden="true"
         className="absolute inset-0"
-        style={{ clipPath: HEX_CLIP, background: "var(--ab-press-rule)" }}
+        style={{
+          clipPath: HEX_CLIP,
+          background: "var(--ab-press-rule)",
+          filter: "url(#ab-rough)",
+        }}
       />
+      <span aria-hidden="true" className="ab-hexclip ab-paper-press" />
       <div
         className="absolute flex flex-col items-center justify-center px-[15%] text-center"
         style={{
@@ -287,14 +358,8 @@ export function HexField({ state }: { state: "without" | "with" }) {
               />
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute"
-                style={{
-                  inset: "0.18cqw",
-                  clipPath: HEX_CLIP,
-                  backgroundImage: GRAIN,
-                  mixBlendMode: "multiply",
-                  opacity: 0.12,
-                }}
+                className="ab-hexclip ab-core-press"
+                style={{ inset: "0.18cqw" }}
               />
               <div
                 className="relative flex flex-col items-center"
