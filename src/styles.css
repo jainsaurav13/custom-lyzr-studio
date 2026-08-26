@@ -164,6 +164,28 @@
 }
 
 /* Once the platform is whole there is nothing left to divide. */
+/* The sheet. A press lays ink on paper that is never perfectly even, and the
+   unevenness is most of what separates a printed panel from a filled box. */
+.ab-press {
+  position: relative;
+}
+
+.ab-press::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.16'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23p)'/%3E%3C/svg%3E");
+}
+
+.ab-press > * {
+  position: relative;
+  z-index: 1;
+}
+
 /* The field's own box. It is only as tall as the parts list needs while the
    platform is still open, and grows into the height the closed platform needs
    as the families draw together. Every coordinate inside is a container-width

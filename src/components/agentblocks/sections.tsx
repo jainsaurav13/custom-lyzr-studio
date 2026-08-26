@@ -352,45 +352,50 @@ export function BlocksSection() {
         <div
           data-ab-platform=""
           data-complete={complete ? "true" : undefined}
-          className="mt-12 overflow-hidden rounded-[var(--st-radius-lg)] border"
+          className="ab-press mt-12 overflow-hidden rounded-[var(--st-radius-lg)] border"
           style={
             {
-              // Cool glass on warm paper reads as mud. The field gets its own
-              // ground: a dark slab the colours can actually sit on.
+              // Ink on paper. The sheet is warm and very slightly uneven,
+              // which is what the colours are mixed to sit on.
               background:
-                "radial-gradient(118% 76% at 50% 26%, #241F38 0%, #171325 46%, #0F0C18 100%)",
-              borderColor: "rgba(255,255,255,0.10)",
-              boxShadow: "0 34px 70px -34px rgba(24,18,40,0.55)",
+                "radial-gradient(120% 80% at 50% 22%, #FDFBF6 0%, #F7F3EA 52%, #F1ECE1 100%)",
+              borderColor: "var(--ab-press-rule)",
+              boxShadow: "0 18px 40px -28px rgba(60,44,28,0.28)",
               ["--ab-reveal" as string]: `${reveal}%`,
-              ["--ab-track-fill" as string]: "rgba(255,255,255,0.88)",
-              ["--ab-track-rail" as string]: "rgba(255,255,255,0.18)",
-              ["--ab-track-knob" as string]: "#241F38",
+              ["--ab-press-paper" as string]: "#FBF8F2",
+              ["--ab-press-ink" as string]: "#2C2F34",
+              ["--ab-press-rule" as string]: "rgba(64,50,36,0.20)",
+              ["--ab-press-hollow" as string]: "rgba(64,50,36,0.045)",
+              ["--ab-press-faint" as string]: "rgba(52,42,32,0.52)",
+              ["--ab-track-fill" as string]: "#C13B2A",
+              ["--ab-track-rail" as string]: "rgba(64,50,36,0.22)",
+              ["--ab-track-knob" as string]: "#FBF8F2",
             } as CSSProperties
           }
         >
           <div
             className="hidden flex-wrap items-start justify-between gap-4 border-b px-5 py-4 sm:px-7 lg:flex"
-            style={{ borderColor: "rgba(255,255,255,0.09)" }}
+            style={{ borderColor: "var(--ab-press-rule)" }}
           >
             <div>
               <p
                 className="text-sm font-semibold"
-                style={{ fontFamily: "var(--st-font-head)", color: "rgba(255,255,255,0.62)" }}
+                style={{ fontFamily: "var(--st-font-head)", color: "var(--ab-press-ink)" }}
               >
                 {COMPARISON.without.label}
               </p>
-              <p className="mt-0.5 text-xs" style={{ color: "rgba(255,255,255,0.34)" }}>
+              <p className="mt-0.5 text-xs" style={{ color: "var(--ab-press-faint)" }}>
                 {COMPARISON.without.note}
               </p>
             </div>
             <div className="text-right">
               <p
                 className="text-sm font-semibold"
-                style={{ fontFamily: "var(--st-font-head)", color: "#FFFFFF" }}
+                style={{ fontFamily: "var(--st-font-head)", color: "var(--ab-press-ink)" }}
               >
                 {COMPARISON.with.label}
               </p>
-              <p className="mt-0.5 text-xs" style={{ color: "#C9B6F5" }}>
+              <p className="mt-0.5 text-xs" style={{ color: "#C13B2A" }}>
                 {COMPARISON.with.note}
               </p>
             </div>
@@ -408,7 +413,7 @@ export function BlocksSection() {
               style={{
                 clipPath: "inset(0 calc(100% - var(--ab-reveal)) 0 0)",
                 background:
-                  "radial-gradient(118% 76% at 50% 26%, #241F38 0%, #171325 46%, #0F0C18 100%)",
+                  "radial-gradient(120% 80% at 50% 22%, #FDFBF6 0%, #F7F3EA 52%, #F1ECE1 100%)",
               }}
               aria-hidden="true"
             >
@@ -426,20 +431,20 @@ export function BlocksSection() {
             <span
               aria-hidden="true"
               className="ab-divider pointer-events-none absolute inset-y-0 z-10 w-px"
-              style={{ left: "var(--ab-reveal)", background: "rgba(255,255,255,0.72)" }}
+              style={{ left: "var(--ab-reveal)", background: "var(--ab-press-ink)" }}
             />
             <span
               aria-hidden="true"
               className="ab-divider pointer-events-none absolute top-1/2 z-10 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border"
               style={{
                 left: "var(--ab-reveal)",
-                background: "#241F38",
-                borderColor: "rgba(255,255,255,0.7)",
-                boxShadow: "0 4px 14px -4px rgba(10,8,18,0.6)",
+                background: "#FBF8F2",
+                borderColor: "var(--ab-press-ink)",
+                boxShadow: "0 4px 12px -4px rgba(60,44,28,0.34)",
               }}
             >
-              <ChevronLeft className="h-3 w-3" style={{ color: "rgba(255,255,255,0.85)" }} />
-              <ChevronRight className="h-3 w-3" style={{ color: "rgba(255,255,255,0.85)" }} />
+              <ChevronLeft className="h-3 w-3" style={{ color: "var(--ab-press-ink)" }} />
+              <ChevronRight className="h-3 w-3" style={{ color: "var(--ab-press-ink)" }} />
             </span>
 
             {/* Drag the field itself, or the track under it: both write the
@@ -465,7 +470,7 @@ export function BlocksSection() {
 
           <div
             className="hidden items-center gap-5 border-t px-5 pt-5 pb-4 sm:px-7 lg:flex"
-            style={{ borderColor: "rgba(255,255,255,0.09)" }}
+            style={{ borderColor: "var(--ab-press-rule)" }}
           >
             <input
               type="range"
@@ -486,9 +491,9 @@ export function BlocksSection() {
               className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[0.8125rem] font-semibold whitespace-nowrap transition-colors"
               style={{
                 fontFamily: "var(--st-font-head)",
-                borderColor: "rgba(255,255,255,0.26)",
-                background: "rgba(255,255,255,0.06)",
-                color: "#FFFFFF",
+                borderColor: "#C13B2A",
+                background: "rgba(193,59,42,0.06)",
+                color: "#C13B2A",
               }}
             >
               <span className="ab-when-open inline-flex items-center gap-1.5">
@@ -504,10 +509,10 @@ export function BlocksSection() {
 
           <p
             className="relative hidden border-t px-5 py-3 text-center text-[11px] font-semibold tracking-[0.14em] uppercase sm:px-7 lg:block"
-            style={{ borderColor: "rgba(255,255,255,0.09)", color: "rgba(255,255,255,0.4)" }}
+            style={{ borderColor: "var(--ab-press-rule)", color: "var(--ab-press-faint)" }}
           >
             <span className="ab-when-open">{COMPARISON.hint}</span>
-            <span className="ab-when-complete" style={{ color: "#C9B6F5" }}>
+            <span className="ab-when-complete" style={{ color: "#C13B2A" }}>
               {COMPARISON.complete}
             </span>
           </p>

@@ -27,35 +27,35 @@ export interface Group {
 
 /** Seven families, spaced evenly around the core, clockwise from top left. */
 export const GROUPS: Group[] = [
-  { key: "build", label: "Build", note: "Design and ship agents", color: "#FF7A66", angle: 244.1 },
+  { key: "build", label: "Build", note: "Design and ship agents", color: "#C13B2A", angle: 244.1 },
   {
     key: "govern",
     label: "Govern",
     note: "Every agent on the record",
-    color: "#4ADE9B",
+    color: "#3F7A73",
     angle: -64.3,
   },
-  { key: "operate", label: "Operate", note: "Where the work runs", color: "#FFB258", angle: -12.9 },
+  { key: "operate", label: "Operate", note: "Where the work runs", color: "#9A6E10", angle: -12.9 },
   {
     key: "observe",
     label: "Observe",
     note: "Runs, cost and quality",
-    color: "#45D7E8",
+    color: "#34738A",
     angle: 38.5,
   },
   {
     key: "scale",
     label: "Scale",
     note: "Enterprise load, absorbed",
-    color: "#F472B6",
+    color: "#8A4A24",
     angle: 89.9,
   },
-  { key: "secure", label: "Secure", note: "Who may do what", color: "#A78BFA", angle: 141.3 },
+  { key: "secure", label: "Secure", note: "Who may do what", color: "#2C2F34", angle: 141.3 },
   {
     key: "integrate",
     label: "Integrate",
     note: "Connect what you already run",
-    color: "#5B9DFF",
+    color: "#245A6D",
     angle: 192.7,
   },
 ];
@@ -249,7 +249,7 @@ function place(): Placed[] {
 function shade(base: string, index: number, count: number): string {
   if (count < 2) return base;
   const t = (index / (count - 1)) * 2 - 1;
-  return t >= 0 ? mix(base, "#FFFFFF", 0.06 * t) : mix(base, "#2A1B12", 0.11 * -t);
+  return t >= 0 ? mix(base, "#FFFFFF", 0.028 * t) : mix(base, "#241A12", 0.04 * -t);
 }
 
 export const PLACED: Placed[] = place();

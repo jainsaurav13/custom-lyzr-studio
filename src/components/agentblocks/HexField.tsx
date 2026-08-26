@@ -97,87 +97,51 @@ function Icon({ name, size }: { name: string; size: string }) {
 const HEX_CLIP = "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)";
 
 /**
+ * Print grain. Flat ink laid on paper is never quite even, and that unevenness
+ * is most of what separates a printed mark from a filled rectangle. Generated
+ * rather than fetched, so the frozen snapshot carries it.
+ */
+const GRAIN =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E\")";
+
+/**
  * One block, as a slab of tinted glass cut to a hexagon. Depth comes from a lit
  * top face, a shaded foot and the colour bleeding out beneath it, all derived
  * from the block's own hue so the whole field stays one material.
  */
 function LitHex({ item }: { item: Placed }) {
   const { color } = item;
-  // Deep enough to clear the lit face, but mixed from the family's own colour
-  // rather than from black, so the type belongs to the block it sits on.
-  const ink = mix(item.group.color, "#171226", 0.93);
-  const crown = mix(color, "#FFFFFF", 0.46);
-  // The foot deepens toward a blue-violet rather than toward black, which is
-  // what keeps a saturated colour looking like a gem instead of a bruise.
-  const foot = mix(color, "#2A1F3D", 0.3);
 
   return (
-    <>
-      {/* The block's own light, spilling onto the slab. On a dark ground this
-          does the work a drop shadow does on a light one, and it is the reason
-          the field reads as lit rather than printed. */}
+    <div className="relative h-full w-full" style={{ clipPath: HEX_CLIP, background: color }}>
+      {/* The ink, unevenly taken. */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute -inset-[14%] rounded-full"
+        className="pointer-events-none absolute inset-0"
+        style={{ backgroundImage: GRAIN, mixBlendMode: "overlay", opacity: 0.22 }}
+      />
+      {/* A press leaves its edges a shade heavier than its middle. */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
         style={{
-          background: `radial-gradient(closest-side, ${alpha(color, 0.34)}, ${alpha(color, 0.1)} 54%, transparent 76%)`,
+          background: `radial-gradient(closest-side, ${alpha("#FFFFFF", 0.07)}, ${alpha("#241A12", 0)} 62%, ${alpha("#241A12", 0.16)} 100%)`,
         }}
       />
 
-      {/* The rim is the thickness of the glass. One gradient lights the two
-          roof edges near-white and lights the two foot edges again in the
-          block's own colour, where light that has crossed it leaves. */}
       <div
-        className="relative h-full w-full"
-        style={{
-          clipPath: HEX_CLIP,
-          background: `linear-gradient(168deg, ${alpha("#FFFFFF", 0.99)} 0%, ${mix(color, "#FFFFFF", 0.8)} 6%, ${mix(color, "#241C38", 0.22)} 62%, ${mix(color, "#FFFFFF", 0.6)} 93%, ${mix(color, "#FFFFFF", 0.9)} 100%)`,
-          filter: `drop-shadow(0 0.07cqw 0.1cqw ${alpha("#0B0813", 0.4)}) drop-shadow(0 0.5cqw 0.8cqw ${alpha("#0B0813", 0.3)})`,
-        }}
+        className="relative flex h-full w-full flex-col items-center justify-center px-[15%] text-center"
+        style={{ color: "#FFFFFF" }}
       >
-        <div
-          className="absolute flex flex-col items-center justify-center px-[15%] text-center"
-          style={{
-            inset: "0.28cqw",
-            clipPath: HEX_CLIP,
-            color: ink,
-            background: `linear-gradient(176deg, ${crown} 0%, ${color} 52%, ${foot} 94%, ${mix(color, "#FFFFFF", 0.2)} 100%)`,
-          }}
+        <Icon name={item.block.icon} size="2.15cqw" />
+        <span
+          className="mt-[0.3cqw] leading-[1.15] font-semibold"
+          style={{ fontFamily: "var(--st-font-head)", fontSize: "1.02cqw" }}
         >
-          {/* Lit from inside, not from above. A source sitting behind the upper
-              face is what separates a gem from a painted panel. */}
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background: `radial-gradient(70% 46% at 50% 20%, ${alpha("#FFFFFF", 0.62)}, ${alpha("#FFFFFF", 0.18)} 46%, ${alpha("#FFFFFF", 0)} 74%)`,
-            }}
-          />
-          {/* The seam. One dark line under the roof and one above the foot, so
-              the rim reads as an edge with thickness rather than a soft ramp. */}
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background: `linear-gradient(180deg, ${alpha("#171226", 0.28)} 0%, ${alpha("#171226", 0)} 6%), linear-gradient(0deg, ${alpha("#171226", 0.2)} 0%, ${alpha("#171226", 0)} 7%)`,
-            }}
-          />
-
-          <div
-            className="relative flex flex-col items-center"
-            style={{ filter: `drop-shadow(0 0.05cqw 0.09cqw ${alpha("#FFFFFF", 0.45)})` }}
-          >
-            <Icon name={item.block.icon} size="2.15cqw" />
-            <span
-              className="mt-[0.3cqw] leading-[1.15] font-semibold"
-              style={{ fontFamily: "var(--st-font-head)", fontSize: "1.02cqw" }}
-            >
-              {item.block.name}
-            </span>
-          </div>
-        </div>
+          {item.block.name}
+        </span>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -188,15 +152,15 @@ function EmptyHex({ item }: { item: Placed }) {
       <span
         aria-hidden="true"
         className="absolute inset-0"
-        style={{ clipPath: HEX_CLIP, background: alpha("#FFFFFF", 0.16) }}
+        style={{ clipPath: HEX_CLIP, background: "var(--ab-press-rule)" }}
       />
       <div
         className="absolute flex flex-col items-center justify-center px-[15%] text-center"
         style={{
           inset: "0.13cqw",
           clipPath: HEX_CLIP,
-          background: alpha("#FFFFFF", 0.045),
-          color: alpha("#FFFFFF", 0.44),
+          background: "var(--ab-press-hollow)",
+          color: "var(--ab-press-faint)",
         }}
       >
         <Icon name={item.block.icon} size="2.15cqw" />
@@ -231,36 +195,66 @@ export function HexField({ state }: { state: "without" | "with" }) {
           } as CSSProperties
         }
       >
-        {/* The core the families close around, and the ring they close on. */}
+        {/* The core the families close around, the ring they close on, and
+            the lines that say which family answers to it. */}
         {whole ? (
           <>
-            <span
+            <svg
               aria-hidden="true"
-              className="ab-ring pointer-events-none absolute rounded-[50%] border border-dashed"
-              style={{
-                left: `${cq(RING.x)}cqw`,
-                top: `${cq(RING.y)}cqw`,
-                width: `${cq(RING.w)}cqw`,
-                height: `${cq(RING.h)}cqw`,
-                borderColor: alpha("#FFFFFF", 0.11),
-              }}
-            />
-
-            {/* The light each family throws onto the ground once it settles. */}
-            {GROUP_LABELS.map(({ group, cx, cy }) => (
-              <span
-                key={`${group.key}-glow`}
-                aria-hidden="true"
-                className="ab-glow pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 rounded-full"
-                style={{
-                  left: `${cq(cx)}cqw`,
-                  top: `${cq(cy)}cqw`,
-                  width: `${cq(430)}cqw`,
-                  height: `${cq(380)}cqw`,
-                  background: `radial-gradient(closest-side, ${alpha(group.color, 0.24)}, ${alpha(group.color, 0.08)} 52%, transparent 78%)`,
-                }}
+              className="ab-ring pointer-events-none absolute inset-0 h-full w-full"
+              viewBox={`0 0 ${BOX_W} ${BOX_H}`}
+              preserveAspectRatio="none"
+            >
+              <ellipse
+                cx={CORE.x}
+                cy={CORE.y}
+                rx={RING.w / 2}
+                ry={RING.h / 2}
+                fill="none"
+                stroke="var(--ab-press-rule)"
+                strokeWidth={1.6}
+                strokeDasharray="7 9"
               />
-            ))}
+              {GROUP_LABELS.map(({ group, cx, cy }) => {
+                // The line runs from the core's edge to just short of the
+                // clump, so the family reads as answering to the middle.
+                const dx = cx - CORE.x;
+                const dy = cy - CORE.y;
+                const len = Math.hypot(dx, dy) || 1;
+                const ux = dx / len;
+                const uy = dy / len;
+                // Measured in pixels, not fractions: the clumps sit at
+                // different distances, and a fraction would start some of
+                // these lines inside the core and end others inside a block.
+                const from = 124;
+                const to = len - 132;
+                return (
+                  <g key={`${group.key}-wire`}>
+                    <line
+                      x1={CORE.x + ux * from}
+                      y1={CORE.y + uy * from}
+                      x2={CORE.x + ux * to}
+                      y2={CORE.y + uy * to}
+                      stroke={group.color}
+                      strokeWidth={1.8}
+                    />
+                    <circle
+                      cx={CORE.x + ux * to}
+                      cy={CORE.y + uy * to}
+                      r={5.5}
+                      fill={group.color}
+                    />
+                    <circle
+                      cx={CORE.x + Math.cos(Math.atan2(dy, dx)) * (RING.w / 2)}
+                      cy={CORE.y + Math.sin(Math.atan2(dy, dx)) * (RING.h / 2)}
+                      r={4.5}
+                      fill={group.color}
+                    />
+                  </g>
+                );
+              })}
+            </svg>
+
             <div
               className="ab-core absolute flex flex-col items-center justify-center"
               style={{
@@ -270,32 +264,42 @@ export function HexField({ state }: { state: "without" | "with" }) {
                 aspectRatio: "1 / 1.1547",
               }}
             >
+              {/* The press did not quite register: the sheet shows a sliver of
+                  the colour plate under the paper one. */}
               <span
                 aria-hidden="true"
-                className="absolute -inset-[20%] rounded-full"
-                style={{
-                  background: `radial-gradient(closest-side, ${alpha("#FFFFFF", 0.2)}, transparent 72%)`,
-                }}
+                className="absolute inset-0 translate-x-[1.4%] translate-y-[1.8%]"
+                style={{ clipPath: HEX_CLIP, background: GROUPS[0].color, opacity: 0.85 }}
               />
               <span
                 aria-hidden="true"
                 className="absolute inset-0"
-                style={{
-                  clipPath: HEX_CLIP,
-                  background: `linear-gradient(168deg, ${alpha("#FFFFFF", 0.99)} 0%, #F4F1FB 8%, #D9D0EC 62%, #FFFFFF 100%)`,
-                }}
+                style={{ clipPath: HEX_CLIP, background: "var(--ab-press-ink)" }}
               />
               <span
                 aria-hidden="true"
                 className="absolute"
                 style={{
-                  inset: "0.55cqw",
+                  inset: "0.18cqw",
                   clipPath: HEX_CLIP,
-                  background:
-                    "linear-gradient(176deg, #FFFFFF 0%, #F7F4FD 46%, #E2DBF1 93%, #F1ECFA 100%)",
+                  background: "var(--ab-press-paper)",
                 }}
               />
-              <div className="relative flex flex-col items-center" style={{ color: "#15121F" }}>
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute"
+                style={{
+                  inset: "0.18cqw",
+                  clipPath: HEX_CLIP,
+                  backgroundImage: GRAIN,
+                  mixBlendMode: "multiply",
+                  opacity: 0.12,
+                }}
+              />
+              <div
+                className="relative flex flex-col items-center"
+                style={{ color: "var(--ab-press-ink)" }}
+              >
                 <Icon name="Boxes" size="4cqw" />
                 <span
                   className="mt-[0.6cqw] leading-none font-semibold"
@@ -305,7 +309,7 @@ export function HexField({ state }: { state: "without" | "with" }) {
                 </span>
                 <span
                   className="mt-[0.35cqw] leading-none font-semibold tracking-[0.26em] uppercase"
-                  style={{ fontSize: "0.85cqw", opacity: 0.62 }}
+                  style={{ fontSize: "0.85cqw", opacity: 0.55 }}
                 >
                   Platform
                 </span>
@@ -320,13 +324,13 @@ export function HexField({ state }: { state: "without" | "with" }) {
               >
                 <span
                   className="block leading-none font-semibold tracking-[0.24em] uppercase"
-                  style={{ fontSize: "1.05cqw", color: mix(group.color, "#FFFFFF", 0.12) }}
+                  style={{ fontSize: "1.05cqw", color: group.color }}
                 >
                   {group.label}
                 </span>
                 <span
                   className="mt-[0.35cqw] block leading-none"
-                  style={{ fontSize: "0.88cqw", color: alpha("#FFFFFF", 0.42) }}
+                  style={{ fontSize: "0.88cqw", color: "var(--ab-press-faint)" }}
                 >
                   {group.note}
                 </span>
@@ -374,11 +378,11 @@ export function BlockGroupList() {
           <div className="flex items-baseline gap-2">
             <span
               className="text-[0.6875rem] font-semibold tracking-[0.22em] uppercase"
-              style={{ color: mix(group.color, "#FFFFFF", 0.12) }}
+              style={{ color: group.color }}
             >
               {group.label}
             </span>
-            <span className="text-[0.75rem]" style={{ color: alpha("#FFFFFF", 0.42) }}>
+            <span className="text-[0.75rem]" style={{ color: "var(--ab-press-faint)" }}>
               {group.note}
             </span>
           </div>
@@ -389,7 +393,7 @@ export function BlockGroupList() {
                 className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.75rem] font-medium"
                 style={{
                   background: item.color,
-                  color: mix(group.color, "#171226", 0.93),
+                  color: "#FFFFFF",
                 }}
               >
                 <Icon name={item.block.icon} size="0.8125rem" />
