@@ -378,12 +378,6 @@ export function HexField({ state }: { state: "without" | "with" }) {
                 >
                   AgentBlocks
                 </span>
-                <span
-                  className="mt-[0.35cqw] leading-none font-semibold tracking-[0.26em] uppercase"
-                  style={{ fontSize: "0.85cqw", opacity: 0.55 }}
-                >
-                  Platform
-                </span>
               </div>
             </div>
 
