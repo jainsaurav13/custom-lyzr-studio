@@ -363,6 +363,7 @@ export function BlocksSection() {
               boxShadow: "0 18px 40px -28px rgba(60,44,28,0.28)",
               ["--ab-reveal" as string]: `${reveal}%`,
               ["--ab-press-paper" as string]: "#FBF8F2",
+              ["--ab-press-type" as string]: "#FDFBF7",
               ["--ab-press-ink" as string]: "#2C2F34",
               ["--ab-press-rule" as string]: "rgba(64,50,36,0.20)",
               ["--ab-press-hollow" as string]: "rgba(64,50,36,0.045)",

@@ -27,35 +27,35 @@ export interface Group {
 
 /** Seven families, spaced evenly around the core, clockwise from top left. */
 export const GROUPS: Group[] = [
-  { key: "build", label: "Build", note: "Design and ship agents", color: "#C13B2A", angle: 244.1 },
+  { key: "build", label: "Build", note: "Design and ship agents", color: "#C1503A", angle: 244.1 },
   {
     key: "govern",
     label: "Govern",
     note: "Every agent on the record",
-    color: "#3F7A73",
+    color: "#4D7D73",
     angle: -64.3,
   },
-  { key: "operate", label: "Operate", note: "Where the work runs", color: "#9A6E10", angle: -12.9 },
+  { key: "operate", label: "Operate", note: "Where the work runs", color: "#966C33", angle: -12.9 },
   {
     key: "observe",
     label: "Observe",
     note: "Runs, cost and quality",
-    color: "#34738A",
+    color: "#4C7A91",
     angle: 38.5,
   },
   {
     key: "scale",
     label: "Scale",
     note: "Enterprise load, absorbed",
-    color: "#8A4A24",
+    color: "#AA613D",
     angle: 89.9,
   },
-  { key: "secure", label: "Secure", note: "Who may do what", color: "#2C2F34", angle: 141.3 },
+  { key: "secure", label: "Secure", note: "Who may do what", color: "#72747B", angle: 141.3 },
   {
     key: "integrate",
     label: "Integrate",
     note: "Connect what you already run",
-    color: "#245A6D",
+    color: "#4E7A8D",
     angle: 192.7,
   },
 ];
@@ -226,11 +226,10 @@ function place(): Placed[] {
       cursor += 1;
       if (!block) return;
       const group = GROUPS.find((candidate) => candidate.key === block.group)!;
-      const members = byGroup.get(group.key) ?? [];
       placed.push({
         block,
         group,
-        color: shade(group.color, members.indexOf(block), members.length),
+        color: shade(group.color),
         from: {
           x: BOX_W / 2 + (i - (count - 1) / 2) * SCATTER_STEP_X,
           y: SCATTER_TOP + row * SCATTER_STEP_Y,
@@ -243,13 +242,12 @@ function place(): Placed[] {
 }
 
 /**
- * A member's own shade of its family's hue: light at the top of the list,
- * deep at the bottom, never far enough to break the family or the contrast.
+ * A family prints in one ink. Tonal variation between its members would only
+ * cost the lightest of them its contrast against the warm off-white type, and
+ * the press already gives each impression a character of its own.
  */
-function shade(base: string, index: number, count: number): string {
-  if (count < 2) return base;
-  const t = (index / (count - 1)) * 2 - 1;
-  return t >= 0 ? mix(base, "#FFFFFF", 0.028 * t) : mix(base, "#241A12", 0.04 * -t);
+function shade(base: string): string {
+  return base;
 }
 
 export const PLACED: Placed[] = place();

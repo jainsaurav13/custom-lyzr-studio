@@ -185,7 +185,7 @@
 .ab-ink-mottle {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.008' numOctaves='3' seed='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='420' height='420' filter='url(%23m)'/%3E%3C/svg%3E");
   mix-blend-mode: overlay;
-  opacity: 0.34;
+  opacity: 0.26;
 }
 
 /* The fibre running through the sheet, one way, as laid paper does. */
@@ -205,7 +205,7 @@
 /* Flecks the ink missed. Sparse, by design. */
 .ab-ink-speckle {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='1' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 -0.62'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23s)'/%3E%3C/svg%3E");
-  opacity: 0.28;
+  opacity: 0.2;
 }
 
 /* The same sheet, seen through a block that was never printed. */

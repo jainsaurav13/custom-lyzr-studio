@@ -166,7 +166,7 @@ function LitHex({ item }: { item: Placed }) {
       <span
         aria-hidden="true"
         className="ab-hexclip pointer-events-none absolute inset-0 scale-[1.035]"
-        style={{ background: color, filter: "blur(0.22cqw)", opacity: 0.3 }}
+        style={{ background: color, filter: "blur(0.22cqw)", opacity: 0.24 }}
       />
 
       {/* Everything printed sits inside the rough filter, so the edge of the
@@ -180,7 +180,13 @@ function LitHex({ item }: { item: Placed }) {
         {/* The second plate, a hair off register. */}
         <span
           className="ab-hexclip absolute inset-0 translate-x-[0.9%] translate-y-[0.7%]"
-          style={{ background: color, mixBlendMode: "multiply", opacity: 0.3 }}
+          style={{ background: color, mixBlendMode: "multiply", opacity: 0.22 }}
+        />
+        <span
+          className="ab-hexclip absolute inset-0"
+          style={{
+            background: `linear-gradient(180deg, ${alpha("#FFFFFF", 0.11)} 0%, ${alpha("#FFFFFF", 0.03)} 9%, ${alpha("#FFFFFF", 0)} 18%)`,
+          }}
         />
         <span className="ab-hexclip ab-ink-mottle" />
         <span className="ab-hexclip ab-ink-fibre" />
@@ -190,14 +196,14 @@ function LitHex({ item }: { item: Placed }) {
         <span
           className="ab-hexclip absolute inset-0"
           style={{
-            background: `radial-gradient(closest-side, ${alpha("#FFFFFF", 0.06)}, ${alpha("#241A12", 0)} 60%, ${alpha("#241A12", 0.17)} 100%)`,
+            background: `radial-gradient(closest-side, ${alpha("#FFFFFF", 0.05)}, ${alpha("#241A12", 0)} 62%, ${alpha("#241A12", 0.09)} 100%)`,
           }}
         />
       </span>
 
       <div
         className="relative flex h-full w-full flex-col items-center justify-center px-[15%] text-center"
-        style={{ color: "#FFFFFF" }}
+        style={{ color: "var(--ab-press-type)" }}
       >
         <Icon name={item.block.icon} size="2.15cqw" />
         <span
@@ -389,7 +395,7 @@ export function HexField({ state }: { state: "without" | "with" }) {
               >
                 <span
                   className="block leading-none font-semibold tracking-[0.24em] uppercase"
-                  style={{ fontSize: "1.05cqw", color: group.color }}
+                  style={{ fontSize: "1.05cqw", color: mix(group.color, "#2C2F34", 0.3) }}
                 >
                   {group.label}
                 </span>
@@ -443,7 +449,7 @@ export function BlockGroupList() {
           <div className="flex items-baseline gap-2">
             <span
               className="text-[0.6875rem] font-semibold tracking-[0.22em] uppercase"
-              style={{ color: group.color }}
+              style={{ color: mix(group.color, "#2C2F34", 0.3) }}
             >
               {group.label}
             </span>
@@ -458,7 +464,7 @@ export function BlockGroupList() {
                 className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.75rem] font-medium"
                 style={{
                   background: item.color,
-                  color: "#FFFFFF",
+                  color: "var(--ab-press-type)",
                 }}
               >
                 <Icon name={item.block.icon} size="0.8125rem" />
